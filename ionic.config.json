@@ -1,0 +1,7 @@
+{
+  "name": "correja",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
