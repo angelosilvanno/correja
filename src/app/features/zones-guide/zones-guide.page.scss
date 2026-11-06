@@ -1,0 +1,118 @@
+.page-canvas {
+  --background: #f8fafc;
+  &::part(scroll) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+.app-viewport-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+.page-header {
+  margin-bottom: 20px;
+
+  .micro-tag {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #0284c7;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .page-title {
+    margin: 4px 0 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .page-desc {
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+}
+
+.zones-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zone-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+
+  .zone-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+
+    .zone-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+    }
+
+    .zone-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .zone-effort {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+  }
+
+  .zone-tagline {
+    font-style: italic;
+    font-size: 0.82rem;
+    color: #334155;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .talk-test-row, .purpose-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+
+    .row-icon {
+      font-size: 1.1rem;
+      color: #0284c7;
+      margin-top: 2px;
+    }
+
+    .row-text {
+      flex: 1;
+
+      strong {
+        color: #0f172a;
+      }
+
+      p {
+        margin: 2px 0 0;
+        color: #64748b;
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+<ion-content [fullscreen]="true" class="page-canvas">
+  <div class="app-viewport-container">
+    <header class="page-header">
+      <span class="micro-tag">Diferencial CorreJa</span>
+      <h1 class="page-title">Guia de Zonas de Treino</h1>
+      <p class="page-desc">Aprenda a dosar seu esforço sem depender de relógios caros. Use a percepção do seu corpo e o teste da fala.</p>
+    </header>
+
+    <div class="zones-grid">
+      @for (zone of zones; track zone.id) {
+        <div class="zone-card">
+          <div class="zone-head">
+            <div 
+              class="zone-circle"
+              [style.background-color]="zone.colorHex"
+              [style.color]="zone.textColorHex"
+            >
+              {{ zone.id }}
+            </div>
+            <div>
+              <h2 class="zone-title">{{ zone.name }}</h2>
+              <span class="zone-effort">Esforço: {{ zone.perceivedEffort }}</span>
+            </div>
+          </div>
+
+          <div class="zone-tagline">
+            "{{ zone.tagline }}"
+          </div>
+
+          <div class="talk-test-row">
+            <div class="row-icon">
+              <ion-icon name="chatbubbles-outline"></ion-icon>
+            </div>
+            <div class="row-text">
+              <strong>Teste da Fala:</strong>
+              <p>{{ zone.talkTest }}</p>
+            </div>
+          </div>
+
+          <div class="purpose-row">
+            <div class="row-icon">
+              <ion-icon name="checkmark-done-outline"></ion-icon>
+            </div>
+            <div class="row-text">
+              <strong>Para que serve:</strong>
+              <p>{{ zone.purpose }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</ion-content>

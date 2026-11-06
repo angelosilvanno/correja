@@ -1,2 +1,33 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+:root {
+  /* Identidade Visual CorreJa */
+  --ion-color-primary: #0284c7;
+  --ion-color-primary-rgb: 2, 132, 199;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #0369a1;
+  --ion-color-primary-tint: #38bdf8;
+
+  --correja-bg-surface: #ffffff;
+  --correja-bg-canvas: #f8fafc;
+  --correja-text-title: #0f172a;
+  --correja-text-body: #334155;
+  --correja-text-muted: #64748b;
+  --correja-border: #e2e8f0;
+
+  /* Zonas de Treino */
+  --zone-1: #0ea5e9;
+  --zone-2: #10b981;
+  --zone-3: #f59e0b;
+  --zone-4: #f97316;
+  --zone-5: #ef4444;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --correja-bg-surface: #1e293b;
+    --correja-bg-canvas: #0f172a;
+    --correja-text-title: #f8fafc;
+    --correja-text-body: #cbd5e1;
+    --correja-text-muted: #94a3b8;
+    --correja-border: #334155;
+  }
+}

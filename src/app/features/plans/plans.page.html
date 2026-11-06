@@ -1,0 +1,48 @@
+<ion-content [fullscreen]="true" class="page-canvas">
+  <div class="app-viewport-container">
+    <header class="page-header">
+      <span class="micro-tag">Evolução Orientada</span>
+      <h1 class="page-title">Planos de Treino</h1>
+      <p class="page-desc">Escolha uma metodologia gradual para correr com saúde e constância.</p>
+    </header>
+
+    <div class="plans-list">
+      @for (plan of plans; track plan.id) {
+        <div class="plan-card" [class.is-active]="plan.active">
+          <div class="plan-head">
+            <div>
+              <span class="level-chip">{{ plan.level }}</span>
+              <h2 class="plan-title">{{ plan.title }}</h2>
+              <p class="plan-sub">{{ plan.subtitle }}</p>
+            </div>
+            @if (plan.active) {
+              <div class="active-tag">
+                <ion-icon name="checkmark-circle"></ion-icon> Em Andamento
+              </div>
+            }
+          </div>
+
+          <div class="plan-meta">
+            <div class="meta-item">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>{{ plan.durationWeeks }} semanas</span>
+            </div>
+            <div class="meta-divider">•</div>
+            <div class="meta-item">
+              <ion-icon name="flag-outline"></ion-icon>
+              <span>{{ plan.sessionsPerWeek }} treinos/sem</span>
+            </div>
+          </div>
+
+          <div class="plan-actions">
+            @if (plan.active) {
+              <ion-button expand="block" fill="outline" class="btn-manage">Ver Cronograma</ion-button>
+            } @else {
+              <ion-button expand="block" class="btn-start">Escolher Este Plano</ion-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,469 @@
+.dashboard-canvas {
+  --background: #f8fafc;
+
+  &::part(scroll) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.app-viewport-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Topbar */
+.app-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .brand-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #0284c7;
+    text-transform: uppercase;
+  }
+
+  .user-name {
+    margin: 4px 0 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+
+  .avatar-badge {
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* Card Base Esportivo */
+.card-section {
+  margin-bottom: 20px;
+}
+
+.sport-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 20px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+}
+
+/* Constância */
+.consistency-card {
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .micro-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+  }
+
+  .card-main-title {
+    margin: 4px 0 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .streak-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #ecfdf5;
+    color: #059669;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid #d1fae5;
+  }
+
+  .week-days-track {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+
+    .day-slot {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+
+      &.done {
+        background: #ecfdf5;
+        color: #059669;
+        ion-icon {
+          font-size: 1.1rem;
+        }
+      }
+
+      &.current {
+        background: #eff6ff;
+        color: #0284c7;
+        border: 1.5px solid #0284c7;
+
+        .pulse-dot {
+          width: 8px;
+          height: 8px;
+          background: #0284c7;
+          border-radius: 50%;
+          box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.2);
+        }
+      }
+    }
+  }
+
+  .card-stat-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+
+    .stat-label {
+      display: block;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .text-accent {
+      color: #10b981;
+    }
+  }
+}
+
+/* Treino Principal */
+.section-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .plan-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #0284c7;
+    background: #e0f2fe;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+}
+
+.workout-focus-card {
+  .workout-title-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+
+    .workout-hero-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+
+    .workout-hero-sub {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .active-zone-badge {
+      background: #10b981;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 6px 14px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    }
+  }
+}
+
+/* Régua Visual das 5 Zonas (Z1 a Z5) */
+.zone-spectrum-wrapper {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border: 1px solid #f1f5f9;
+
+  .spectrum-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 8px;
+
+    .zone-text-highlight {
+      color: #10b981;
+      font-weight: 800;
+    }
+  }
+
+  .zone-spectrum-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+
+    .spectrum-segment {
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      opacity: 0.25;
+
+      &.z1 { background: #0ea5e9; color: #fff; }
+      &.z2 { background: #10b981; color: #fff; }
+      &.z3 { background: #f59e0b; color: #000; }
+      &.z4 { background: #f97316; color: #fff; }
+      &.z5 { background: #ef4444; color: #fff; }
+
+      &.highlight {
+        opacity: 1;
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      }
+    }
+  }
+}
+
+/* Grid de Métricas */
+.workout-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+
+  .grid-stat-box {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+
+    .stat-box-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
+    .stat-box-number {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #0f172a;
+
+      small {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #64748b;
+      }
+    }
+  }
+}
+
+/* Coaching Callouts */
+.coaching-callout {
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+
+  .callout-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .callout-body {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  &.talk-test-callout {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+
+    .callout-header {
+      color: #047857;
+    }
+  }
+
+  &.purpose-callout {
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    color: #134e4a;
+
+    .callout-header {
+      color: #0d9488;
+    }
+  }
+}
+
+/* Timeline */
+.timeline-block {
+  margin: 16px 0 20px;
+
+  .timeline-title {
+    margin: 0 0 10px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .timeline-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    .timeline-zone-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+
+      &[data-zone="Z1"] { background: #0ea5e9; }
+      &[data-zone="Z2"] { background: #10b981; }
+      &[data-zone="Z3"] { background: #f59e0b; }
+      &[data-zone="Z4"] { background: #f97316; }
+      &[data-zone="Z5"] { background: #ef4444; }
+    }
+
+    .step-meta {
+      flex: 1;
+
+      .step-top-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .step-name {
+          font-size: 0.85rem;
+          color: #0f172a;
+        }
+
+        .step-duration {
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: #64748b;
+          background: #f1f5f9;
+          padding: 2px 6px;
+          border-radius: 6px;
+        }
+      }
+
+      .step-desc {
+        margin: 2px 0 0;
+        font-size: 0.78rem;
+        color: #64748b;
+        line-height: 1.35;
+      }
+    }
+  }
+}
+
+/* Botão de Ação */
+.sport-btn-primary {
+  --background: #0284c7;
+  --background-activated: #0369a1;
+  --border-radius: 14px;
+  font-weight: 800;
+  height: 48px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+}
+
+.congratulations-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: #065f46;
+
+  ion-icon {
+    font-size: 1.8rem;
+    color: #059669;
+    flex-shrink: 0;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.95rem;
+  }
+
+  p {
+    margin: 2px 0 0;
+    font-size: 0.8rem;
+    color: #047857;
+  }
+}
