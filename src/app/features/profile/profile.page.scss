@@ -1,0 +1,139 @@
+.page-canvas {
+  --background: #f8fafc;
+  &::part(scroll) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+.app-viewport-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+.profile-hero-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+  margin-bottom: 24px;
+
+  .hero-avatar {
+    width: 64px;
+    height: 64px;
+    background: #e0f2fe;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .hero-name {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .hero-level {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0284c7;
+    background: #e0f2fe;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+
+  .hero-stats-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+
+    .hero-stat {
+      .val {
+        display: block;
+        font-size: 1.25rem;
+        font-weight: 900;
+        color: #0f172a;
+      }
+      .lbl {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+      }
+    }
+
+    .stat-sep {
+      width: 1px;
+      height: 24px;
+      background: #e2e8f0;
+    }
+  }
+}
+
+.settings-group {
+  margin-bottom: 20px;
+
+  .group-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+
+  .settings-list {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #edf2f7;
+    overflow: hidden;
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #0f172a;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .item-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        ion-icon {
+          font-size: 1.2rem;
+          color: #0284c7;
+        }
+      }
+
+      .badge-soon {
+        font-size: 0.7rem;
+        font-weight: 800;
+        background: #f1f5f9;
+        color: #64748b;
+        padding: 2px 8px;
+        border-radius: 6px;
+      }
+    }
+  }
+}
