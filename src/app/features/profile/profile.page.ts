@@ -1,13 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
+  arrowForwardOutline,
   chevronForwardOutline,
-  medalOutline,
+  flameOutline,
+  logOutOutline,
   notificationsOutline,
-  ribbonOutline,
-  shieldCheckmarkOutline
+  pulseOutline,
+  sparklesOutline,
+  speedometerOutline,
+  timeOutline,
+  trophyOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -18,13 +24,24 @@ import {
   styleUrls: ['./profile.page.scss']
 })
 export class ProfilePage {
+  private router = inject(Router);
+
   constructor() {
     addIcons({
+      arrowForwardOutline,
       chevronForwardOutline,
-      medalOutline,
+      flameOutline,
+      logOutOutline,
       notificationsOutline,
-      ribbonOutline,
-      shieldCheckmarkOutline
+      pulseOutline,
+      sparklesOutline,
+      speedometerOutline,
+      timeOutline,
+      trophyOutline
     });
+  }
+
+  logout(): void {
+    this.router.navigate(['/auth']);
   }
 }

@@ -1,4 +1,4 @@
-.page-canvas {
+.profile-canvas {
   --background: #f8fafc;
   &::part(scroll) {
     scrollbar-width: none;
@@ -9,131 +9,370 @@
 .app-viewport-container {
   max-width: 520px;
   margin: 0 auto;
-  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(36px + env(safe-area-inset-bottom, 0px));
 }
 
-.profile-hero-card {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #edf2f7;
-  padding: 24px 16px;
-  text-align: center;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
-  margin-bottom: 24px;
+/* Topbar */
+.profile-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 
-  .hero-avatar {
-    width: 64px;
-    height: 64px;
-    background: #e0f2fe;
+  .topbar-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+
+  .logout-icon-btn {
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    margin: 0 auto 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s ease;
+
+    ion-icon {
+      font-size: 1.2rem;
+      color: #64748b;
+    }
+
+    &:hover {
+      background: #fef2f2;
+      border-color: #fecaca;
+      ion-icon { color: #ef4444; }
+    }
+  }
+}
+
+/* Card Principal do Atleta */
+.athlete-hero-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #edf2f7;
+  padding: 24px 18px 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 4px 10px -4px rgba(15, 23, 42, 0.02);
+  margin-bottom: 16px;
+
+  .avatar-ring-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 12px;
+
+    .athlete-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      border: 3px solid #ffffff;
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.15);
+    }
+
+    .level-indicator-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0284c7;
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 0.75rem;
+    }
   }
 
-  .hero-name {
+  .athlete-name {
     margin: 0;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: 800;
     color: #0f172a;
+    letter-spacing: -0.02em;
   }
 
-  .hero-level {
-    display: inline-block;
+  .athlete-handle {
+    display: block;
     margin-top: 4px;
     font-size: 0.8rem;
-    font-weight: 700;
-    color: #0284c7;
-    background: #e0f2fe;
-    padding: 3px 10px;
-    border-radius: 12px;
+    font-weight: 600;
+    color: #64748b;
   }
 
-  .hero-stats-row {
+  .active-plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 12px;
+
+    .pulse-green-dot {
+      width: 7px;
+      height: 7px;
+      background: #16a34a;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+    }
+  }
+
+  /* Grid de Métricas Reais */
+  .athlete-stats-grid {
     display: flex;
     justify-content: space-around;
     align-items: center;
     margin-top: 20px;
-    padding-top: 16px;
+    padding-top: 18px;
     border-top: 1px solid #f1f5f9;
 
-    .hero-stat {
-      .val {
+    .stat-cell {
+      flex: 1;
+      text-align: center;
+
+      .stat-number {
         display: block;
-        font-size: 1.25rem;
+        font-size: 1.35rem;
         font-weight: 900;
         color: #0f172a;
+        letter-spacing: -0.02em;
+
+        &.zone-accent {
+          color: #10b981;
+        }
       }
-      .lbl {
+
+      .stat-caption {
+        display: block;
         font-size: 0.7rem;
         font-weight: 700;
-        color: #94a3b8;
         text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 0.04em;
+        margin-top: 2px;
       }
     }
 
-    .stat-sep {
+    .stat-divider {
       width: 1px;
-      height: 24px;
+      height: 28px;
       background: #e2e8f0;
     }
   }
 }
 
-.settings-group {
-  margin-bottom: 20px;
+/* Widget de Meta */
+.goal-widget-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 16px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
 
-  .group-title {
-    font-size: 0.8rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #94a3b8;
-    letter-spacing: 0.06em;
-    margin-bottom: 8px;
-    padding-left: 4px;
+  .goal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    .goal-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #ffedd5;
+      color: #ea580c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .goal-kicker {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #ea580c;
+    }
+
+    .goal-title {
+      font-size: 0.92rem;
+      color: #0f172a;
+      font-weight: 700;
+    }
   }
 
-  .settings-list {
+  .goal-progress-bar {
+    width: 100%;
+    height: 7px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #10b981);
+      border-radius: 4px;
+    }
+  }
+
+  .goal-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+}
+
+/* Menus e Listas */
+.menu-section {
+  margin-bottom: 20px;
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin: 0 0 8px 4px;
+  }
+
+  .menu-card {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 20px;
     border: 1px solid #edf2f7;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+  }
 
-    .setting-item {
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: #f8fafc;
+    }
+
+    .item-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 14px 16px;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #0f172a;
+      justify-content: center;
+      margin-right: 14px;
+      flex-shrink: 0;
 
-      &:last-child {
-        border-bottom: none;
+      ion-icon {
+        font-size: 1.25rem;
       }
 
-      .item-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+      &.icon-blue { background: #e0f2fe; color: #0284c7; }
+      &.icon-gold { background: #fef3c7; color: #d97706; }
+      &.icon-emerald { background: #dcfce7; color: #16a34a; }
+      &.icon-slate { background: #f1f5f9; color: #475569; }
+      &.icon-orange { background: #ffedd5; color: #ea580c; }
+    }
 
-        ion-icon {
-          font-size: 1.2rem;
-          color: #0284c7;
-        }
+    .item-content {
+      flex: 1;
+
+      .item-title {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #0f172a;
       }
 
-      .badge-soon {
-        font-size: 0.7rem;
-        font-weight: 800;
-        background: #f1f5f9;
+      .item-sub {
+        display: block;
+        font-size: 0.75rem;
         color: #64748b;
-        padding: 2px 8px;
-        border-radius: 6px;
+        margin-top: 2px;
       }
     }
+
+    .chevron-arrow {
+      font-size: 1.15rem;
+      color: #94a3b8;
+    }
+
+    .status-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+  }
+}
+
+/* Rodapé */
+.profile-footer {
+  text-align: center;
+  padding: 12px 0 24px;
+
+  .logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    ion-icon {
+      font-size: 1.1rem;
+    }
+
+    &:hover {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+  }
+
+  .app-version {
+    display: block;
+    margin-top: 14px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #cbd5e1;
   }
 }
