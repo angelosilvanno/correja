@@ -1,0 +1,330 @@
+.schedule-canvas {
+  --background: #f8fafc;
+  &::part(scroll) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+.app-viewport-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Topbar com Botão Voltar */
+.schedule-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+
+  .back-circle-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s ease;
+
+    ion-icon {
+      font-size: 1.3rem;
+      color: #0f172a;
+    }
+
+    &:hover {
+      background: #f1f5f9;
+      transform: translateX(-2px);
+    }
+  }
+
+  .micro-eyebrow {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #0284c7;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .plan-headline {
+    margin: 2px 0 0;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Card Resumo do Progresso */
+.progress-hero-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 18px;
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.04);
+  margin-bottom: 22px;
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+
+    .kicker {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .hero-stat-txt {
+      margin: 4px 0 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .completion-pill {
+      background: #e0f2fe;
+      color: #0284c7;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+    }
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0284c7, #10b981);
+      border-radius: 4px;
+    }
+  }
+
+  .hero-details-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: #64748b;
+  }
+}
+
+/* Subtítulos de Seção */
+.section-subheading {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Seletor Horizontal de Semanas */
+.weeks-carousel-section {
+  margin-bottom: 22px;
+
+  .weeks-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+
+    .week-chip {
+      flex: 0 0 auto;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      .week-chip-title {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .week-chip-sub {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: #94a3b8;
+        margin-top: 2px;
+      }
+
+      &.selected {
+        background: #0284c7;
+        border-color: #0284c7;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+
+        .week-chip-title { color: #ffffff; }
+        .week-chip-sub { color: #e0f2fe; }
+      }
+    }
+  }
+}
+
+/* Lista de Dias */
+.schedule-days-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.day-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.02);
+
+  &.is-today {
+    border: 2px solid #0284c7;
+    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.1);
+  }
+
+  &.is-rest {
+    background: #f8fafc;
+    border-style: dashed;
+  }
+
+  .day-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .day-name {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.04em;
+    }
+
+    .today-tag {
+      background: #e0f2fe;
+      color: #0284c7;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-left: 8px;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+
+      &.done {
+        color: #059669;
+        ion-icon { font-size: 1.1rem; }
+      }
+
+      &.rest {
+        color: #94a3b8;
+      }
+    }
+  }
+
+  .session-title {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .session-metrics-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .metric-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .zone-chip {
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+  }
+
+  .session-structure-box {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 0.82rem;
+
+    .box-lbl {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+
+    p {
+      margin: 0;
+      color: #334155;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+  }
+
+  .session-purpose-box {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.35;
+
+    ion-icon {
+      font-size: 1.05rem;
+      color: #0284c7;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+  }
+
+  .rest-desc {
+    margin: 4px 0 0;
+    font-size: 0.82rem;
+    color: #64748b;
+    font-style: italic;
+  }
+}

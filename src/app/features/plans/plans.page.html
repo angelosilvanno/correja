@@ -36,9 +36,13 @@
 
           <div class="plan-actions">
             @if (plan.active) {
-              <ion-button expand="block" fill="outline" class="btn-manage">Ver Cronograma</ion-button>
+              <ion-button expand="block" fill="outline" class="btn-manage" (click)="viewSchedule(plan.id)">
+                VER CRONOGRAMA
+              </ion-button>
             } @else {
-              <ion-button expand="block" class="btn-start">Escolher Este Plano</ion-button>
+              <ion-button expand="block" class="btn-start" (click)="viewSchedule(plan.id)">
+                ESCOLHER ESTE PLANO
+              </ion-button>
             }
           </div>
         </div>

@@ -1,26 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import {
-  IonButton,
-  IonContent,
-  IonIcon
-} from '@ionic/angular';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { IonButton, IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, flagOutline, timeOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-plans',
   standalone: true,
-  imports: [
-    CommonModule,
-    IonButton,
-    IonContent,
-    IonIcon
-  ],
+  imports: [CommonModule, IonButton, IonContent, IonIcon],
   templateUrl: './plans.page.html',
   styleUrls: ['./plans.page.scss']
 })
 export class PlansPage {
+  private router = inject(Router);
+
   constructor() {
     addIcons({ checkmarkCircle, flagOutline, timeOutline });
   }
@@ -67,4 +61,8 @@ export class PlansPage {
       badgeColor: '#ef4444'
     }
   ];
+
+  viewSchedule(planId: string): void {
+    this.router.navigate(['/tabs/plans', planId]);
+  }
 }

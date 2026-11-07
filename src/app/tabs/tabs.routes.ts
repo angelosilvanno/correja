@@ -18,6 +18,11 @@ export const routes: Routes = [
           import('../features/plans/plans.page').then((m) => m.PlansPage),
       },
       {
+        path: 'plans/:id',
+        loadComponent: () =>
+          import('../features/plans/plan-detail/plan-detail.page').then((m) => m.PlanDetailPage),
+      },
+      {
         path: 'zones',
         loadComponent: () =>
           import('../features/zones-guide/zones-guide.page').then((m) => m.ZonesGuidePage),

@@ -1,0 +1,125 @@
+<ion-content [fullscreen]="true" class="schedule-canvas">
+  <div class="app-viewport-container">
+    
+    <!-- Topo com Botão Voltar -->
+    <header class="schedule-topbar">
+      <button type="button" class="back-circle-btn" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="top-title-wrap">
+        <span class="micro-eyebrow">CRONOGRAMA DO PLANO</span>
+        <h1 class="plan-headline">Primeiros 5 km</h1>
+      </div>
+    </header>
+
+    <!-- Card Resumo do Progresso do Plano -->
+    <section class="progress-hero-card">
+      <div class="hero-top">
+        <div>
+          <span class="kicker">Progresso Geral</span>
+          <h2 class="hero-stat-txt">Semana {{ selectedWeek }} de 6</h2>
+        </div>
+        <div class="completion-pill">
+          <strong>22%</strong> concluído
+        </div>
+      </div>
+
+      <!-- Barra de Progresso Suave -->
+      <div class="progress-track">
+        <div class="progress-fill" style="width: 22%"></div>
+      </div>
+
+      <div class="hero-details-row">
+        <span>Meta: <strong>3 treinos por semana</strong></span>
+        <span>Foco: <strong>Base Aeróbica (Z2)</strong></span>
+      </div>
+    </section>
+
+    <!-- Seletor Horizontal de Semanas -->
+    <section class="weeks-carousel-section">
+      <h3 class="section-subheading">Escolha a Semana:</h3>
+      <div class="weeks-scroll">
+        @for (week of weeks; track week) {
+          <button 
+            type="button" 
+            class="week-chip" 
+            [class.selected]="selectedWeek === week"
+            [class.is-current]="week === 2"
+            (click)="selectWeek(week)">
+            <span class="week-chip-title">Semana {{ week }}</span>
+            <span class="week-chip-sub">
+              {{ week === 2 ? 'Atual' : (week < 2 ? 'Concluída' : 'Futura') }}
+            </span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- Sessões dos Dias da Semana -->
+    <section class="schedule-days-list">
+      <h3 class="section-subheading">Rotina da Semana {{ selectedWeek }}:</h3>
+
+      @for (session of currentWeekSessions; track session.dayName) {
+        <div 
+          class="day-card" 
+          [class.is-rest]="session.dayType === 'rest'"
+          [class.is-today]="session.status === 'today'"
+          [class.is-done]="session.status === 'completed'">
+          
+          <div class="day-card-head">
+            <div class="day-badge-wrap">
+              <span class="day-name">{{ session.dayName }}</span>
+              @if (session.status === 'today') {
+                <span class="today-tag">Treino de Hoje</span>
+              }
+            </div>
+
+            <!-- Status do Dia -->
+            @if (session.status === 'completed') {
+              <div class="status-indicator done">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                <span>Concluído</span>
+              </div>
+            } @else if (session.status === 'rest') {
+              <div class="status-indicator rest">
+                <ion-icon name="bed-outline"></ion-icon>
+                <span>Descanso</span>
+              </div>
+            }
+          </div>
+
+          <h4 class="session-title">{{ session.title }}</h4>
+
+          @if (session.dayType === 'workout') {
+            <!-- Métricas da Sessão -->
+            <div class="session-metrics-row">
+              <div class="metric-chip">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ session.durationMinutes }} minutos</span>
+              </div>
+              <div class="zone-chip" [style.background-color]="session.zoneColor">
+                {{ session.targetZone }}
+              </div>
+            </div>
+
+            <!-- Estrutura do Treino -->
+            <div class="session-structure-box">
+              <span class="box-lbl">Passo a passo:</span>
+              <p>{{ session.structure }}</p>
+            </div>
+
+            <!-- Propósito Fisiológico -->
+            <div class="session-purpose-box">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>{{ session.purpose }}</span>
+            </div>
+          } @else {
+            <p class="rest-desc">{{ session.purpose }}</p>
+          }
+
+        </div>
+      }
+    </section>
+
+  </div>
+</ion-content>
