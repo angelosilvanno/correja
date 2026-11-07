@@ -5,6 +5,9 @@ import { addIcons } from 'ionicons';
 import {
   chatbubblesOutline,
   checkmarkDoneOutline,
+  flameOutline,
+  informationCircleOutline,
+  sparklesOutline,
   speedometerOutline
 } from 'ionicons/icons';
 
@@ -25,6 +28,9 @@ export class ZonesGuidePage {
     addIcons({
       chatbubblesOutline,
       checkmarkDoneOutline,
+      flameOutline,
+      informationCircleOutline,
+      sparklesOutline,
       speedometerOutline
     });
   }

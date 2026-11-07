@@ -1,4 +1,7 @@
-.page-canvas {
+/* ==========================================================================
+   CANVAS & VIEWPORT RESPONSIVO
+   ========================================================================== */
+.zones-canvas {
   --background: #f8fafc;
   &::part(scroll) {
     scrollbar-width: none;
@@ -6,113 +9,326 @@
   }
 }
 
-.app-viewport-container {
-  max-width: 520px;
+.zones-viewport {
+  width: 100%;
   margin: 0 auto;
-  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(48px + env(safe-area-inset-bottom, 0px));
+
+  @media (min-width: 768px) {
+    padding: 24px 24px 50px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    padding: 32px 36px 64px;
+  }
 }
 
-.page-header {
-  margin-bottom: 20px;
+/* ==========================================================================
+   CABEÇALHO
+   ========================================================================== */
+.zones-header {
+  margin-bottom: 24px;
 
-  .micro-tag {
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 0.72rem;
     font-weight: 800;
     color: #0284c7;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+
+    ion-icon { font-size: 0.95rem; }
   }
 
-  .page-title {
-    margin: 4px 0 0;
-    font-size: 1.5rem;
-    font-weight: 800;
+  .header-title {
+    margin: 0;
+    font-size: 1.65rem;
+    font-weight: 900;
     color: #0f172a;
+    letter-spacing: -0.025em;
+
+    @media (min-width: 768px) {
+      font-size: 1.95rem;
+    }
   }
 
-  .page-desc {
-    margin: 6px 0 0;
-    font-size: 0.85rem;
+  .header-subtitle {
+    margin: 8px 0 0;
+    font-size: 0.9rem;
     color: #64748b;
+    line-height: 1.5;
+    max-width: 680px;
   }
 }
 
-.zones-grid {
+/* ==========================================================================
+   BANNER REGRA 80/20
+   ========================================================================== */
+.methodology-banner-card {
+  background: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: 24px;
+  padding: 22px 24px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04);
+  margin-bottom: 28px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
+  gap: 18px;
 
-.zone-card {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #edf2f7;
-  padding: 18px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
-
-  .zone-head {
-    display: flex;
+  @media (min-width: 768px) {
+    flex-direction: row;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
+    justify-content: space-between;
+  }
 
-    .zone-circle {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 1.1rem;
+  .banner-text-col {
+    flex: 1;
+
+    .micro-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #059669;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .zone-title {
-      margin: 0;
-      font-size: 1.1rem;
+    .banner-heading {
+      margin: 4px 0 6px;
+      font-size: 1.25rem;
       font-weight: 800;
       color: #0f172a;
     }
 
-    .zone-effort {
-      font-size: 0.75rem;
+    .banner-desc {
+      margin: 0;
+      font-size: 0.86rem;
       color: #64748b;
-      font-weight: 600;
+      line-height: 1.45;
+      max-width: 540px;
     }
   }
 
-  .zone-tagline {
-    font-style: italic;
-    font-size: 0.82rem;
-    color: #334155;
-    margin-bottom: 12px;
-    font-weight: 600;
+  .banner-visual-col {
+    width: 100%;
+    @media (min-width: 768px) {
+      width: 260px;
+      flex-shrink: 0;
+    }
+
+    .ratio-bar-wrap {
+      display: flex;
+      height: 48px;
+      border-radius: 14px;
+      overflow: hidden;
+      font-size: 0.75rem;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+
+      .bar-part {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        padding: 4px;
+
+        strong { font-size: 0.95rem; line-height: 1; }
+        span { font-size: 0.65rem; opacity: 0.9; margin-top: 2px; }
+
+        &.light-part {
+          flex: 4;
+          background: #10b981;
+        }
+
+        &.hard-part {
+          flex: 1;
+          background: #f97316;
+        }
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   GRADE DAS 5 ZONAS (2 COLUNAS NO DESKTOP / 1 NO CELULAR)
+   ========================================================================== */
+.zones-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+
+  /* No Tablet e Desktop: Grade equilibrada que preenche a tela */
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+.zone-detailed-card {
+  background: #ffffff;
+  border-radius: 22px;
+  border: 1px solid #edf2f7;
+  padding: 22px;
+  box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.06);
   }
 
-  .talk-test-row, .purpose-row {
+  /* Destaque visual na Z2 (O Coração da Metodologia) */
+  &.highlighted-z2 {
+    border: 2px solid #10b981;
+    background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.15);
+  }
+
+  .card-top-row {
     display: flex;
-    gap: 10px;
-    margin-top: 8px;
-    font-size: 0.82rem;
-    line-height: 1.4;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
 
-    .row-icon {
-      font-size: 1.1rem;
-      color: #0284c7;
-      margin-top: 2px;
+    .zone-badge-pill {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      font-weight: 900;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .row-text {
+    .zone-name-block {
       flex: 1;
 
-      strong {
-        color: #0f172a;
+      .name-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        .zone-title {
+          margin: 0;
+          font-size: 1.18rem;
+          font-weight: 800;
+          color: #0f172a;
+        }
+
+        .star-pill {
+          background: #dcfce7;
+          color: #166534;
+          font-size: 0.68rem;
+          font-weight: 800;
+          padding: 2px 8px;
+          border-radius: 6px;
+        }
       }
 
-      p {
-        margin: 2px 0 0;
+      .effort-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.78rem;
         color: #64748b;
+        margin-top: 4px;
+
+        ion-icon { font-size: 0.95rem; color: #0284c7; }
+        strong { color: #0f172a; }
       }
+    }
+  }
+
+  .tagline-box {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #334155;
+    font-style: italic;
+    margin-bottom: 14px;
+    padding-left: 2px;
+  }
+
+  /* Blocos Internos de Informação */
+  .insight-block {
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+
+    .block-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .block-text {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    &.talk-test-block {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+      .block-label { color: #0284c7; }
+    }
+
+    &.purpose-block {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #14532d;
+      margin-bottom: 0;
+      .block-label { color: #16a34a; }
+    }
+  }
+}
+
+/* ==========================================================================
+   RODAPÉ EDUCATIVO
+   ========================================================================== */
+.zones-footer-tip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.02);
+
+  .tip-icon-box {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  .tip-text-box {
+    strong {
+      display: block;
+      font-size: 0.92rem;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.84rem;
+      color: #64748b;
+      line-height: 1.45;
     }
   }
 }

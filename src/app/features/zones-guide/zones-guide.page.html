@@ -1,53 +1,100 @@
-<ion-content [fullscreen]="true" class="page-canvas">
-  <div class="app-viewport-container">
-    <header class="page-header">
-      <span class="micro-tag">Diferencial CorreJa</span>
-      <h1 class="page-title">Guia de Zonas de Treino</h1>
-      <p class="page-desc">Aprenda a dosar seu esforço sem depender de relógios caros. Use a percepção do seu corpo e o teste da fala.</p>
+<ion-content [fullscreen]="true" class="zones-canvas">
+  <div class="zones-viewport">
+    
+    <!-- Cabeçalho Principal -->
+    <header class="zones-header">
+      <div class="header-badge">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        <span>METODOLOGIA DE INTENSIDADE</span>
+      </div>
+      <h1 class="header-title">Zonas de Treino</h1>
+      <p class="header-subtitle">
+        Aprenda a dosar o esforço do seu corpo sem depender de relógios caros. Use a percepção do fôlego e o teste da fala para treinar na intensidade certa.
+      </p>
     </header>
 
-    <div class="zones-grid">
+    <!-- Banner Didático: A Regra 80/20 do Treinamento -->
+    <section class="methodology-banner-card">
+      <div class="banner-text-col">
+        <span class="micro-tag">REGRA DE OURO DA CORRIDA</span>
+        <h2 class="banner-heading">80% do seu tempo deve ser Leve (Z1 e Z2)</h2>
+        <p class="banner-desc">
+          Corredores iniciantes que tentam correr rápido em todo treino acabam se machucando ou estagnando. A evolução aeróbica de verdade acontece quando você aprende a correr devagar.
+        </p>
+      </div>
+      <div class="banner-visual-col">
+        <div class="ratio-bar-wrap">
+          <div class="bar-part light-part">
+            <strong>80%</strong>
+            <span>Z1 e Z2 (Base)</span>
+          </div>
+          <div class="bar-part hard-part">
+            <strong>20%</strong>
+            <span>Z3 a Z5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grade Responsiva dos Cards das 5 Zonas -->
+    <section class="zones-grid">
       @for (zone of zones; track zone.id) {
-        <div class="zone-card">
-          <div class="zone-head">
-            <div 
-              class="zone-circle"
-              [style.background-color]="zone.colorHex"
-              [style.color]="zone.textColorHex"
-            >
+        <div class="zone-detailed-card" [class.highlighted-z2]="zone.id === 'Z2'">
+          
+          <!-- Topo do Card com Cor e Esforço -->
+          <div class="card-top-row">
+            <div class="zone-badge-pill" [style.background-color]="zone.colorHex" [style.color]="zone.textColorHex">
               {{ zone.id }}
             </div>
-            <div>
-              <h2 class="zone-title">{{ zone.name }}</h2>
-              <span class="zone-effort">Esforço: {{ zone.perceivedEffort }}</span>
+            <div class="zone-name-block">
+              <div class="name-line">
+                <h3 class="zone-title">{{ zone.name }}</h3>
+                @if (zone.id === 'Z2') {
+                  <span class="star-pill">⭐ Mais Importante</span>
+                }
+              </div>
+              <span class="effort-indicator">
+                <ion-icon name="speedometer-outline"></ion-icon>
+                Esforço: <strong>{{ zone.perceivedEffort }}</strong>
+              </span>
             </div>
           </div>
 
-          <div class="zone-tagline">
+          <!-- Frase de Impacto da Zona -->
+          <div class="tagline-box">
             "{{ zone.tagline }}"
           </div>
 
-          <div class="talk-test-row">
-            <div class="row-icon">
+          <!-- Bloco do Teste da Fala (Diferencial Prático) -->
+          <div class="insight-block talk-test-block">
+            <div class="block-label">
               <ion-icon name="chatbubbles-outline"></ion-icon>
+              <span>TESTE DA FALA (COMO RECONHECER)</span>
             </div>
-            <div class="row-text">
-              <strong>Teste da Fala:</strong>
-              <p>{{ zone.talkTest }}</p>
-            </div>
+            <p class="block-text">{{ zone.talkTest }}</p>
           </div>
 
-          <div class="purpose-row">
-            <div class="row-icon">
+          <!-- Bloco Fisiológico: Para que serve -->
+          <div class="insight-block purpose-block">
+            <div class="block-label">
               <ion-icon name="checkmark-done-outline"></ion-icon>
+              <span>ADAPTAÇÃO NO SEU CORPO</span>
             </div>
-            <div class="row-text">
-              <strong>Para que serve:</strong>
-              <p>{{ zone.purpose }}</p>
-            </div>
+            <p class="block-text">{{ zone.purpose }}</p>
           </div>
+
         </div>
       }
-    </div>
+    </section>
+
+    <!-- Dica de Rodapé do Treinador -->
+    <footer class="zones-footer-tip">
+      <div class="tip-icon-box">💡</div>
+      <div class="tip-text-box">
+        <strong>Não tem medidor de frequência cardíaca? Não se preocupe!</strong>
+        <p>O teste da fala e a percepção de esforço de 1 a 10 têm respaldo científico e são os métodos mais naturais para aprender a ouvir os sinais do seu próprio corpo.</p>
+      </div>
+    </footer>
+
   </div>
 </ion-content>
