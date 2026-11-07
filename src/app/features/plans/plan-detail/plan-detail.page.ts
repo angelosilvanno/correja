@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonButton, IonContent, IonIcon } from '@ionic/angular';
+import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline,
@@ -27,7 +27,7 @@ interface DaySession {
 @Component({
   selector: 'app-plan-detail',
   standalone: true,
-  imports: [CommonModule, IonButton, IonContent, IonIcon],
+  imports: [CommonModule, IonContent, IonIcon],
   templateUrl: './plan-detail.page.html',
   styleUrls: ['./plan-detail.page.scss']
 })

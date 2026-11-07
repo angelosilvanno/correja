@@ -1,4 +1,4 @@
-import { ZoneId } from './training-zone.model';
+import type { ZoneId } from './training-zone.model';
 
 export type WorkoutType = 'base' | 'interval' | 'recovery' | 'long_run' | 'walk_run';
 
