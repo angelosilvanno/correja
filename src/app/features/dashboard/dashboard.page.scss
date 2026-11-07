@@ -1,18 +1,5 @@
 .dashboard-canvas {
   --background: #f8fafc;
-
-  &::part(scroll) {
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-}
-
-.app-viewport-container {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Topbar */
@@ -20,7 +7,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   .brand-eyebrow {
     display: inline-flex;
@@ -41,34 +28,74 @@
     letter-spacing: -0.02em;
   }
 
-  .avatar-badge {
-    width: 44px;
-    height: 44px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 50%;
+  .topbar-right-info {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    gap: 12px;
+
+    .current-plan-chip {
+      display: none;
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 6px 14px;
+      border-radius: 20px;
+
+      @media (min-width: 768px) {
+        display: inline-block;
+      }
+    }
+
+    .avatar-badge {
+      width: 44px;
+      height: 44px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+
+/* ==========================================================================
+   GRID ADAPTATIVO: 1 COLUNA (MOBILE) | 2 COLUNAS (DESKTOP)
+   ========================================================================== */
+.responsive-dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  /* No Desktop: 2 Colunas Proporcionais */
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 28px;
+    align-items: flex-start;
   }
 }
 
 /* Card Base Esportivo */
-.card-section {
-  margin-bottom: 20px;
-}
-
 .sport-card {
   background: #ffffff;
   border-radius: 20px;
   border: 1px solid #edf2f7;
-  padding: 20px;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+  padding: 22px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 4px 10px -4px rgba(15, 23, 42, 0.02);
+  margin-bottom: 20px;
 }
 
-/* Constância */
+/* Coluna Lateral */
+.grid-secondary-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card de Constância */
 .consistency-card {
   .card-head {
     display: flex;
@@ -126,9 +153,7 @@
       &.done {
         background: #ecfdf5;
         color: #059669;
-        ion-icon {
-          font-size: 1.1rem;
-        }
+        ion-icon { font-size: 1.1rem; }
       }
 
       &.current {
@@ -167,21 +192,55 @@
       color: #0f172a;
     }
 
-    .text-accent {
-      color: #10b981;
-    }
+    .text-accent { color: #10b981; }
   }
 }
 
-/* Treino Principal */
+/* Card Dica do Treinador */
+.coaching-tip-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #a7f3d0;
+
+  .tip-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+
+    .tip-icon { font-size: 1.6rem; }
+    .tip-kicker {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #059669;
+      letter-spacing: 0.08em;
+    }
+    .tip-title {
+      margin: 2px 0 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #065f46;
+    }
+  }
+
+  .tip-body {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #047857;
+    line-height: 1.5;
+  }
+}
+
+/* Seção Treino de Hoje */
 .section-badge-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 
   .section-title {
-    font-size: 1.1rem;
+    margin: 0;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #0f172a;
   }
@@ -205,7 +264,7 @@
 
     .workout-hero-title {
       margin: 0;
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: #0f172a;
       letter-spacing: -0.01em;
@@ -213,7 +272,7 @@
 
     .workout-hero-sub {
       margin: 4px 0 0;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: #64748b;
     }
 
@@ -229,12 +288,12 @@
   }
 }
 
-/* Régua Visual das 5 Zonas (Z1 a Z5) */
+/* Régua Visual das 5 Zonas */
 .zone-spectrum-wrapper {
   background: #f8fafc;
   border-radius: 14px;
-  padding: 12px 14px;
-  margin-bottom: 16px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
   border: 1px solid #f1f5f9;
 
   .spectrum-label-row {
@@ -256,14 +315,18 @@
     gap: 6px;
 
     .spectrum-segment {
-      height: 28px;
+      height: 32px;
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 800;
       opacity: 0.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 0 4px;
 
       &.z1 { background: #0ea5e9; color: #fff; }
       &.z2 { background: #10b981; color: #fff; }
@@ -273,25 +336,25 @@
 
       &.highlight {
         opacity: 1;
-        transform: scale(1.08);
+        transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
       }
     }
   }
 }
 
-/* Grid de Métricas */
+/* Métricas */
 .workout-stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 18px;
 
   .grid-stat-box {
     background: #f8fafc;
     border: 1px solid #f1f5f9;
-    border-radius: 12px;
-    padding: 10px 8px;
+    border-radius: 14px;
+    padding: 12px 10px;
     text-align: center;
 
     .stat-box-label {
@@ -303,24 +366,31 @@
     }
 
     .stat-box-number {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 900;
       color: #0f172a;
 
-      small {
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #64748b;
-      }
+      small { font-size: 0.75rem; font-weight: 600; color: #64748b; }
+      &.text-accent { color: #10b981; }
     }
   }
 }
 
-/* Coaching Callouts */
+/* Callouts lado a lado no desktop */
+.coaching-callouts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .coaching-callout {
   border-radius: 14px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
+  padding: 14px;
 
   .callout-header {
     display: flex;
@@ -341,26 +411,20 @@
     background: #ecfdf5;
     border: 1px solid #a7f3d0;
     color: #065f46;
-
-    .callout-header {
-      color: #047857;
-    }
+    .callout-header { color: #047857; }
   }
 
   &.purpose-callout {
     background: #f0fdfa;
     border: 1px solid #ccfbf1;
     color: #134e4a;
-
-    .callout-header {
-      color: #0d9488;
-    }
+    .callout-header { color: #0d9488; }
   }
 }
 
 /* Timeline */
 .timeline-block {
-  margin: 16px 0 20px;
+  margin: 18px 0 24px;
 
   .timeline-title {
     margin: 0 0 10px;
@@ -404,24 +468,20 @@
         justify-content: space-between;
         align-items: center;
 
-        .step-name {
-          font-size: 0.85rem;
-          color: #0f172a;
-        }
-
+        .step-name { font-size: 0.88rem; color: #0f172a; }
         .step-duration {
           font-size: 0.75rem;
           font-weight: 700;
           color: #64748b;
           background: #f1f5f9;
-          padding: 2px 6px;
+          padding: 2px 8px;
           border-radius: 6px;
         }
       }
 
       .step-desc {
         margin: 2px 0 0;
-        font-size: 0.78rem;
+        font-size: 0.8rem;
         color: #64748b;
         line-height: 1.35;
       }
@@ -435,7 +495,7 @@
   --background-activated: #0369a1;
   --border-radius: 14px;
   font-weight: 800;
-  height: 48px;
+  height: 50px;
   font-size: 0.95rem;
   box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
 }
@@ -456,14 +516,6 @@
     flex-shrink: 0;
   }
 
-  strong {
-    display: block;
-    font-size: 0.95rem;
-  }
-
-  p {
-    margin: 2px 0 0;
-    font-size: 0.8rem;
-    color: #047857;
-  }
+  strong { display: block; font-size: 0.95rem; }
+  p { margin: 2px 0 0; font-size: 0.8rem; color: #047857; }
 }

@@ -9,162 +9,187 @@
         </span>
         <h1 class="user-name">Olá, Corredor(a) 👋</h1>
       </div>
-      <div class="avatar-badge">
-        <span>🏃</span>
+      <div class="topbar-right-info">
+        <span class="current-plan-chip">Plano Ativo: <strong>Primeiros 5 km</strong></span>
+        <div class="avatar-badge">
+          <span>🏃</span>
+        </div>
       </div>
     </header>
 
-    <!-- Card 1: Consistência Semanal (Segmentos de Dias) -->
-    <section class="card-section">
-      <div class="sport-card consistency-card">
-        <div class="card-head">
-          <div>
-            <span class="micro-label">Constância Semanal</span>
-            <h2 class="card-main-title">{{ progress().completedCount }} de {{ progress().plannedCount }} treinos concluídos</h2>
-          </div>
-          <div class="streak-pill">
-            <ion-icon name="flame-outline"></ion-icon>
-            <span>{{ progress().streakWeeks }} semanas</span>
-          </div>
-        </div>
+    <!-- Grid Responsivo: 1 coluna no celular | 2 colunas no desktop -->
+    <div class="responsive-dashboard-grid">
 
-        <!-- Indicador de Dias da Semana -->
-        <div class="week-days-track">
-          <div class="day-slot done">
-            <ion-icon name="checkmark-circle"></ion-icon>
-            <span>Treino 1</span>
-          </div>
-          <div class="day-slot done">
-            <ion-icon name="checkmark-circle"></ion-icon>
-            <span>Treino 2</span>
-          </div>
-          <div class="day-slot current">
-            <div class="pulse-dot"></div>
-            <span>Hoje</span>
-          </div>
-        </div>
-
-        <div class="card-stat-footer">
-          <div class="stat-pill">
-            <span class="stat-label">Distância na Semana</span>
-            <strong class="stat-value">{{ progress().totalDistanceKm }} km</strong>
-          </div>
-          <div class="stat-pill align-right">
-            <span class="stat-label">Ritmo Sugerido</span>
-            <strong class="stat-value text-accent">Confortável</strong>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Card 2: Sessão do Dia com Régua de Zonas -->
-    <section class="card-section">
-      <div class="section-badge-row">
-        <span class="section-title">Treino de Hoje</span>
-        <span class="plan-tag">Plano: Primeiros 5 km</span>
-      </div>
-
-      <div class="sport-card workout-focus-card" [class.is-done]="workout().completed">
+      <!-- COLUNA PRINCIPAL (Esquerda no Desktop): Treino do Dia -->
+      <main class="grid-primary-column">
         
-        <!-- Cabeçalho do Treino -->
-        <div class="workout-title-block">
-          <div>
-            <h3 class="workout-hero-title">{{ workout().title }}</h3>
-            <p class="workout-hero-sub">{{ workout().subtitle }}</p>
-          </div>
-          <div class="active-zone-badge" [attr.data-zone]="workout().primaryZone">
-            {{ targetZone.id }}
-          </div>
+        <div class="section-badge-row">
+          <h2 class="section-title">Treino de Hoje</h2>
+          <span class="plan-tag">Semana 2 • Sessão 3</span>
         </div>
 
-        <!-- O Diferencial: Régua Visual das 5 Zonas -->
-        <div class="zone-spectrum-wrapper">
-          <div class="spectrum-label-row">
-            <span>Intensidade Recomendada:</span>
-            <strong class="zone-text-highlight">{{ targetZone.shortName }}</strong>
+        <div class="sport-card workout-focus-card" [class.is-done]="workout().completed">
+          
+          <div class="workout-title-block">
+            <div>
+              <h3 class="workout-hero-title">{{ workout().title }}</h3>
+              <p class="workout-hero-sub">{{ workout().subtitle }}</p>
+            </div>
+            <div class="active-zone-badge" [attr.data-zone]="workout().primaryZone">
+              {{ targetZone.id }}
+            </div>
           </div>
-          <div class="zone-spectrum-bar">
-            <div class="spectrum-segment z1" [class.highlight]="workout().primaryZone === 'Z1'">Z1</div>
-            <div class="spectrum-segment z2" [class.highlight]="workout().primaryZone === 'Z2'">Z2</div>
-            <div class="spectrum-segment z3" [class.highlight]="workout().primaryZone === 'Z3'">Z3</div>
-            <div class="spectrum-segment z4" [class.highlight]="workout().primaryZone === 'Z4'">Z4</div>
-            <div class="spectrum-segment z5" [class.highlight]="workout().primaryZone === 'Z5'">Z5</div>
-          </div>
-        </div>
 
-        <!-- Grid de Métricas Principais -->
-        <div class="workout-stats-grid">
-          <div class="grid-stat-box">
-            <span class="stat-box-label">Duração</span>
-            <span class="stat-box-number">{{ workout().totalDurationMinutes }} <small>min</small></span>
+          <!-- Régua Visual das 5 Zonas (Z1 a Z5) -->
+          <div class="zone-spectrum-wrapper">
+            <div class="spectrum-label-row">
+              <span>Intensidade Recomendada:</span>
+              <strong class="zone-text-highlight">{{ targetZone.shortName }}</strong>
+            </div>
+            <div class="zone-spectrum-bar">
+              <div class="spectrum-segment z1" [class.highlight]="workout().primaryZone === 'Z1'">Z1 - Recuperação</div>
+              <div class="spectrum-segment z2" [class.highlight]="workout().primaryZone === 'Z2'">Z2 - Base Aeróbica</div>
+              <div class="spectrum-segment z3" [class.highlight]="workout().primaryZone === 'Z3'">Z3 - Moderada</div>
+              <div class="spectrum-segment z4" [class.highlight]="workout().primaryZone === 'Z4'">Z4 - Limiar</div>
+              <div class="spectrum-segment z5" [class.highlight]="workout().primaryZone === 'Z5'">Z5 - Máxima</div>
+            </div>
           </div>
-          <div class="grid-stat-box">
-            <span class="stat-box-label">Distância Est.</span>
-            <span class="stat-box-number">{{ workout().estimatedDistanceKm }} <small>km</small></span>
-          </div>
-          <div class="grid-stat-box">
-            <span class="stat-box-label">Esforço (1-10)</span>
-            <span class="stat-box-number">{{ targetZone.perceivedEffort }}</span>
-          </div>
-        </div>
 
-        <!-- Bloco de Consciência: O Teste da Fala -->
-        <div class="coaching-callout talk-test-callout">
-          <div class="callout-header">
-            <ion-icon name="sparkles-outline"></ion-icon>
-            <span>Como dosar seu ritmo sem relógio:</span>
+          <!-- Grid de Métricas Principais -->
+          <div class="workout-stats-grid">
+            <div class="grid-stat-box">
+              <span class="stat-box-label">Duração Planejada</span>
+              <span class="stat-box-number">{{ workout().totalDurationMinutes }} <small>min</small></span>
+            </div>
+            <div class="grid-stat-box">
+              <span class="stat-box-label">Ritmo Sugerido</span>
+              <span class="stat-box-number text-accent">Confortável</span>
+            </div>
+            <div class="grid-stat-box">
+              <span class="stat-box-label">Esforço (1-10)</span>
+              <span class="stat-box-number">{{ targetZone.perceivedEffort }}</span>
+            </div>
           </div>
-          <p class="callout-body">"{{ targetZone.talkTest }}"</p>
-        </div>
 
-        <!-- Bloco de Propósito: Por que treinar assim? -->
-        <div class="coaching-callout purpose-callout">
-          <div class="callout-header">
-            <ion-icon name="information-circle-outline"></ion-icon>
-            <span>Por que esta intensidade?</span>
+          <!-- Cards de Coaching Lado a Lado no Desktop -->
+          <div class="coaching-callouts-grid">
+            <div class="coaching-callout talk-test-callout">
+              <div class="callout-header">
+                <ion-icon name="sparkles-outline"></ion-icon>
+                <span>Como dosar seu ritmo sem relógio (Teste da Fala):</span>
+              </div>
+              <p class="callout-body">"{{ targetZone.talkTest }}"</p>
+            </div>
+
+            <div class="coaching-callout purpose-callout">
+              <div class="callout-header">
+                <ion-icon name="information-circle-outline"></ion-icon>
+                <span>Por que esta intensidade?</span>
+              </div>
+              <p class="callout-body">{{ workout().whyThisMatters }}</p>
+            </div>
           </div>
-          <p class="callout-body">{{ workout().whyThisMatters }}</p>
-        </div>
 
-        <!-- Timeline das Etapas -->
-        <div class="timeline-block">
-          <h4 class="timeline-title">Passo a passo da sessão</h4>
-          <div class="timeline-list">
-            @for (step of workout().steps; track step.name) {
-              <div class="timeline-step">
-                <div class="timeline-zone-indicator" [attr.data-zone]="step.targetZone"></div>
-                <div class="step-meta">
-                  <div class="step-top-line">
-                    <strong class="step-name">{{ step.name }}</strong>
-                    <span class="step-duration">{{ step.durationMinutes }} min</span>
+          <!-- Timeline das Etapas -->
+          <div class="timeline-block">
+            <h4 class="timeline-title">Passo a passo da sessão</h4>
+            <div class="timeline-list">
+              @for (step of workout().steps; track step.name) {
+                <div class="timeline-step">
+                  <div class="timeline-zone-indicator" [attr.data-zone]="step.targetZone"></div>
+                  <div class="step-meta">
+                    <div class="step-top-line">
+                      <strong class="step-name">{{ step.name }}</strong>
+                      <span class="step-duration">{{ step.durationMinutes }} min</span>
+                    </div>
+                    <p class="step-desc">{{ step.description }}</p>
                   </div>
-                  <p class="step-desc">{{ step.description }}</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Ação Principal -->
+          <div class="action-footer">
+            @if (!workout().completed) {
+              <ion-button expand="block" (click)="onCompleteWorkout()" class="sport-btn-primary">
+                <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+                Concluir Este Treino
+              </ion-button>
+            } @else {
+              <div class="congratulations-box">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                <div>
+                  <strong>Treino Registrado!</strong>
+                  <p>Excelente disciplina. Seu corpo absorve o ganho durante a recuperação.</p>
                 </div>
               </div>
             }
           </div>
-        </div>
 
-        <!-- Botão de Ação -->
-        <div class="action-footer">
-          @if (!workout().completed) {
-            <ion-button expand="block" (click)="onCompleteWorkout()" class="sport-btn-primary">
-              <ion-icon slot="start" name="checkmark-circle"></ion-icon>
-              Concluir Este Treino
-            </ion-button>
-          } @else {
-            <div class="congratulations-box">
-              <ion-icon name="checkmark-circle"></ion-icon>
-              <div>
-                <strong>Treino Registrado!</strong>
-                <p>Excelente disciplina. Seu corpo agradece o descanso ativo.</p>
-              </div>
+        </div>
+      </main>
+
+      <!-- COLUNA LATERAL (Direita no Desktop): Constância e Dicas -->
+      <aside class="grid-secondary-column">
+        
+        <!-- Card: Constância Semanal -->
+        <div class="sport-card consistency-card">
+          <div class="card-head">
+            <div>
+              <span class="micro-label">Constância Semanal</span>
+              <h2 class="card-main-title">{{ progress().completedCount }} de {{ progress().plannedCount }} treinos realizados</h2>
             </div>
-          }
+            <div class="streak-pill">
+              <ion-icon name="flame-outline"></ion-icon>
+              <span>{{ progress().streakWeeks }} semanas</span>
+            </div>
+          </div>
+
+          <div class="week-days-track">
+            <div class="day-slot done">
+              <ion-icon name="checkmark-circle"></ion-icon>
+              <span>Treino 1</span>
+            </div>
+            <div class="day-slot done">
+              <ion-icon name="checkmark-circle"></ion-icon>
+              <span>Treino 2</span>
+            </div>
+            <div class="day-slot current">
+              <div class="pulse-dot"></div>
+              <span>Hoje</span>
+            </div>
+          </div>
+
+          <div class="card-stat-footer">
+            <div class="stat-pill">
+              <span class="stat-label">Sessões Concluídas</span>
+              <strong class="stat-value">{{ progress().completedCount }} treinos</strong>
+            </div>
+            <div class="stat-pill align-right">
+              <span class="stat-label">Objetivo Semanal</span>
+              <strong class="stat-value text-accent">3 dias</strong>
+            </div>
+          </div>
         </div>
 
-      </div>
-    </section>
+        <!-- Card Lateral: Filosofia da Zona 2 -->
+        <div class="sport-card coaching-tip-card">
+          <div class="tip-header">
+            <span class="tip-icon">💡</span>
+            <div>
+              <span class="tip-kicker">A Regra 80/20</span>
+              <h3 class="tip-title">Por que correr devagar?</h3>
+            </div>
+          </div>
+          <p class="tip-body">
+            Atletas de elite passam 80% do tempo de treinamento na <strong>Zona 2</strong>. Correr leve cria novos vasos sanguíneos nos músculos e fortalece seus tendões sem o risco de sobretreino e lesões.
+          </p>
+        </div>
+
+      </aside>
+
+    </div>
 
   </div>
 </ion-content>

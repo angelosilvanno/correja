@@ -1,5 +1,61 @@
 <ion-tabs>
-  <ion-tab-bar slot="bottom" class="correja-tab-bar">
+  
+  <!-- =====================================================================
+       1. SIDEBAR REAL DO DESKTOP (Aparece apenas em telas grandes >= 992px)
+       ===================================================================== -->
+  <aside class="desktop-sidebar">
+    
+    <!-- Topo: Marca Oficial -->
+    <div class="sidebar-brand">
+      <div class="brand-logo-box">
+        <span>🏃</span>
+      </div>
+      <div class="brand-info">
+        <span class="brand-kicker">TREINE COM PROPÓSITO</span>
+        <strong class="brand-name">CORRE <span class="accent">JA</span></strong>
+      </div>
+    </div>
+
+    <!-- Navegação: Links agrupados no topo com 6px de distância -->
+    <nav class="sidebar-nav">
+      <a routerLink="/tabs/dashboard" routerLinkActive="active" class="sidebar-link">
+        <ion-icon name="home-outline"></ion-icon>
+        <span>Início</span>
+      </a>
+
+      <a routerLink="/tabs/plans" routerLinkActive="active" class="sidebar-link">
+        <ion-icon name="flag-outline"></ion-icon>
+        <span>Planos</span>
+      </a>
+
+      <a routerLink="/tabs/zones" routerLinkActive="active" class="sidebar-link">
+        <ion-icon name="speedometer-outline"></ion-icon>
+        <span>Zonas Z1-Z5</span>
+      </a>
+
+      <a routerLink="/tabs/profile" routerLinkActive="active" class="sidebar-link">
+        <ion-icon name="person-outline"></ion-icon>
+        <span>Perfil</span>
+      </a>
+    </nav>
+
+    <!-- Rodapé da Sidebar: Atleta -->
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">🏃</div>
+        <div class="user-text">
+          <strong class="user-name">Atleta CorreJa</strong>
+          <span class="user-status">Foco: Base Z2</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- =====================================================================
+       2. TAB BAR DO CELULAR (Aparece apenas no celular < 992px)
+       ===================================================================== -->
+  <ion-tab-bar slot="bottom" class="mobile-tab-bar">
     <ion-tab-button tab="dashboard" href="/tabs/dashboard">
       <ion-icon name="home-outline"></ion-icon>
       <ion-label>Início</ion-label>
@@ -20,4 +76,5 @@
       <ion-label>Perfil</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
+
 </ion-tabs>

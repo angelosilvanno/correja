@@ -1,12 +1,7 @@
 /*
- * App Global CSS
+ * App Global CSS — CorreJa
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
+ * Folha de estilo global para toda a aplicação.
  */
 
 /* Core CSS required for Ionic components to work properly */
@@ -26,24 +21,87 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 /**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
+ * Ionic Dark Mode (Tema do Sistema)
  */
+@import "@ionic/angular/css/palettes/dark.system.css";
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
-
-/* Ocultar barra de rolagem mantendo o scroll 100% fluido */
+/* ==========================================================================
+   1. RESET & SCROLLBAR (EXPERIÊNCIA NATIVA SEM BARRAS CINZAS)
+   ========================================================================== */
 ion-content {
   &::part(scroll) {
     scrollbar-width: none;
+    -ms-overflow-style: none;
     &::-webkit-scrollbar {
       display: none;
       width: 0;
       height: 0;
     }
+  }
+}
+
+/* ==========================================================================
+   2. ESTRUTURA BASE DA APLICAÇÃO
+   ========================================================================== */
+ion-app {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   3. CONTAINER RESPONSIVO (MOBILE, TABLET E DESKTOP)
+   ========================================================================== */
+.app-viewport-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+
+  /* Celular */
+  @media (max-width: 767px) {
+    max-width: 100%;
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) and (max-width: 991px) {
+    max-width: 720px;
+    padding: 24px 20px 40px;
+  }
+}
+
+/* ==========================================================================
+   4. DESLOCAMENTO NO DESKTOP (AFASTA DA SIDEBAR E DÁ RESPIRO)
+   ========================================================================== */
+@media (min-width: 992px) {
+  /* Empurra as páginas para a direita da Sidebar de 240px */
+  ion-tabs > .tabs-inner,
+  .dashboard-canvas,
+  .page-canvas,
+  .schedule-canvas,
+  .profile-canvas {
+    margin-left: 240px !important;
+    width: calc(100% - 240px) !important;
+  }
+
+  /* Área nobre do conteúdo com 36px de respiro da linha da Sidebar */
+  .app-viewport-container {
+    max-width: 1180px;
+    padding: 32px 36px 60px !important;
+  }
+}
+
+/* Deslocamento no Desktop */
+@media (min-width: 992px) {
+  .dashboard-canvas,
+  .page-canvas,
+  .schedule-canvas,
+  .profile-canvas {
+    margin-left: 240px !important;
+    width: calc(100% - 240px) !important;
+  }
+
+  .app-viewport-container {
+    max-width: 1180px;
+    padding: 32px 36px 60px !important;
   }
 }

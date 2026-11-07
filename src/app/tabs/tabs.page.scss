@@ -1,27 +1,171 @@
-.correja-tab-bar {
-  --background: rgba(255, 255, 255, 0.92);
+/* ==========================================================================
+   MOBILE (< 992px): Esconde a Sidebar e exibe a barra inferior normal
+   ========================================================================== */
+.desktop-sidebar {
+  display: none;
+}
+
+.mobile-tab-bar {
+  --background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid #e2e8f0;
   height: 60px;
   padding-bottom: env(safe-area-inset-bottom, 6px);
-  box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.04);
 
   ion-tab-button {
     --color: #64748b;
     --color-selected: #0284c7;
     font-weight: 700;
     font-size: 0.72rem;
-    transition: all 0.2s ease;
 
     ion-icon {
       font-size: 1.35rem;
       margin-bottom: 2px;
     }
+  }
+}
 
-    &.tab-selected {
-      ion-icon {
-        transform: translateY(-2px);
+/* ==========================================================================
+   DESKTOP (≥ 992px): Sidebar Real e Perfeita
+   ========================================================================== */
+@media (min-width: 992px) {
+  /* Esconde a barra inferior no computador */
+  .mobile-tab-bar {
+    display: none !important;
+  }
+
+  /* Exibe a Sidebar fixa na esquerda */
+  .desktop-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 240px;
+    height: 100vh;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    padding: 24px 14px 20px;
+    z-index: 9999;
+
+    /* Topo: Logo */
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px 18px;
+      border-bottom: 1px solid #f1f5f9;
+
+      .brand-logo-box {
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+      }
+
+      .brand-kicker {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        color: #0284c7;
+      }
+
+      .brand-name {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: #0f172a;
+
+        .accent {
+          color: #0284c7;
+        }
+      }
+    }
+
+    /* Navegação: Itens agrupados juntinhos no topo */
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 18px;
+      flex: 1;
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 42px;
+        padding: 0 14px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.15s ease;
+
+        ion-icon {
+          font-size: 1.25rem;
+          color: inherit;
+        }
+
+        &:hover {
+          background: #f8fafc;
+          color: #0f172a;
+        }
+
+        /* Item Selecionado */
+        &.active {
+          background: #f0f9ff;
+          color: #0284c7;
+          font-weight: 800;
+        }
+      }
+    }
+
+    /* Rodapé da Sidebar */
+    .sidebar-footer {
+      border-top: 1px solid #f1f5f9;
+      padding-top: 14px;
+
+      .user-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 12px;
+
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+          background: #e0f2fe;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1rem;
+        }
+
+        .user-name {
+          display: block;
+          font-size: 0.8rem;
+          color: #0f172a;
+        }
+
+        .user-status {
+          font-size: 0.7rem;
+          font-weight: 700;
+          color: #10b981;
+        }
       }
     }
   }

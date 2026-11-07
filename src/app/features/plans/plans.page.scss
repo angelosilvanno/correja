@@ -1,15 +1,13 @@
 .page-canvas {
   --background: #f8fafc;
-}
-
-.app-viewport-container {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(32px + env(safe-area-inset-bottom, 0px));
+  &::part(scroll) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
 }
 
 .page-header {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   .micro-tag {
     font-size: 0.72rem;
@@ -21,34 +19,43 @@
 
   .page-title {
     margin: 4px 0 0;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 800;
     color: #0f172a;
   }
 
   .page-desc {
     margin: 6px 0 0;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: #64748b;
   }
 }
 
+/* Grade de Planos: 1 coluna no celular | 2 colunas no tablet e desktop */
 .plans-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 16px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
 }
 
 .plan-card {
   background: #ffffff;
   border-radius: 20px;
   border: 1px solid #edf2f7;
-  padding: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
 
   &.is-active {
     border: 2px solid #0284c7;
-    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.1);
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
   }
 
   .level-chip {
@@ -65,14 +72,14 @@
 
   .plan-title {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: #0f172a;
   }
 
   .plan-sub {
     margin: 4px 0 0;
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     color: #64748b;
     line-height: 1.4;
   }
@@ -83,19 +90,18 @@
     gap: 4px;
     background: #ecfdf5;
     color: #059669;
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 8px;
     font-size: 0.75rem;
     font-weight: 700;
-    margin-top: 4px;
   }
 
   .plan-meta {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 14px 0;
-    font-size: 0.8rem;
+    margin: 16px 0;
+    font-size: 0.82rem;
     font-weight: 600;
     color: #64748b;
 
