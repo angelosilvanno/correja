@@ -42,7 +42,7 @@ Siga o passo a passo abaixo para clonar, instalar dependências e rodar o projet
 
 #### 1. Clonar o repositório
 ```bash
-git clone https://github.com/SEU-USUARIO/correja.git
+git clone https://github.com/angelosilvanno/correja.git
 cd correja
 ```
 
