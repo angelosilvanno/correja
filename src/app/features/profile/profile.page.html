@@ -1,151 +1,176 @@
 <ion-content [fullscreen]="true" class="profile-canvas">
-  <div class="app-viewport-container">
+  <div class="profile-viewport">
     
-    <!-- Topbar Discreta -->
-    <header class="profile-topbar">
-      <span class="topbar-title">Meu Perfil</span>
-      <button type="button" class="logout-icon-btn" (click)="logout()" title="Sair">
+    <!-- Cabeçalho -->
+    <header class="profile-header">
+      <div class="header-titles">
+        <span class="brand-pill">
+          <ion-icon name="sparkles-outline"></ion-icon> PERFIL
+        </span>
+        <h1 class="page-title">Minha Conta</h1>
+      </div>
+      <button type="button" class="logout-pill-btn" (click)="logout()" title="Sair da Conta">
         <ion-icon name="log-out-outline"></ion-icon>
+        <span>Sair</span>
       </button>
     </header>
 
-    <!-- Card Principal do Atleta -->
-    <section class="athlete-hero-card">
-      <div class="avatar-ring-wrapper">
-        <div class="athlete-avatar">
-          <span>🏃</span>
-        </div>
-        <div class="level-indicator-badge">
-          <ion-icon name="sparkles-outline"></ion-icon>
-        </div>
-      </div>
-
-      <h1 class="athlete-name">{{ athleteName }}</h1>
-      <span class="athlete-handle">Corredor CorreJa • Nível Base</span>
-
-      <div class="active-plan-pill">
-        <span class="pulse-green-dot"></span>
-        <span>Plano: <strong>Primeiros 5 km</strong> (Semana 2 de 6)</span>
-      </div>
-
-      <!-- Métricas Reais do CorreJa (Foco em Esforço e Tempo, Não em KM) -->
-      <div class="athlete-stats-grid">
-        <div class="stat-cell">
-          <span class="stat-number">14</span>
-          <span class="stat-caption">Treinos</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-cell">
-          <span class="stat-number">6h 40m</span>
-          <span class="stat-caption">Tempo Ativo</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-cell">
-          <span class="stat-number zone-accent">Z2</span>
-          <span class="stat-caption">Zona Média</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Meta Atual em Andamento -->
-    <section class="goal-widget-card">
-      <div class="goal-header">
-        <div class="goal-icon-box">
-          <ion-icon name="flame-outline"></ion-icon>
-        </div>
-        <div class="goal-info">
-          <span class="goal-kicker">Meta Principal</span>
-          <strong class="goal-title">Correr 5 km direto com conforto</strong>
-        </div>
-      </div>
-      <div class="goal-progress-bar">
-        <div class="progress-fill" style="width: 35%"></div>
-      </div>
-      <div class="goal-footer">
-        <span>Adaptação da respiração e tendões</span>
-        <strong>35% completo</strong>
-      </div>
-    </section>
-
-    <!-- Seção: Minha Jornada & Metodologia -->
-    <section class="menu-section">
-      <h2 class="section-label">JORNADA & METODOLOGIA</h2>
-      <div class="menu-card">
+    <!-- Layout Grid: 2 Colunas no Desktop | 1 Coluna no Celular -->
+    <div class="profile-grid-layout">
+      
+      <!-- ===================================================================
+           COLUNA DA ESQUERDA: IDENTIDADE DO ATLETA & TELEMETRIA
+           =================================================================== -->
+      <div class="profile-left-col">
         
-        <div class="menu-item">
-          <div class="item-icon-box icon-blue">
-            <ion-icon name="speedometer-outline"></ion-icon>
+        <!-- Card Principal de Identidade -->
+        <section class="athlete-identity-card">
+          <div class="avatar-ring-wrapper">
+            <div class="athlete-avatar">🏃</div>
+            <div class="status-badge">
+              <ion-icon name="sparkles-outline"></ion-icon>
+            </div>
           </div>
-          <div class="item-content">
-            <strong class="item-title">Minhas Zonas de Treino</strong>
-            <span class="item-sub">Z1 a Z5 e calibragem do Teste da Fala</span>
-          </div>
-          <ion-icon class="chevron-arrow" name="chevron-forward-outline"></ion-icon>
-        </div>
 
-        <div class="menu-item">
-          <div class="item-icon-box icon-gold">
-            <ion-icon name="trophy-outline"></ion-icon>
-          </div>
-          <div class="item-content">
-            <strong class="item-title">Conquistas e Hábitos</strong>
-            <span class="item-sub">3 medalhas de disciplina desbloqueadas</span>
-          </div>
-          <ion-icon class="chevron-arrow" name="chevron-forward-outline"></ion-icon>
-        </div>
+          <h2 class="athlete-name">{{ athleteName }}</h2>
+          <span class="athlete-role">Corredor CorreJa • Nível Base</span>
 
-        <div class="menu-item">
-          <div class="item-icon-box icon-emerald">
-            <ion-icon name="pulse-outline"></ion-icon>
+          <div class="active-plan-pill">
+            <span class="pulse-dot"></span>
+            <span>Plano: <strong>Primeiros 5 km</strong> (Semana 2 de 6)</span>
           </div>
-          <div class="item-content">
-            <strong class="item-title">Histórico de Percepção</strong>
-            <span class="item-sub">Como você tem se sentido após os treinos</span>
+
+          <!-- Métricas de Telemetria (Foco em tempo e intensidade, sem km de GPS) -->
+          <div class="athlete-telemetry-grid">
+            <div class="telemetry-cell">
+              <span class="cell-num">14</span>
+              <span class="cell-lbl">Treinos</span>
+            </div>
+            <div class="cell-divider"></div>
+            <div class="telemetry-cell">
+              <span class="cell-num">6h 40m</span>
+              <span class="cell-lbl">Tempo Ativo</span>
+            </div>
+            <div class="cell-divider"></div>
+            <div class="telemetry-cell">
+              <span class="cell-num zone-highlight">Z2</span>
+              <span class="cell-lbl">Zona Média</span>
+            </div>
           </div>
-          <ion-icon class="chevron-arrow" name="chevron-forward-outline"></ion-icon>
-        </div>
+        </section>
+
+        <!-- Card da Meta Principal -->
+        <section class="goal-progress-card">
+          <div class="goal-card-top">
+            <div class="goal-icon-badge">
+              <ion-icon name="flame-outline"></ion-icon>
+            </div>
+            <div class="goal-title-group">
+              <span class="goal-micro">META ATIVA</span>
+              <strong class="goal-name">Correr 5 km direto com conforto</strong>
+            </div>
+          </div>
+
+          <div class="goal-meter-track">
+            <div class="goal-meter-fill" style="width: 35%"></div>
+          </div>
+
+          <div class="goal-details-footer">
+            <span>Adaptação da respiração e tendões</span>
+            <strong>35% conquistado</strong>
+          </div>
+        </section>
 
       </div>
-    </section>
 
-    <!-- Seção: Configurações & Conexões -->
-    <section class="menu-section">
-      <h2 class="section-label">CONFIGURAÇÕES</h2>
-      <div class="menu-card">
+      <!-- ===================================================================
+           COLUNA DA DIREITA: JORNADA, CONFIGURAÇÕES E ROTINA
+           =================================================================== -->
+      <div class="profile-right-col">
         
-        <div class="menu-item">
-          <div class="item-icon-box icon-slate">
-            <ion-icon name="notifications-outline"></ion-icon>
-          </div>
-          <div class="item-content">
-            <strong class="item-title">Lembretes de Rotina</strong>
-            <span class="item-sub">Ter, Qui e Sáb às 07:00</span>
-          </div>
-          <ion-icon class="chevron-arrow" name="chevron-forward-outline"></ion-icon>
-        </div>
+        <!-- Bloco 1: Jornada & Metodologia -->
+        <section class="settings-block">
+          <h3 class="block-heading">JORNADA & METODOLOGIA</h3>
+          <div class="settings-card-menu">
+            
+            <div class="menu-action-row">
+              <div class="row-icon-box icon-blue">
+                <ion-icon name="speedometer-outline"></ion-icon>
+              </div>
+              <div class="row-info">
+                <strong class="row-title">Minhas Zonas de Treino</strong>
+                <span class="row-sub">Z1 a Z5 e calibração do Teste da Fala</span>
+              </div>
+              <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
+            </div>
 
-        <div class="menu-item">
-          <div class="item-icon-box icon-orange">
-            <ion-icon name="time-outline"></ion-icon>
+            <div class="menu-action-row">
+              <div class="row-icon-box icon-gold">
+                <ion-icon name="trophy-outline"></ion-icon>
+              </div>
+              <div class="row-info">
+                <strong class="row-title">Conquistas e Hábitos</strong>
+                <span class="row-sub">3 medalhas de disciplina desbloqueadas</span>
+              </div>
+              <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
+            </div>
+
+            <div class="menu-action-row">
+              <div class="row-icon-box icon-emerald">
+                <ion-icon name="pulse-outline"></ion-icon>
+              </div>
+              <div class="row-info">
+                <strong class="row-title">Histórico de Percepção</strong>
+                <span class="row-sub">Como você tem se sentido após os treinos</span>
+              </div>
+              <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
+            </div>
+
           </div>
-          <div class="item-content">
-            <strong class="item-title">Importação Strava (Fase 5)</strong>
-            <span class="item-sub">Leitura passiva de treinos gravados</span>
+        </section>
+
+        <!-- Bloco 2: Preferências & Conexões -->
+        <section class="settings-block">
+          <h3 class="block-heading">PREFERÊNCIAS & CONEXÕES</h3>
+          <div class="settings-card-menu">
+            
+            <div class="menu-action-row">
+              <div class="row-icon-box icon-slate">
+                <ion-icon name="notifications-outline"></ion-icon>
+              </div>
+              <div class="row-info">
+                <strong class="row-title">Lembretes de Rotina</strong>
+                <span class="row-sub">Ter, Qui e Sáb às 07:00</span>
+              </div>
+              <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
+            </div>
+
+            <div class="menu-action-row">
+              <div class="row-icon-box icon-orange">
+                <ion-icon name="time-outline"></ion-icon>
+              </div>
+              <div class="row-info">
+                <strong class="row-title">Importação Strava (Fase 5)</strong>
+                <span class="row-sub">Leitura passiva dos treinos gravados</span>
+              </div>
+              <span class="status-pill-soon">Em breve</span>
+            </div>
+
           </div>
-          <span class="status-tag">Em breve</span>
-        </div>
+        </section>
+
+        <!-- Rodapé do Perfil -->
+        <footer class="desktop-profile-footer">
+          <button type="button" class="logout-link-btn" (click)="logout()">
+            <ion-icon name="log-out-outline"></ion-icon>
+            <span>Sair da conta</span>
+          </button>
+          <span class="version-label">CorreJa v1.0.0 • Treine com propósito</span>
+        </footer>
 
       </div>
-    </section>
 
-    <!-- Rodapé: Sair -->
-    <footer class="profile-footer">
-      <button type="button" class="logout-btn" (click)="logout()">
-        <ion-icon name="log-out-outline"></ion-icon>
-        <span>Sair da conta</span>
-      </button>
-      <span class="app-version">CorreJa v1.0.0 • Treine com propósito</span>
-    </footer>
+    </div>
 
   </div>
 </ion-content>

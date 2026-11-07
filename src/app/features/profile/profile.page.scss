@@ -1,3 +1,6 @@
+/* ==========================================================================
+   CANVAS & VIEWPORT RESPONSIVO
+   ========================================================================== */
 .profile-canvas {
   --background: #f8fafc;
   &::part(scroll) {
@@ -6,66 +9,110 @@
   }
 }
 
-.app-viewport-container {
-  max-width: 520px;
+.profile-viewport {
+  width: 100%;
   margin: 0 auto;
-  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(36px + env(safe-area-inset-bottom, 0px));
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(48px + env(safe-area-inset-bottom, 0px));
+
+  @media (min-width: 768px) {
+    padding: 24px 24px 50px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    padding: 32px 36px 64px;
+  }
 }
 
-/* Topbar */
-.profile-topbar {
+/* ==========================================================================
+   CABEÇALHO
+   ========================================================================== */
+.profile-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 
-  .topbar-title {
-    font-size: 1.15rem;
+  .brand-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
     font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.01em;
+    color: #0284c7;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
-  .logout-icon-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+  .page-title {
+    margin: 4px 0 0;
+    font-size: 1.65rem;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+
+    @media (min-width: 768px) {
+      font-size: 1.85rem;
+    }
+  }
+
+  .logout-pill-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #64748b;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
     transition: all 0.2s ease;
 
-    ion-icon {
-      font-size: 1.2rem;
-      color: #64748b;
-    }
+    ion-icon { font-size: 1.1rem; }
 
     &:hover {
       background: #fef2f2;
       border-color: #fecaca;
-      ion-icon { color: #ef4444; }
+      color: #ef4444;
     }
   }
 }
 
-/* Card Principal do Atleta */
-.athlete-hero-card {
+/* ==========================================================================
+   GRID ADAPTATIVO (2 COLUNAS NO DESKTOP / 1 NO CELULAR)
+   ========================================================================== */
+.profile-grid-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1.1fr 1.35fr;
+    gap: 32px;
+    align-items: flex-start;
+  }
+}
+
+/* ==========================================================================
+   COLUNA ESQUERDA: CARD DE IDENTIDADE DO ATLETA
+   ========================================================================== */
+.athlete-identity-card {
   background: #ffffff;
   border-radius: 24px;
   border: 1px solid #edf2f7;
-  padding: 24px 18px 20px;
+  padding: 26px 20px 22px;
   text-align: center;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 4px 10px -4px rgba(15, 23, 42, 0.02);
-  margin-bottom: 16px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04);
+  margin-bottom: 20px;
 
   .avatar-ring-wrapper {
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 84px;
+    height: 84px;
     margin: 0 auto 12px;
 
     .athlete-avatar {
@@ -76,17 +123,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       border: 3px solid #ffffff;
-      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.15);
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.18);
     }
 
-    .level-indicator-badge {
+    .status-badge {
       position: absolute;
       bottom: 0;
       right: 0;
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: #0284c7;
       border: 2px solid #ffffff;
@@ -94,22 +141,22 @@
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
     }
   }
 
   .athlete-name {
     margin: 0;
-    font-size: 1.4rem;
-    font-weight: 800;
+    font-size: 1.45rem;
+    font-weight: 900;
     color: #0f172a;
     letter-spacing: -0.02em;
   }
 
-  .athlete-handle {
+  .athlete-role {
     display: block;
     margin-top: 4px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: #64748b;
   }
@@ -125,9 +172,9 @@
     border-radius: 20px;
     font-size: 0.78rem;
     font-weight: 600;
-    margin-top: 12px;
+    margin-top: 14px;
 
-    .pulse-green-dot {
+    .pulse-dot {
       width: 7px;
       height: 7px;
       background: #16a34a;
@@ -136,32 +183,30 @@
     }
   }
 
-  /* Grid de Métricas Reais */
-  .athlete-stats-grid {
+  .athlete-telemetry-grid {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-top: 20px;
-    padding-top: 18px;
+    margin-top: 22px;
+    padding-top: 20px;
     border-top: 1px solid #f1f5f9;
 
-    .stat-cell {
+    .telemetry-cell {
       flex: 1;
-      text-align: center;
 
-      .stat-number {
+      .cell-num {
         display: block;
-        font-size: 1.35rem;
+        font-size: 1.4rem;
         font-weight: 900;
         color: #0f172a;
         letter-spacing: -0.02em;
 
-        &.zone-accent {
+        &.zone-highlight {
           color: #10b981;
         }
       }
 
-      .stat-caption {
+      .cell-lbl {
         display: block;
         font-size: 0.7rem;
         font-weight: 700;
@@ -172,7 +217,7 @@
       }
     }
 
-    .stat-divider {
+    .cell-divider {
       width: 1px;
       height: 28px;
       background: #e2e8f0;
@@ -180,34 +225,34 @@
   }
 }
 
-/* Widget de Meta */
-.goal-widget-card {
+/* Card Meta Principal */
+.goal-progress-card {
   background: #ffffff;
   border-radius: 20px;
   border: 1px solid #edf2f7;
-  padding: 16px;
-  margin-bottom: 22px;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
 
-  .goal-header {
+  .goal-card-top {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 
-    .goal-icon-box {
-      width: 38px;
-      height: 38px;
+    .goal-icon-badge {
+      width: 40px;
+      height: 40px;
       border-radius: 12px;
       background: #ffedd5;
       color: #ea580c;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      font-size: 1.3rem;
+      flex-shrink: 0;
     }
 
-    .goal-kicker {
+    .goal-micro {
       display: block;
       font-size: 0.68rem;
       font-weight: 800;
@@ -216,61 +261,63 @@
       color: #ea580c;
     }
 
-    .goal-title {
-      font-size: 0.92rem;
+    .goal-name {
+      font-size: 0.95rem;
       color: #0f172a;
-      font-weight: 700;
+      font-weight: 800;
     }
   }
 
-  .goal-progress-bar {
+  .goal-meter-track {
     width: 100%;
-    height: 7px;
+    height: 8px;
     background: #f1f5f9;
     border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 
-    .progress-fill {
+    .goal-meter-fill {
       height: 100%;
       background: linear-gradient(90deg, #f97316, #10b981);
       border-radius: 4px;
     }
   }
 
-  .goal-footer {
+  .goal-details-footer {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: #64748b;
   }
 }
 
-/* Menus e Listas */
-.menu-section {
-  margin-bottom: 20px;
+/* ==========================================================================
+   COLUNA DIREITA: MENUS DE CONFIGURAÇÃO E JORNADA
+   ========================================================================== */
+.settings-block {
+  margin-bottom: 22px;
 
-  .section-label {
-    font-size: 0.72rem;
+  .block-heading {
+    font-size: 0.74rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: #94a3b8;
     text-transform: uppercase;
-    margin: 0 0 8px 4px;
+    margin: 0 0 10px 4px;
   }
 
-  .menu-card {
+  .settings-card-menu {
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 22px;
     border: 1px solid #edf2f7;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
   }
 
-  .menu-item {
+  .menu-action-row {
     display: flex;
     align-items: center;
-    padding: 14px 16px;
+    padding: 16px 20px;
     border-bottom: 1px solid #f1f5f9;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -283,9 +330,9 @@
       background-color: #f8fafc;
     }
 
-    .item-icon-box {
-      width: 40px;
-      height: 40px;
+    .row-icon-box {
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -293,9 +340,7 @@
       margin-right: 14px;
       flex-shrink: 0;
 
-      ion-icon {
-        font-size: 1.25rem;
-      }
+      ion-icon { font-size: 1.3rem; }
 
       &.icon-blue { background: #e0f2fe; color: #0284c7; }
       &.icon-gold { background: #fef3c7; color: #d97706; }
@@ -304,31 +349,31 @@
       &.icon-orange { background: #ffedd5; color: #ea580c; }
     }
 
-    .item-content {
+    .row-info {
       flex: 1;
 
-      .item-title {
+      .row-title {
         display: block;
-        font-size: 0.9rem;
-        font-weight: 700;
+        font-size: 0.92rem;
+        font-weight: 800;
         color: #0f172a;
       }
 
-      .item-sub {
+      .row-sub {
         display: block;
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         color: #64748b;
         margin-top: 2px;
       }
     }
 
-    .chevron-arrow {
+    .arrow-right {
       font-size: 1.15rem;
       color: #94a3b8;
     }
 
-    .status-tag {
-      font-size: 0.68rem;
+    .status-pill-soon {
+      font-size: 0.7rem;
       font-weight: 800;
       background: #f1f5f9;
       color: #64748b;
@@ -339,28 +384,26 @@
   }
 }
 
-/* Rodapé */
-.profile-footer {
+/* Rodapé do Perfil */
+.desktop-profile-footer {
   text-align: center;
-  padding: 12px 0 24px;
+  padding: 8px 0 24px;
 
-  .logout-btn {
+  .logout-link-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     background: transparent;
     border: 1.5px solid #e2e8f0;
     border-radius: 12px;
-    padding: 10px 20px;
-    font-size: 0.85rem;
+    padding: 10px 22px;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #ef4444;
     cursor: pointer;
     transition: all 0.2s ease;
 
-    ion-icon {
-      font-size: 1.1rem;
-    }
+    ion-icon { font-size: 1.15rem; }
 
     &:hover {
       background: #fef2f2;
@@ -368,10 +411,10 @@
     }
   }
 
-  .app-version {
+  .version-label {
     display: block;
-    margin-top: 14px;
-    font-size: 0.7rem;
+    margin-top: 12px;
+    font-size: 0.72rem;
     font-weight: 600;
     color: #cbd5e1;
   }
