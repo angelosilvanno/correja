@@ -1,147 +1,597 @@
+/* ==========================================================================
+   CANVAS & CONTAINER BASE
+   ========================================================================== */
 .dashboard-canvas {
   --background: #f8fafc;
 }
 
-/* Topbar */
-.app-topbar {
+.dashboard-viewport {
+  width: 100%;
+  margin: 0 auto;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px calc(40px + env(safe-area-inset-bottom, 0px));
+
+  @media (min-width: 768px) {
+    padding: 24px 24px 48px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1200px;
+    padding: 32px 36px 60px;
+  }
+}
+
+/* ==========================================================================
+   HEADER PRINCIPAL
+   ========================================================================== */
+.dash-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 24px;
+  gap: 16px;
 
-  .brand-eyebrow {
+  .brand-pill {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     font-size: 0.72rem;
     font-weight: 800;
-    letter-spacing: 0.12em;
     color: #0284c7;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    margin-bottom: 4px;
   }
 
-  .user-name {
-    margin: 4px 0 0;
-    font-size: 1.5rem;
-    font-weight: 800;
+  .greeting-text {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 900;
     color: #0f172a;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+
+    @media (min-width: 768px) {
+      font-size: 1.85rem;
+    }
   }
 
-  .topbar-right-info {
-    display: flex;
+  .greeting-sub {
+    margin: 4px 0 0;
+    font-size: 0.88rem;
+    color: #64748b;
+  }
+
+  .header-plan-badge {
+    display: none;
     align-items: center;
     gap: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 8px 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
 
-    .current-plan-chip {
-      display: none;
-      font-size: 0.8rem;
-      color: #64748b;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      padding: 6px 14px;
-      border-radius: 20px;
-
-      @media (min-width: 768px) {
-        display: inline-block;
-      }
+    @media (min-width: 768px) {
+      display: flex;
     }
 
-    .avatar-badge {
-      width: 44px;
-      height: 44px;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
+    .plan-icon-wrapper {
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
+      background: #e0f2fe;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      font-size: 1.25rem;
+    }
+
+    .plan-label {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: #0284c7;
+      letter-spacing: 0.08em;
+    }
+
+    .plan-name {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #0f172a;
     }
   }
 }
 
 /* ==========================================================================
-   GRID ADAPTATIVO: 1 COLUNA (MOBILE) | 2 COLUNAS (DESKTOP)
+   GRID RESPONSIVO (2 COLUNAS NO DESKTOP / 1 NO CELULAR)
    ========================================================================== */
-.responsive-dashboard-grid {
+.dash-grid-layout {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 
-  /* No Desktop: 2 Colunas Proporcionais */
   @media (min-width: 1024px) {
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: 28px;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 32px;
     align-items: flex-start;
   }
 }
 
-/* Card Base Esportivo */
-.sport-card {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #edf2f7;
-  padding: 22px;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 4px 10px -4px rgba(15, 23, 42, 0.02);
-  margin-bottom: 20px;
-}
-
-/* Coluna Lateral */
-.grid-secondary-column {
+/* ==========================================================================
+   CARD DO TREINO DO DIA (COLUNA PRINCIPAL)
+   ========================================================================== */
+.column-headline {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+
+  .tag-phase {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #0284c7;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .title-today {
+    margin: 2px 0 0;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+
+  .workout-type-pill {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
 }
 
-/* Card de Constância */
-.consistency-card {
-  .card-head {
+.hero-workout-card {
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #edf2f7;
+  padding: 24px;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 2px 6px rgba(15, 23, 42, 0.02);
+
+  .workout-card-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    gap: 14px;
+
+    .workout-name {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .workout-subtitle {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .zone-badge-large {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+
+      .z-id {
+        font-size: 1.15rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .z-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   RÉGUA DAS 5 ZONAS (DESIGN NOVO SEM TEXTOS CORTADOS)
+   ========================================================================== */
+.spectrum-card-block {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+
+  .spectrum-top-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+
+    .spectrum-title {
+      color: #64748b;
+      font-weight: 600;
+    }
+    .spectrum-focus {
+      font-weight: 800;
+    }
   }
 
-  .micro-label {
-    font-size: 0.72rem;
+  .spectrum-track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+
+    .zone-bar-segment {
+      position: relative;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.82rem;
+      opacity: 0.3;
+      transition: all 0.25s ease;
+
+      &.z1 { background: #0ea5e9; color: #ffffff; }
+      &.z2 { background: #10b981; color: #ffffff; }
+      &.z3 { background: #f59e0b; color: #1e293b; }
+      &.z4 { background: #f97316; color: #ffffff; }
+      &.z5 { background: #ef4444; color: #ffffff; }
+
+      &.active {
+        opacity: 1;
+        transform: scale(1.04);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+
+        .active-arrow-indicator {
+          display: block;
+        }
+      }
+
+      .active-arrow-indicator {
+        display: none;
+        position: absolute;
+        bottom: -10px;
+        color: #10b981;
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .spectrum-legend-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
     font-weight: 700;
+    color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #64748b;
+    padding-top: 4px;
+
+    .highlight {
+      color: #10b981;
+      font-weight: 800;
+    }
+  }
+}
+
+/* ==========================================================================
+   PAINEL HUD DE MÉTRICAS
+   ========================================================================== */
+.hud-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+
+  .hud-stat-box {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .hud-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      color: #0284c7;
+      flex-shrink: 0;
+    }
+
+    .hud-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .hud-value {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #0f172a;
+
+      small {
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 600;
+      }
+
+      &.text-accent {
+        color: #10b981;
+      }
+    }
+
+    &.accent-box .hud-icon {
+      color: #10b981;
+    }
+  }
+}
+
+/* ==========================================================================
+   CARDS DE COACHING
+   ========================================================================== */
+.coaching-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .card-main-title {
-    margin: 4px 0 0;
+  .coach-bubble {
+    border-radius: 16px;
+    padding: 14px 16px;
+
+    .bubble-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .bubble-content {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    &.talk-test-bubble {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      .bubble-header { color: #15803d; }
+    }
+
+    &.purpose-bubble {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #075985;
+      .bubble-header { color: #0284c7; }
+    }
+  }
+}
+
+/* ==========================================================================
+   TIMELINE DE ETAPAS
+   ========================================================================== */
+.session-stepper-wrap {
+  margin-bottom: 24px;
+
+  .stepper-title {
+    margin: 0 0 12px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.08em;
+  }
+
+  .stepper-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .step-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 14px;
+      padding: 12px 14px;
+
+      .step-badge {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: #ffffff;
+        background: #0284c7;
+        padding: 6px 10px;
+        border-radius: 8px;
+        flex-shrink: 0;
+
+        &[data-zone="Z1"] { background: #0ea5e9; }
+        &[data-zone="Z2"] { background: #10b981; }
+        &[data-zone="Z3"] { background: #f59e0b; color: #1e293b; }
+        &[data-zone="Z4"] { background: #f97316; }
+        &[data-zone="Z5"] { background: #ef4444; }
+      }
+
+      .step-body {
+        flex: 1;
+
+        .step-head {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .step-label {
+            font-size: 0.88rem;
+            color: #0f172a;
+          }
+
+          .step-zone-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #64748b;
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+          }
+        }
+
+        .step-instruction {
+          margin: 2px 0 0;
+          font-size: 0.8rem;
+          color: #64748b;
+        }
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   BOTÃO DE AÇÃO
+   ========================================================================== */
+.workout-action-wrap {
+  .btn-complete-workout {
+    --background: #0284c7;
+    --background-activated: #0369a1;
+    --border-radius: 14px;
+    height: 50px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.3);
+
+    ion-icon {
+      font-size: 1.25rem;
+      margin-right: 6px;
+    }
+  }
+
+  .done-banner-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    border-radius: 14px;
+    padding: 16px;
+    color: #065f46;
+
+    ion-icon {
+      font-size: 1.8rem;
+      color: #059669;
+      flex-shrink: 0;
+    }
+
+    strong {
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    p {
+      margin: 2px 0 0;
+      font-size: 0.82rem;
+      color: #047857;
+    }
+  }
+}
+
+/* ==========================================================================
+   COLUNA LATERAL (DIREITA NO DESKTOP)
+   ========================================================================== */
+.side-metrics-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.side-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #edf2f7;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+}
+
+.consistency-hero-card {
+  .card-kicker-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .micro-kicker {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #64748b;
+      letter-spacing: 0.08em;
+    }
+
+    .streak-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #ecfdf5;
+      color: #059669;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 1px solid #a7f3d0;
+    }
+  }
+
+  .consistency-headline {
+    margin: 0 0 16px;
     font-size: 1.15rem;
     font-weight: 800;
     color: #0f172a;
+    letter-spacing: -0.01em;
   }
 
-  .streak-pill {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: #ecfdf5;
-    color: #059669;
-    padding: 6px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border: 1px solid #d1fae5;
-  }
-
-  .week-days-track {
+  .week-pills-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     margin-bottom: 16px;
 
-    .day-slot {
-      background: #f1f5f9;
+    .day-slot-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
       border-radius: 12px;
-      padding: 10px 8px;
+      padding: 12px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -150,18 +600,23 @@
       font-weight: 700;
       color: #64748b;
 
-      &.done {
+      &.completed {
         background: #ecfdf5;
+        border-color: #a7f3d0;
         color: #059669;
-        ion-icon { font-size: 1.1rem; }
+
+        ion-icon {
+          font-size: 1.2rem;
+          color: #059669;
+        }
       }
 
       &.current {
-        background: #eff6ff;
+        background: #f0f9ff;
+        border-color: #0284c7;
         color: #0284c7;
-        border: 1.5px solid #0284c7;
 
-        .pulse-dot {
+        .pulse-marker {
           width: 8px;
           height: 8px;
           background: #0284c7;
@@ -172,350 +627,98 @@
     }
   }
 
-  .card-stat-footer {
+  .metrics-footer-duo {
     display: flex;
     justify-content: space-between;
-    padding-top: 12px;
+    padding-top: 14px;
     border-top: 1px solid #f1f5f9;
 
-    .stat-label {
+    .duo-label {
       display: block;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: #94a3b8;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
     }
 
-    .stat-value {
+    .duo-val {
       font-size: 0.95rem;
       font-weight: 800;
       color: #0f172a;
     }
 
-    .text-accent { color: #10b981; }
+    .text-success {
+      color: #059669;
+    }
   }
 }
 
-/* Card Dica do Treinador */
-.coaching-tip-card {
+.coaching-tip-box {
   background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
   border: 1px solid #a7f3d0;
 
-  .tip-header {
+  .tip-top-badge {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 8px;
 
-    .tip-icon { font-size: 1.6rem; }
-    .tip-kicker {
+    .bulb-icon {
+      font-size: 1.2rem;
+    }
+
+    .tip-tag {
       font-size: 0.68rem;
       font-weight: 800;
-      text-transform: uppercase;
       color: #059669;
       letter-spacing: 0.08em;
     }
-    .tip-title {
-      margin: 2px 0 0;
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #065f46;
-    }
   }
 
-  .tip-body {
-    margin: 0;
-    font-size: 0.85rem;
+  .tip-headline {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: #065f46;
+  }
+
+  .tip-paragraph {
+    margin: 0 0 10px;
+    font-size: 0.84rem;
     color: #047857;
-    line-height: 1.5;
-  }
-}
-
-/* Seção Treino de Hoje */
-.section-badge-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-
-  .section-title {
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #0f172a;
-  }
-
-  .plan-tag {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #0284c7;
-    background: #e0f2fe;
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-}
-
-.workout-focus-card {
-  .workout-title-block {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-
-    .workout-hero-title {
-      margin: 0;
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.01em;
-    }
-
-    .workout-hero-sub {
-      margin: 4px 0 0;
-      font-size: 0.88rem;
-      color: #64748b;
-    }
-
-    .active-zone-badge {
-      background: #10b981;
-      color: #ffffff;
-      font-weight: 900;
-      font-size: 0.95rem;
-      padding: 6px 14px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    }
-  }
-}
-
-/* Régua Visual das 5 Zonas */
-.zone-spectrum-wrapper {
-  background: #f8fafc;
-  border-radius: 14px;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-  border: 1px solid #f1f5f9;
-
-  .spectrum-label-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #64748b;
-    margin-bottom: 8px;
-
-    .zone-text-highlight {
-      color: #10b981;
-      font-weight: 800;
-    }
-  }
-
-  .zone-spectrum-bar {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-
-    .spectrum-segment {
-      height: 32px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 800;
-      opacity: 0.25;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      padding: 0 4px;
-
-      &.z1 { background: #0ea5e9; color: #fff; }
-      &.z2 { background: #10b981; color: #fff; }
-      &.z3 { background: #f59e0b; color: #000; }
-      &.z4 { background: #f97316; color: #fff; }
-      &.z5 { background: #ef4444; color: #fff; }
-
-      &.highlight {
-        opacity: 1;
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-      }
-    }
-  }
-}
-
-/* Métricas */
-.workout-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-
-  .grid-stat-box {
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    border-radius: 14px;
-    padding: 12px 10px;
-    text-align: center;
-
-    .stat-box-label {
-      display: block;
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #94a3b8;
-    }
-
-    .stat-box-number {
-      font-size: 1.25rem;
-      font-weight: 900;
-      color: #0f172a;
-
-      small { font-size: 0.75rem; font-weight: 600; color: #64748b; }
-      &.text-accent { color: #10b981; }
-    }
-  }
-}
-
-/* Callouts lado a lado no desktop */
-.coaching-callouts-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-
-  @media (min-width: 640px) {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.coaching-callout {
-  border-radius: 14px;
-  padding: 14px;
-
-  .callout-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.78rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-  }
-
-  .callout-body {
-    margin: 0;
-    font-size: 0.82rem;
     line-height: 1.45;
   }
 
-  &.talk-test-callout {
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    color: #065f46;
-    .callout-header { color: #047857; }
-  }
-
-  &.purpose-callout {
-    background: #f0fdfa;
-    border: 1px solid #ccfbf1;
-    color: #134e4a;
-    .callout-header { color: #0d9488; }
+  .tip-quote-footer {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: #059669;
+    border-top: 1px solid #bbf7d0;
+    padding-top: 8px;
   }
 }
 
-/* Timeline */
-.timeline-block {
-  margin: 18px 0 24px;
+.next-workout-card {
+  .micro-kicker {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #0284c7;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
 
-  .timeline-title {
-    margin: 0 0 10px;
-    font-size: 0.82rem;
+  .next-title {
+    margin: 0 0 4px;
+    font-size: 1rem;
     font-weight: 800;
     color: #0f172a;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
 
-  .timeline-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  .next-desc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
   }
-
-  .timeline-step {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-
-    .timeline-zone-indicator {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-top: 4px;
-      flex-shrink: 0;
-
-      &[data-zone="Z1"] { background: #0ea5e9; }
-      &[data-zone="Z2"] { background: #10b981; }
-      &[data-zone="Z3"] { background: #f59e0b; }
-      &[data-zone="Z4"] { background: #f97316; }
-      &[data-zone="Z5"] { background: #ef4444; }
-    }
-
-    .step-meta {
-      flex: 1;
-
-      .step-top-line {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .step-name { font-size: 0.88rem; color: #0f172a; }
-        .step-duration {
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: #64748b;
-          background: #f1f5f9;
-          padding: 2px 8px;
-          border-radius: 6px;
-        }
-      }
-
-      .step-desc {
-        margin: 2px 0 0;
-        font-size: 0.8rem;
-        color: #64748b;
-        line-height: 1.35;
-      }
-    }
-  }
-}
-
-/* Botão de Ação */
-.sport-btn-primary {
-  --background: #0284c7;
-  --background-activated: #0369a1;
-  --border-radius: 14px;
-  font-weight: 800;
-  height: 50px;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
-}
-
-.congratulations-box {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #ecfdf5;
-  border: 1px solid #6ee7b7;
-  border-radius: 14px;
-  padding: 14px 16px;
-  color: #065f46;
-
-  ion-icon {
-    font-size: 1.8rem;
-    color: #059669;
-    flex-shrink: 0;
-  }
-
-  strong { display: block; font-size: 0.95rem; }
-  p { margin: 2px 0 0; font-size: 0.8rem; color: #047857; }
 }

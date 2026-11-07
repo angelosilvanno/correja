@@ -8,6 +8,8 @@ import {
   informationCircleOutline,
   playOutline,
   sparklesOutline,
+  speedometerOutline,
+  timeOutline,
   trendingUpOutline
 } from 'ionicons/icons';
 
@@ -25,16 +27,19 @@ export class DashboardPage {
   private workoutService = inject(WorkoutService);
   private zoneService = inject(ZoneService);
 
+  athleteName: string = localStorage.getItem('correja_athlete_name') || 'Atleta';
   workout = this.workoutService.todayWorkout;
   progress = this.workoutService.weeklyProgress;
 
   constructor() {
     addIcons({
-      flameOutline,
       checkmarkCircle,
+      flameOutline,
       informationCircleOutline,
       playOutline,
       sparklesOutline,
+      speedometerOutline,
+      timeOutline,
       trendingUpOutline
     });
   }
