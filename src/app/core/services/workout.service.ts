@@ -1,33 +1,47 @@
 import { Injectable, signal } from '@angular/core';
-import { WorkoutSession } from '../models/workout.model';
+
+import type { WorkoutSession } from '../models/workout.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkoutService {
-  // Treino recomendado para a demonstração do MVP
   readonly todayWorkout = signal<WorkoutSession>({
     id: 'w-today',
-    title: 'Construção de Base Aeróbica',
-    subtitle: 'Alternância caminhada e trote leve',
+    title: 'Trote Leve de Base',
+    subtitle: 'Alternando caminhada e trote suave',
     type: 'walk_run',
     primaryZone: 'Z2',
     totalDurationMinutes: 35,
     estimatedDistanceKm: 3.8,
-    whyThisMatters: 'Correr devagar cria novos capilares nos músculos e fortalece tendões. Tentar correr rápido agora aumentaria o risco de lesões sem gerar mais condicionamento.',
-    howItShouldFeel: 'Ritmo confortável onde você não fica ofegante. Se sentir que a respiração acelerou demais, caminhe até estabilizar.',
+    whyThisMatters: 'Correr leve acostuma seu corpo e seus tendões sem cansaço excessivo. O segredo para evoluir na corrida é não forçar no começo.',
+    howItShouldFeel: 'Ritmo bem tranquilo em que você consegue conversar. Se o ar faltar, basta caminhar até estabilizar.',
     warmupMinutes: 5,
     cooldownMinutes: 5,
     completed: false,
     dateScheduled: new Date().toISOString(),
     steps: [
-      { name: 'Aquecimento', durationMinutes: 5, description: 'Caminhada dinâmica para lubrificar articulações.', targetZone: 'Z1' },
-      { name: 'Bloco Principal', durationMinutes: 25, description: 'Repita 5x: [3 min trote leve Z2 + 2 min caminhada Z1].', targetZone: 'Z2' },
-      { name: 'Desaquecimento', durationMinutes: 5, description: 'Caminhada suave para desacelerar o coração.', targetZone: 'Z1' }
+      { 
+        name: 'Aquecimento', 
+        durationMinutes: 5, 
+        description: 'Caminhada leve para acordar o corpo e soltar as pernas.', 
+        targetZone: 'Z1' 
+      },
+      { 
+        name: 'Bloco Principal', 
+        durationMinutes: 25, 
+        description: 'Faça 5 vezes: 3 min de trote leve + 2 min de caminhada para recuperar o fôlego.', 
+        targetZone: 'Z2' 
+      },
+      { 
+        name: 'Desaquecimento', 
+        durationMinutes: 5, 
+        description: 'Caminhada bem calma para relaxar e baixar os batimentos.', 
+        targetZone: 'Z1' 
+      }
     ]
   });
 
-  // Métricas de progresso semanal (Mock do MVP)
   readonly weeklyProgress = signal({
     completedCount: 2,
     plannedCount: 3,

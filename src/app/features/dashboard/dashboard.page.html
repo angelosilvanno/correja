@@ -1,226 +1,151 @@
 <ion-content [fullscreen]="true" class="dashboard-canvas">
-  <div class="dashboard-viewport">
+  <div class="narrow-container">
     
-    <!-- Topo Esportivo com Data e Status -->
-    <header class="dash-header">
-      <div class="header-titles">
-        <span class="brand-pill">
-          <ion-icon name="sparkles-outline"></ion-icon> CORREJA
-        </span>
-        <h1 class="greeting-text">Olá, {{ athleteName }}! 👋</h1>
-        <p class="greeting-sub">Seu treino de hoje está pronto. Respire fundo e confie no processo.</p>
+    <!-- Topo Acolhedor -->
+    <header class="natural-header">
+      <div class="greeting-box">
+        <h1 class="user-greeting">Olá, {{ athleteName }}! 👋</h1>
+        <p class="friendly-sub">Bora pro próximo passo? Seu treino de hoje tá pronto.</p>
       </div>
 
-      <div class="header-plan-badge">
-        <div class="plan-icon-wrapper">🏃</div>
-        <div class="plan-meta-text">
-          <span class="plan-label">PLANO ATIVO</span>
-          <strong class="plan-name">Primeiros 5 km</strong>
-        </div>
+      <div class="active-plan-chip">
+        <span class="chip-status-dot"></span>
+        <span>Plano: <strong>Primeiros 5 km</strong></span>
       </div>
     </header>
 
-    <!-- Layout Grid: 2 Colunas no Desktop | 1 Coluna Fluida no Celular -->
-    <div class="dash-grid-layout">
-
-      <!-- ===================================================================
-           COLUNA PRINCIPAL (ESQUERDA NO DESKTOP): O TREINO DE HOJE
-           =================================================================== -->
-      <section class="main-workout-column">
-        
-        <div class="column-headline">
+    <!-- Card 1: Sua Semana (Hábito e Frequência) -->
+    <section class="habit-section">
+      <div class="clean-card habit-card">
+        <div class="habit-head">
           <div>
-            <span class="tag-phase">Semana 2 • Sessão 3</span>
-            <h2 class="title-today">Treino de Hoje</h2>
+            <span class="micro-eyebrow">SUA SEMANA</span>
+            <h2 class="habit-title">{{ progress().completedCount }} de {{ progress().plannedCount }} treinos feitos</h2>
           </div>
-          <span class="workout-type-pill">Caminhada & Corrida</span>
+          <span class="streak-badge">
+            <ion-icon name="flame-outline"></ion-icon> {{ progress().streakWeeks }} semanas firmes
+          </span>
         </div>
 
-        <div class="hero-workout-card" [class.completed]="workout().completed">
-          
-          <!-- Topo do Card de Treino -->
-          <div class="workout-card-top">
-            <div class="title-group">
-              <h3 class="workout-name">{{ workout().title }}</h3>
-              <p class="workout-subtitle">{{ workout().subtitle }}</p>
-            </div>
-            <div class="zone-badge-large" [style.background-color]="targetZone.colorHex">
-              <span class="z-id">{{ targetZone.id }}</span>
-              <span class="z-label">Base</span>
-            </div>
+        <div class="week-days-strip">
+          <div class="day-slot done">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Feito</span>
           </div>
-
-          <!-- Régua Visual das 5 Zonas -->
-          <div class="spectrum-card-block">
-            <div class="spectrum-top-info">
-              <span class="spectrum-title">Intensidade Recomendada:</span>
-              <strong class="spectrum-focus" [style.color]="targetZone.colorHex">
-                {{ targetZone.id }} • {{ targetZone.shortName }}
-              </strong>
-            </div>
-
-            <!-- Barra Segmentada -->
-            <div class="spectrum-track">
-              <div class="zone-bar-segment z1" [class.active]="workout().primaryZone === 'Z1'">
-                <span>Z1</span>
-              </div>
-              <div class="zone-bar-segment z2" [class.active]="workout().primaryZone === 'Z2'">
-                <span>Z2</span>
-                <div class="active-arrow-indicator">▲</div>
-              </div>
-              <div class="zone-bar-segment z3" [class.active]="workout().primaryZone === 'Z3'">
-                <span>Z3</span>
-              </div>
-              <div class="zone-bar-segment z4" [class.active]="workout().primaryZone === 'Z4'">
-                <span>Z4</span>
-              </div>
-              <div class="zone-bar-segment z5" [class.active]="workout().primaryZone === 'Z5'">
-                <span>Z5</span>
-              </div>
-            </div>
-
-            <div class="spectrum-legend-labels">
-              <span>Recuperação</span>
-              <span class="highlight">Base Aeróbica</span>
-              <span>Moderada</span>
-              <span>Limiar</span>
-              <span>Máxima</span>
-            </div>
+          <div class="day-slot done">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Feito</span>
           </div>
-
-          <!-- Painel HUD de Métricas Esportivas -->
-  
-          <div class="hud-metrics-row">
-            <div class="hud-stat-box">
-              <div class="hud-icon">
-                <ion-icon name="time-outline"></ion-icon>
-              </div>
-              <div class="hud-val-wrap">
-                <span class="hud-label">Duração</span>
-                <strong class="hud-value">{{ workout().totalDurationMinutes }} <small>min</small></strong>
-              </div>
-            </div>
-
-            <div class="hud-stat-box accent-box">
-              <div class="hud-icon">
-                <ion-icon name="speedometer-outline"></ion-icon>
-              </div>
-              <div class="hud-val-wrap">
-                <span class="hud-label">Ritmo</span>
-                <strong class="hud-value text-accent">Confortável</strong>
-              </div>
-            </div>
-
-            <div class="hud-stat-box">
-              <div class="hud-icon">
-                <ion-icon name="flame-outline"></ion-icon>
-              </div>
-              <div class="hud-val-wrap">
-                <span class="hud-label">Esforço</span>
-                <strong class="hud-value">4 a 5 <small>/ 10</small></strong>
-              </div>
-            </div>
+          <div class="day-slot active">
+            <div class="pulse-marker"></div>
+            <span>Hoje</span>
           </div>
+        </div>
 
-          <!-- Timeline Estruturada do Treino (Subiu para o campo de visão!) -->
-          <div class="session-stepper-wrap">
-            <h4 class="stepper-title">ESTRUTURA DA SESSÃO</h4>
-            
-            <div class="stepper-steps">
-              @for (step of workout().steps; track step.name) {
-                <div class="step-card">
-                  <div class="step-badge" [attr.data-zone]="step.targetZone">
-                    {{ step.durationMinutes }}m
-                  </div>
-                  <div class="step-body">
-                    <div class="step-head">
-                      <strong class="step-label">{{ step.name }}</strong>
-                      <span class="step-zone-tag">{{ step.targetZone }}</span>
-                    </div>
-                    <p class="step-instruction">{{ step.description }}</p>
-                  </div>
+        <div class="habit-footer">
+          <span>Meta: <strong>3 vezes na semana</strong></span>
+          <span class="status-ok">Tudo em dia! 🎯</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 2: Treino de Hoje (Foco Principal Estreito) -->
+    <section class="today-workout-section">
+      <div class="section-title-wrap">
+        <span class="micro-eyebrow">TREINO DE HOJE</span>
+        <h2 class="section-headline">{{ workout().title }}</h2>
+        <p class="section-sub">{{ workout().subtitle }}</p>
+      </div>
+
+      <div class="clean-card workout-card" [class.is-done]="workout().completed">
+        
+        <!-- Destaque de Intensidade com Linguagem Humana -->
+        <div class="intensity-callout">
+          <div class="zone-pill-live" [style.background-color]="targetZone.colorHex">
+            {{ targetZone.id }}
+          </div>
+          <div class="intensity-text">
+            <strong class="intensity-name">{{ targetZone.shortName }}</strong>
+            <span class="intensity-hint">Ritmo confortável, sem ficar sem fôlego.</span>
+          </div>
+        </div>
+
+        <!-- Régua das 5 Zonas Discreta e Fina -->
+        <div class="mini-spectrum-bar">
+          <div class="bar-seg z1" [class.active]="workout().primaryZone === 'Z1'">Z1</div>
+          <div class="bar-seg z2" [class.active]="workout().primaryZone === 'Z2'">Z2</div>
+          <div class="bar-seg z3" [class.active]="workout().primaryZone === 'Z3'">Z3</div>
+          <div class="bar-seg z4" [class.active]="workout().primaryZone === 'Z4'">Z4</div>
+          <div class="bar-seg z5" [class.active]="workout().primaryZone === 'Z5'">Z5</div>
+        </div>
+
+        <!-- Telemetria Rápida: 3 Caixinhas sem imprensar -->
+        <div class="quick-stats-grid">
+          <div class="stat-pill-box">
+            <span class="pill-lbl">Tempo</span>
+            <strong class="pill-val">{{ workout().totalDurationMinutes }} <small>min</small></strong>
+          </div>
+          <div class="stat-pill-box">
+            <span class="pill-lbl">Ritmo</span>
+            <strong class="pill-val text-green">Leve</strong>
+          </div>
+          <div class="stat-pill-box">
+            <span class="pill-lbl">Sensação</span>
+            <strong class="pill-val">4 - 5 <small>/10</small></strong>
+          </div>
+        </div>
+
+        <!-- Como vai ser o treino (Timeline simples) -->
+        <div class="steps-flow-wrap">
+          <h3 class="steps-heading">Como vai ser o treino:</h3>
+
+          <div class="steps-flow-list">
+            @for (step of workout().steps; track step.name) {
+              <div class="flow-step-item">
+                <div class="step-time-bubble" [attr.data-zone]="step.targetZone">
+                  {{ step.durationMinutes }}m
                 </div>
-              }
-            </div>
-          </div>
-
-          <!-- Botão de Ação Imediato -->
-          <div class="workout-action-wrap">
-            @if (!workout().completed) {
-              <ion-button expand="block" (click)="onCompleteWorkout()" class="btn-complete-workout">
-                <ion-icon slot="start" name="checkmark-circle"></ion-icon>
-                <span>Marcar Sessão como Concluída</span>
-              </ion-button>
-            } @else {
-              <div class="done-banner-box">
-                <ion-icon name="checkmark-circle"></ion-icon>
-                <div class="done-text">
-                  <strong>Sessão Concluída com Sucesso!</strong>
-                  <p>Excelente disciplina. Seu corpo assimila os ganhos aeróbicos no descanso.</p>
+                <div class="step-info">
+                  <strong class="step-title">{{ step.name }}</strong>
+                  <p class="step-desc">{{ step.description }}</p>
                 </div>
               </div>
             }
           </div>
-
         </div>
-      </section>
 
-      <!-- ===================================================================
-           COLUNA LATERAL (DIREITA NO DESKTOP): DISCIPLINA & PRÓXIMO PASSO
-           =================================================================== -->
-      <aside class="side-metrics-column">
-        
-        <!-- Card: Consistência Semanal -->
-        <div class="side-card consistency-hero-card">
-          <div class="card-kicker-row">
-            <span class="micro-kicker">DISCIPLINA SEMANAL</span>
-            <span class="streak-tag">
-              <ion-icon name="flame-outline"></ion-icon> {{ progress().streakWeeks }} semanas
-            </span>
-          </div>
-
-          <h3 class="consistency-headline">
-            {{ progress().completedCount }} de {{ progress().plannedCount }} treinos realizados
-          </h3>
-
-          <!-- Blocos de Dias da Semana -->
-          <div class="week-pills-row">
-            <div class="day-slot-card completed">
+        <!-- Botão de Concluir Sessão -->
+        <div class="workout-action-wrap">
+          @if (!workout().completed) {
+            <ion-button expand="block" (click)="onCompleteWorkout()" class="btn-primary-finish">
+              <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+              <span>Concluir treino de hoje</span>
+            </ion-button>
+          } @else {
+            <div class="congrats-banner">
               <ion-icon name="checkmark-circle"></ion-icon>
-              <span>Treino 1</span>
+              <div>
+                <strong>Treino concluído! Parabéns! 🎉</strong>
+                <p>Excelente constância. Descanse que seu corpo tá evoluindo.</p>
+              </div>
             </div>
-            <div class="day-slot-card completed">
-              <ion-icon name="checkmark-circle"></ion-icon>
-              <span>Treino 2</span>
-            </div>
-            <div class="day-slot-card current">
-              <div class="pulse-marker"></div>
-              <span>Hoje</span>
-            </div>
-          </div>
-
-          <div class="metrics-footer-duo">
-            <div class="duo-item">
-              <span class="duo-label">Meta da Semana</span>
-              <strong class="duo-val">3 sessões</strong>
-            </div>
-            <div class="duo-item align-right">
-              <span class="duo-label">Status</span>
-              <strong class="duo-val text-success">No Ritmo</strong>
-            </div>
-          </div>
+          }
         </div>
 
-        <!-- Card: Próxima Sessão (Conectado diretamente com a consistência!) -->
-        <div class="side-card next-workout-card">
-          <span class="micro-kicker">PRÓXIMO PASSO</span>
-          <h4 class="next-title">Sábado • Longão de Base</h4>
-          <p class="next-desc">40 minutos contínuos na Zona 2 para consolidar sua resistência aeróbica.</p>
+      </div>
+    </section>
+
+    <!-- Card 3: Próximo Passo -->
+    <section class="next-step-section">
+      <div class="next-step-card">
+        <div class="next-icon">📅</div>
+        <div class="next-text">
+          <span class="next-kicker">PRÓXIMO TREINO</span>
+          <strong class="next-title">Sábado • Trote de Base (40 min)</strong>
+          <p class="next-sub">Sessão suave para continuar acostumando o corpo.</p>
         </div>
-
-      </aside>
-
-    </div>
+      </div>
+    </section>
 
   </div>
 </ion-content>
