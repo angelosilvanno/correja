@@ -1,167 +1,163 @@
 <ion-content [fullscreen]="true" class="auth-canvas">
-  <div class="auth-container">
+  <div class="auth-wrapper">
     
-    <!-- Topo: Nova Logo Oficial CorreJa -->
-    <header class="hero-header">
-      <div class="logo-hero-wrapper">
-        <img src="assets/logo.png" alt="CorreJa Logo" class="auth-logo-hero" />
+    <!-- Topo Limpo: Logo & Identidade -->
+   <header class="auth-header">
+      <div class="logo-wrap">
+        <img src="assets/logo.png" alt="CorreJa" class="brand-logo" />
       </div>
 
-      <span class="kicker-tag">TREINE • EVOLUA • CORRA MAIS</span>
-      <h1 class="hero-headline">Seu próximo passo começa agora.</h1>
-      
-      <p class="hero-description">
+      <span class="eyebrow-tag">TREINE • EVOLUA • CORRA MAIS</span>
+      <p class="subtitle">
         Mais que quilômetros. Aprenda a sentir seu ritmo, evoluir com segurança e correr melhor.
       </p>
     </header>
 
-    <!-- Alternador: Login vs Cadastro -->
-    <div class="auth-switch">
-      <button 
-        type="button" 
-        class="switch-btn" 
-        [class.active]="isLoginMode"
-        (click)="toggleMode('login')">
-        Entrar
-      </button>
-      <button 
-        type="button" 
-        class="switch-btn" 
-        [class.active]="!isLoginMode"
-        (click)="toggleMode('register')">
-        Criar Conta
-      </button>
-    </div>
+    <!-- Card de Acesso -->
+    <main class="access-card">
+      
+      <!-- Seletor Integrado: Entrar / Criar Conta -->
+      <div class="tab-toggle">
+        <button 
+          type="button" 
+          class="tab-btn" 
+          [class.active]="isLoginMode" 
+          (click)="toggleMode('login')">
+          Entrar
+        </button>
+        <button 
+          type="button" 
+          class="tab-btn" 
+          [class.active]="!isLoginMode" 
+          (click)="toggleMode('register')">
+          Criar Conta
+        </button>
+      </div>
 
-    <!-- Formulário 1: Login -->
-    @if (isLoginMode) {
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
-        <div class="input-field">
-          <label for="login-email">E-mail</label>
-          <div class="field-control">
-            <ion-icon name="mail-outline"></ion-icon>
-            <input 
-              id="login-email" 
-              type="email" 
-              formControlName="email" 
-              placeholder="seu@email.com" 
-              autocomplete="email" />
+      <!-- Formulário: Entrar -->
+      @if (isLoginMode) {
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="form-content">
+          <div class="field-group">
+            <label for="email-in">E-mail</label>
+            <div class="input-box">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input 
+                id="email-in"
+                type="email" 
+                formControlName="email" 
+                placeholder="seu@email.com" 
+                autocomplete="email" />
+            </div>
+            @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+              <span class="input-error">Informe um e-mail válido</span>
+            }
           </div>
-          @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
-            <span class="error-msg">Informe um e-mail válido.</span>
-          }
-        </div>
 
-        <div class="input-field">
-          <label for="login-pass">Senha</label>
-          <div class="field-control">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <input 
-              id="login-pass" 
-              [type]="showPassword ? 'text' : 'password'" 
-              formControlName="password" 
-              placeholder="Mínimo 6 caracteres" />
-            <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
-              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-            </button>
+          <div class="field-group">
+            <label for="pass-in">Senha</label>
+            <div class="input-box">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <input 
+                id="pass-in"
+                [type]="showPassword ? 'text' : 'password'" 
+                formControlName="password" 
+                placeholder="Mínimo 6 caracteres" />
+              <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
+                <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+              </button>
+            </div>
+            @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+              <span class="input-error">A senha precisa ter no mínimo 6 caracteres</span>
+            }
           </div>
-          @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-            <span class="error-msg">A senha precisa ter no mínimo 6 caracteres.</span>
-          }
-        </div>
 
-        <div class="forgot-row">
-          <a class="forgot-link">Esqueceu sua senha?</a>
-        </div>
-
-        <ion-button expand="block" type="submit" class="submit-btn">
-          Acessar Meus Treinos
-        </ion-button>
-      </form>
-    }
-
-    <!-- Formulário 2: Cadastro -->
-    @if (!isLoginMode) {
-      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
-        <div class="input-field">
-          <label for="reg-name">Como prefere ser chamado(a)?</label>
-          <div class="field-control">
-            <ion-icon name="person-outline"></ion-icon>
-            <input 
-              id="reg-name" 
-              type="text" 
-              formControlName="name" 
-              placeholder="Ex: Ana Silva" 
-              autocomplete="name" />
+          <div class="recovery-row">
+            <a class="recovery-link">Esqueceu sua senha?</a>
           </div>
-          @if (registerForm.get('name')?.touched && registerForm.get('name')?.invalid) {
-            <span class="error-msg">Por favor, informe seu nome.</span>
-          }
-        </div>
 
-        <div class="input-field">
-          <label for="reg-email">E-mail</label>
-          <div class="field-control">
-            <ion-icon name="mail-outline"></ion-icon>
-            <input 
-              id="reg-email" 
-              type="email" 
-              formControlName="email" 
-              placeholder="seu@email.com" 
-              autocomplete="email" />
+          <ion-button expand="block" type="submit" class="btn-primary-action">
+            <span>Acessar meus treinos</span>
+            <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+          </ion-button>
+        </form>
+      }
+
+      <!-- Formulário: Criar Conta -->
+      @if (!isLoginMode) {
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="form-content">
+          <div class="field-group">
+            <label for="reg-name">Como prefere ser chamado(a)?</label>
+            <div class="input-box">
+              <ion-icon name="person-outline"></ion-icon>
+              <input 
+                id="reg-name"
+                type="text" 
+                formControlName="name" 
+                placeholder="Ex: Ana Silva" 
+                autocomplete="name" />
+            </div>
+            @if (registerForm.get('name')?.touched && registerForm.get('name')?.invalid) {
+              <span class="input-error">Por favor, informe seu nome</span>
+            }
           </div>
-          @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
-            <span class="error-msg">Informe um e-mail válido.</span>
-          }
-        </div>
 
-        <div class="input-field">
-          <label for="reg-pass">Crie uma Senha</label>
-          <div class="field-control">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <input 
-              id="reg-pass" 
-              [type]="showPassword ? 'text' : 'password'" 
-              formControlName="password" 
-              placeholder="Mínimo 6 caracteres" />
-            <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
-              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-            </button>
+          <div class="field-group">
+            <label for="reg-email">E-mail</label>
+            <div class="input-box">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input 
+                id="reg-email"
+                type="email" 
+                formControlName="email" 
+                placeholder="seu@email.com" 
+                autocomplete="email" />
+            </div>
+            @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+              <span class="input-error">Informe um e-mail válido</span>
+            }
           </div>
-          @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
-            <span class="error-msg">A senha precisa ter no mínimo 6 caracteres.</span>
-          }
-        </div>
 
-        <div class="input-field">
-          <label for="reg-exp">Seu nível atual de corrida</label>
-          <div class="select-control">
-            <select id="reg-exp" formControlName="experienceLevel">
-              <option value="sedentary">Começando do zero absoluto (Sedentário)</option>
-              <option value="beginner">Iniciante (Alterno caminhada e corrida)</option>
-              <option value="intermediate">Intermediário (Já corro 5 km ou mais)</option>
-              <option value="advanced">Avançado (Focado em ritmo e provas)</option>
-            </select>
+          <div class="field-group">
+            <label for="reg-pass">Crie uma Senha</label>
+            <div class="input-box">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <input 
+                id="reg-pass"
+                [type]="showPassword ? 'text' : 'password'" 
+                formControlName="password" 
+                placeholder="Mínimo 6 caracteres" />
+              <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
+                <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+              </button>
+            </div>
+            @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+              <span class="input-error">A senha precisa ter no mínimo 6 caracteres</span>
+            }
           </div>
-        </div>
 
-        <ion-button expand="block" type="submit" class="submit-btn">
-          Criar Minha Conta Grátis
-        </ion-button>
-      </form>
-    }
+          <ion-button expand="block" type="submit" class="btn-primary-action">
+            <span>Criar minha conta</span>
+            <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+          </ion-button>
+        </form>
+      }
 
-    <!-- Divisor e Modo Demonstração -->
-    <div class="guest-section">
-      <div class="or-divider">
+      <div class="divider-line">
         <span>ou</span>
       </div>
 
-      <button type="button" class="guest-btn" (click)="exploreAsGuest()">
+      <!-- Botão Secundário Contornado -->
+      <button type="button" class="btn-guest-action" (click)="exploreAsGuest()">
         <span>Explorar demonstração sem cadastro</span>
         <ion-icon name="arrow-forward-outline"></ion-icon>
       </button>
-    </div>
+
+    </main>
+
+    <!-- Rodapé Legal Discreto -->
+    <footer class="terms-footer">
+      <p>Ao continuar, você concorda com nossos Termos e Política de Privacidade.</p>
+    </footer>
 
   </div>
 </ion-content>
