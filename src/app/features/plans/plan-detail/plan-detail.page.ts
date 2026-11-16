@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonContent, IonIcon } from '@ionic/angular';
+import { IonContent, IonIcon, IonButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline,
@@ -27,17 +27,16 @@ interface DaySession {
 @Component({
   selector: 'app-plan-detail',
   standalone: true,
-  imports: [CommonModule, IonContent, IonIcon],
+  imports: [IonButton, CommonModule, IonContent, IonIcon],
   templateUrl: './plan-detail.page.html',
   styleUrls: ['./plan-detail.page.scss']
 })
 export class PlanDetailPage {
   private router = inject(Router);
 
-  selectedWeek = 2; // Semana atual
+  selectedWeek = 2;
   weeks = [1, 2, 3, 4, 5, 6];
 
-  // Dados das sessões da semana atual do plano Primeiros 5 km
   currentWeekSessions: DaySession[] = [
     {
       dayName: 'Terça-feira',
@@ -124,5 +123,9 @@ export class PlanDetailPage {
 
   goBack(): void {
     this.router.navigate(['/tabs/plans']);
+  }
+
+  completeSession(session: DaySession): void {
+    session.status = 'completed';
   }
 }

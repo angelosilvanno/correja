@@ -1,7 +1,6 @@
 <ion-content [fullscreen]="true" class="schedule-canvas">
   <div class="app-viewport-container">
     
-    <!-- Topo com Botão Voltar -->
     <header class="schedule-topbar">
       <button type="button" class="back-circle-btn" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -12,7 +11,6 @@
       </div>
     </header>
 
-    <!-- Card Resumo do Progresso do Plano -->
     <section class="progress-hero-card">
       <div class="hero-top">
         <div>
@@ -24,7 +22,6 @@
         </div>
       </div>
 
-      <!-- Barra de Progresso Suave -->
       <div class="progress-track">
         <div class="progress-fill" style="width: 22%"></div>
       </div>
@@ -35,7 +32,6 @@
       </div>
     </section>
 
-    <!-- Seletor Horizontal de Semanas -->
     <section class="weeks-carousel-section">
       <h3 class="section-subheading">Escolha a Semana:</h3>
       <div class="weeks-scroll">
@@ -55,7 +51,6 @@
       </div>
     </section>
 
-    <!-- Sessões dos Dias da Semana -->
     <section class="schedule-days-list">
       <h3 class="section-subheading">Rotina da Semana {{ selectedWeek }}:</h3>
 
@@ -74,7 +69,6 @@
               }
             </div>
 
-            <!-- Status do Dia -->
             @if (session.status === 'completed') {
               <div class="status-indicator done">
                 <ion-icon name="checkmark-circle"></ion-icon>
@@ -91,7 +85,6 @@
           <h4 class="session-title">{{ session.title }}</h4>
 
           @if (session.dayType === 'workout') {
-            <!-- Métricas da Sessão -->
             <div class="session-metrics-row">
               <div class="metric-chip">
                 <ion-icon name="time-outline"></ion-icon>
@@ -102,16 +95,31 @@
               </div>
             </div>
 
-            <!-- Estrutura do Treino -->
             <div class="session-structure-box">
               <span class="box-lbl">Passo a passo:</span>
               <p>{{ session.structure }}</p>
             </div>
 
-            <!-- Propósito Fisiológico -->
             <div class="session-purpose-box">
               <ion-icon name="information-circle-outline"></ion-icon>
               <span>{{ session.purpose }}</span>
+            </div>
+
+            <div class="workout-action-wrap" style="margin-top: 16px;">
+              @if (session.status !== 'completed') {
+                <ion-button expand="block" class="btn-primary-finish" (click)="completeSession(session)">
+                  <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+                  <span>REGISTRAR TREINO</span>
+                </ion-button>
+              } @else {
+                <div class="congrats-banner" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(var(--ion-color-success-rgb), 0.1); border-radius: 12px;">
+                  <ion-icon name="checkmark-circle" style="font-size: 24px; color: var(--ion-color-success);"></ion-icon>
+                  <div>
+                    <strong style="display: block; font-size: 14px;">Treino concluído! 🎉</strong>
+                    <p style="margin: 0; font-size: 12px; opacity: 0.8;">Excelente constância. Continue firme.</p>
+                  </div>
+                </div>
+              }
             </div>
           } @else {
             <p class="rest-desc">{{ session.purpose }}</p>
