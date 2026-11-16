@@ -1,6 +1,3 @@
-/* ==========================================================================
-   CANVAS & VIEWPORT RESPONSIVO
-   ========================================================================== */
 .profile-canvas {
   --background: #f8fafc;
   &::part(scroll) {
@@ -24,9 +21,7 @@
   }
 }
 
-/* ==========================================================================
-   CABEÇALHO
-   ========================================================================== */
+/* Cabeçalho */
 .profile-header {
   display: flex;
   justify-content: space-between;
@@ -56,34 +51,23 @@
     }
   }
 
-  .logout-pill-btn {
+  .streak-badge-top {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: #ecfdf5;
+    color: #059669;
+    padding: 8px 14px;
     border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 0.84rem;
-    font-weight: 700;
-    color: #64748b;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-    transition: all 0.2s ease;
+    font-size: 0.8rem;
+    font-weight: 800;
+    border: 1px solid #a7f3d0;
 
     ion-icon { font-size: 1.1rem; }
-
-    &:hover {
-      background: #fef2f2;
-      border-color: #fecaca;
-      color: #ef4444;
-    }
   }
 }
 
-/* ==========================================================================
-   GRID ADAPTATIVO (2 COLUNAS NO DESKTOP / 1 NO CELULAR)
-   ========================================================================== */
+/* Grid Responsivo (2 Colunas no Desktop / 1 no Celular) */
 .profile-grid-layout {
   display: flex;
   flex-direction: column;
@@ -91,15 +75,13 @@
 
   @media (min-width: 1024px) {
     display: grid;
-    grid-template-columns: 1.1fr 1.35fr;
+    grid-template-columns: 1fr 1.3fr;
     gap: 32px;
     align-items: flex-start;
   }
 }
 
-/* ==========================================================================
-   COLUNA ESQUERDA: CARD DE IDENTIDADE DO ATLETA
-   ========================================================================== */
+/* Card Principal de Identidade */
 .athlete-identity-card {
   background: #ffffff;
   border-radius: 24px;
@@ -111,9 +93,9 @@
 
   .avatar-ring-wrapper {
     position: relative;
-    width: 84px;
-    height: 84px;
-    margin: 0 auto 12px;
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 14px;
 
     .athlete-avatar {
       width: 100%;
@@ -123,17 +105,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.3rem;
+      font-size: 2.4rem;
       border: 3px solid #ffffff;
       box-shadow: 0 8px 20px rgba(2, 132, 199, 0.18);
     }
 
-    .status-badge {
+    .avatar-edit-btn {
       position: absolute;
       bottom: 0;
       right: 0;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       background: #0284c7;
       border: 2px solid #ffffff;
@@ -141,16 +123,40 @@
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #0369a1;
+        transform: scale(1.08);
+      }
     }
   }
 
-  .athlete-name {
-    margin: 0;
-    font-size: 1.45rem;
-    font-weight: 900;
-    color: #0f172a;
-    letter-spacing: -0.02em;
+  .name-edit-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    .athlete-name {
+      margin: 0;
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .btn-text-edit {
+      background: none;
+      border: none;
+      color: #0284c7;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
 
   .athlete-role {
@@ -172,7 +178,14 @@
     border-radius: 20px;
     font-size: 0.78rem;
     font-weight: 600;
+    font-family: inherit;
     margin-top: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #dcfce7;
+    }
 
     .pulse-dot {
       width: 7px;
@@ -181,6 +194,8 @@
       border-radius: 50%;
       box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
     }
+
+    ion-icon { font-size: 0.9rem; color: #16a34a; }
   }
 
   .athlete-telemetry-grid {
@@ -199,11 +214,8 @@
         font-size: 1.4rem;
         font-weight: 900;
         color: #0f172a;
-        letter-spacing: -0.02em;
 
-        &.zone-highlight {
-          color: #10b981;
-        }
+        &.zone-highlight { color: #10b981; }
       }
 
       .cell-lbl {
@@ -232,6 +244,7 @@
   border: 1px solid #edf2f7;
   padding: 18px 20px;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+  margin-bottom: 20px;
 
   .goal-card-top {
     display: flex;
@@ -291,9 +304,32 @@
   }
 }
 
-/* ==========================================================================
-   COLUNA DIREITA: MENUS DE CONFIGURAÇÃO E JORNADA
-   ========================================================================== */
+/* Card Filosofia / Dica */
+.philosophy-quote-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  padding: 16px 18px;
+
+  .quote-tag {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #0284c7;
+    margin-bottom: 6px;
+  }
+
+  .quote-text {
+    margin: 0;
+    font-size: 0.82rem;
+    color: #475569;
+    font-style: italic;
+    line-height: 1.45;
+  }
+}
+
+/* Configurações & Menus */
 .settings-block {
   margin-bottom: 22px;
 
@@ -318,17 +354,17 @@
     display: flex;
     align-items: center;
     padding: 16px 20px;
+    border: none;
     border-bottom: 1px solid #f1f5f9;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
-    &:last-child {
-      border-bottom: none;
-    }
-
-    &:hover {
-      background-color: #f8fafc;
-    }
+    &:last-child { border-bottom: none; }
+    &:hover { background-color: #f8fafc; }
 
     .row-icon-box {
       width: 42px;
@@ -384,7 +420,7 @@
   }
 }
 
-/* Rodapé do Perfil */
+/* Rodapé com Botão Único de Logout */
 .desktop-profile-footer {
   text-align: center;
   padding: 8px 0 24px;
@@ -393,27 +429,29 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: transparent;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 10px 22px;
-    font-size: 0.88rem;
-    font-weight: 700;
+    background: #ffffff;
+    border: 1.5px solid #fecaca;
+    border-radius: 14px;
+    padding: 12px 28px;
+    font-size: 0.9rem;
+    font-weight: 800;
     color: #ef4444;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.08);
     transition: all 0.2s ease;
 
-    ion-icon { font-size: 1.15rem; }
+    ion-icon { font-size: 1.2rem; }
 
     &:hover {
       background: #fef2f2;
-      border-color: #fecaca;
+      border-color: #ef4444;
+      transform: translateY(-1px);
     }
   }
 
   .version-label {
     display: block;
-    margin-top: 12px;
+    margin-top: 14px;
     font-size: 0.72rem;
     font-weight: 600;
     color: #cbd5e1;

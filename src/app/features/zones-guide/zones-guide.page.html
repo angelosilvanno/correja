@@ -1,47 +1,59 @@
 <ion-content [fullscreen]="true" class="zones-canvas">
   <div class="zones-viewport">
     
-    <!-- Cabeçalho Principal -->
+    <!-- Cabeçalho -->
     <header class="zones-header">
       <div class="header-badge">
         <ion-icon name="sparkles-outline"></ion-icon>
-        <span>METODOLOGIA DE INTENSIDADE</span>
+        <span>METODOLOGIA DE INTENSIDADE & EXERCÍCIOS</span>
       </div>
-      <h1 class="header-title">Zonas de Treino</h1>
+      <h1 class="header-title">Zonas de Treino na Prática</h1>
       <p class="header-subtitle">
-        Aprenda a dosar o esforço do seu corpo sem depender de relógios caros. Use a percepção do fôlego e o teste da fala para treinar na intensidade certa.
+        Cada zona tem um propósito no seu corpo. Veja como executar cada uma delas, com exercícios estruturados do nível iniciante ao avançado.
       </p>
     </header>
 
-    <!-- Banner Didático: A Regra 80/20 do Treinamento -->
-    <section class="methodology-banner-card">
-      <div class="banner-text-col">
-        <span class="micro-tag">REGRA DE OURO DA CORRIDA</span>
-        <h2 class="banner-heading">80% do seu tempo deve ser Leve (Z1 e Z2)</h2>
-        <p class="banner-desc">
-          Corredores iniciantes que tentam correr rápido em todo treino acabam se machucando ou estagnando. A evolução aeróbica de verdade acontece quando você aprende a correr devagar.
-        </p>
-      </div>
-      <div class="banner-visual-col">
-        <div class="ratio-bar-wrap">
-          <div class="bar-part light-part">
-            <strong>80%</strong>
-            <span>Z1 e Z2 (Base)</span>
-          </div>
-          <div class="bar-part hard-part">
-            <strong>20%</strong>
-            <span>Z3 a Z5</span>
-          </div>
-        </div>
+    <!-- Barra de Filtro Interativo por Nível -->
+    <section class="level-filter-bar">
+      <span class="filter-label">Filtrar por nível:</span>
+      <div class="filter-buttons">
+        <button 
+          type="button" 
+          class="filter-chip" 
+          [class.active]="selectedLevel() === 'all'" 
+          (click)="setLevel('all')">
+          Todos os Níveis
+        </button>
+        <button 
+          type="button" 
+          class="filter-chip" 
+          [class.active]="selectedLevel() === 'iniciante'" 
+          (click)="setLevel('iniciante')">
+          🌱 Iniciante
+        </button>
+        <button 
+          type="button" 
+          class="filter-chip" 
+          [class.active]="selectedLevel() === 'intermediario'" 
+          (click)="setLevel('intermediario')">
+          ⚡ Intermediário
+        </button>
+        <button 
+          type="button" 
+          class="filter-chip" 
+          [class.active]="selectedLevel() === 'avancado'" 
+          (click)="setLevel('avancado')">
+          🔥 Avançado
+        </button>
       </div>
     </section>
 
-    <!-- Grade Responsiva dos Cards das 5 Zonas -->
+    <!-- Grade Responsiva com os Cards e os Exercícios por Nível -->
     <section class="zones-grid">
       @for (zone of zones; track zone.id) {
         <div class="zone-detailed-card" [class.highlighted-z2]="zone.id === 'Z2'">
           
-          <!-- Topo do Card com Cor e Esforço -->
+          <!-- Cabeçalho da Zona -->
           <div class="card-top-row">
             <div class="zone-badge-pill" [style.background-color]="zone.colorHex" [style.color]="zone.textColorHex">
               {{ zone.id }}
@@ -60,12 +72,11 @@
             </div>
           </div>
 
-          <!-- Frase de Impacto da Zona -->
           <div class="tagline-box">
             "{{ zone.tagline }}"
           </div>
 
-          <!-- Bloco do Teste da Fala (Diferencial Prático) -->
+          <!-- Teste da Fala -->
           <div class="insight-block talk-test-block">
             <div class="block-label">
               <ion-icon name="chatbubbles-outline"></ion-icon>
@@ -74,27 +85,34 @@
             <p class="block-text">{{ zone.talkTest }}</p>
           </div>
 
-          <!-- Bloco Fisiológico: Para que serve -->
-          <div class="insight-block purpose-block">
-            <div class="block-label">
-              <ion-icon name="checkmark-done-outline"></ion-icon>
-              <span>ADAPTAÇÃO NO SEU CORPO</span>
+          <!-- SEÇÃO PRÁTICA: EXERCÍCIOS DO INICIANTE AO AVANÇADO -->
+          <div class="workouts-prescription-block">
+            <div class="prescription-header">
+              <ion-icon name="fitness-outline"></ion-icon>
+              <span>EXERCÍCIOS PRÁTICOS:</span>
             </div>
-            <p class="block-text">{{ zone.purpose }}</p>
+
+            <div class="workout-items-list">
+              @for (workout of getFilteredWorkouts(zone.workoutExamples); track workout.workoutTitle) {
+                <div class="workout-level-card" [attr.data-level]="workout.level">
+                  <div class="workout-card-head">
+                    <span class="level-badge" [attr.data-level]="workout.level">
+                      {{ workout.levelLabel }}
+                    </span>
+                    <span class="duration-badge">
+                      <ion-icon name="time-outline"></ion-icon> {{ workout.duration }}
+                    </span>
+                  </div>
+                  <strong class="workout-exercise-title">{{ workout.workoutTitle }}</strong>
+                  <p class="workout-exercise-desc">{{ workout.instructions }}</p>
+                </div>
+              }
+            </div>
           </div>
 
         </div>
       }
     </section>
-
-    <!-- Dica de Rodapé do Treinador -->
-    <footer class="zones-footer-tip">
-      <div class="tip-icon-box">💡</div>
-      <div class="tip-text-box">
-        <strong>Não tem medidor de frequência cardíaca? Não se preocupe!</strong>
-        <p>O teste da fala e a percepção de esforço de 1 a 10 têm respaldo científico e são os métodos mais naturais para aprender a ouvir os sinais do seu próprio corpo.</p>
-      </div>
-    </footer>
 
   </div>
 </ion-content>

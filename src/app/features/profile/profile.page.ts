@@ -6,7 +6,9 @@ import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   arrowForwardOutline,
+  calendarOutline,
   chevronForwardOutline,
+  createOutline,
   flameOutline,
   logOutOutline,
   notificationsOutline,
@@ -33,7 +35,9 @@ export class ProfilePage {
   constructor() {
     addIcons({
       arrowForwardOutline,
+      calendarOutline,
       chevronForwardOutline,
+      createOutline,
       flameOutline,
       logOutOutline,
       notificationsOutline,
@@ -52,14 +56,30 @@ export class ProfilePage {
     }
 
     const name = this.registerForm.value.name;
-
     localStorage.setItem('correja_athlete_name', name);
     this.athleteName = name;
-
     this.router.navigate(['/tabs/dashboard']);
   }
 
+  editName(): void {
+    const newName = prompt('Como prefere ser chamado(a)?', this.athleteName);
+    if (newName && newName.trim() !== '') {
+      this.athleteName = newName.trim();
+      localStorage.setItem('correja_athlete_name', this.athleteName);
+    }
+  }
+
+  goToZones(): void {
+    this.router.navigate(['/tabs/zones']);
+  }
+
+  goToPlans(): void {
+    this.router.navigate(['/tabs/plans']);
+  }
+
   logout(): void {
-    this.router.navigate(['/auth']);
+    if (confirm('Deseja realmente sair da sua conta?')) {
+      this.router.navigate(['/auth']);
+    }
   }
 }

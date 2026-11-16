@@ -1,6 +1,7 @@
 <ion-content [fullscreen]="true" class="dashboard-canvas">
   <div class="dashboard-viewport">
     
+    <!-- Topo Esportivo com Data e Status -->
     <header class="dash-header">
       <div class="header-titles">
         <span class="brand-pill">
@@ -19,8 +20,12 @@
       </div>
     </header>
 
+    <!-- Layout Grid: 2 Colunas no Desktop | 1 Coluna Fluida no Celular -->
     <div class="dash-grid-layout">
 
+      <!-- ===================================================================
+           COLUNA PRINCIPAL (ESQUERDA NO DESKTOP): O TREINO DE HOJE
+           =================================================================== -->
       <section class="main-workout-column">
         
         <div class="column-headline">
@@ -33,6 +38,7 @@
 
         <div class="hero-workout-card" [class.completed]="workout().completed">
           
+          <!-- Topo do Card de Treino -->
           <div class="workout-card-top">
             <div class="title-group">
               <h3 class="workout-name">{{ workout().title }}</h3>
@@ -44,6 +50,7 @@
             </div>
           </div>
 
+          <!-- Régua Visual das 5 Zonas -->
           <div class="spectrum-card-block">
             <div class="spectrum-top-info">
               <span class="spectrum-title">Intensidade Recomendada:</span>
@@ -52,6 +59,7 @@
               </strong>
             </div>
 
+            <!-- Barra Segmentada -->
             <div class="spectrum-track">
               <div class="zone-bar-segment z1" [class.active]="workout().primaryZone === 'Z1'">
                 <span>Z1</span>
@@ -80,6 +88,8 @@
             </div>
           </div>
 
+          <!-- Painel HUD de Métricas Esportivas -->
+  
           <div class="hud-metrics-row">
             <div class="hud-stat-box">
               <div class="hud-icon">
@@ -96,7 +106,7 @@
                 <ion-icon name="speedometer-outline"></ion-icon>
               </div>
               <div class="hud-val-wrap">
-                <span class="hud-label">Ritmo Alvo</span>
+                <span class="hud-label">Ritmo</span>
                 <strong class="hud-value text-accent">Confortável</strong>
               </div>
             </div>
@@ -106,30 +116,13 @@
                 <ion-icon name="flame-outline"></ion-icon>
               </div>
               <div class="hud-val-wrap">
-                <span class="hud-label">Esforço Real</span>
-                <strong class="hud-value">{{ targetZone.perceivedEffort }}</strong>
+                <span class="hud-label">Esforço</span>
+                <strong class="hud-value">4 a 5 <small>/ 10</small></strong>
               </div>
             </div>
           </div>
 
-          <div class="coaching-grid">
-            <div class="coach-bubble talk-test-bubble">
-              <div class="bubble-header">
-                <ion-icon name="sparkles-outline"></ion-icon>
-                <span>TESTE DA FALA (SEM RELÓGIO)</span>
-              </div>
-              <p class="bubble-content">"{{ targetZone.talkTest }}"</p>
-            </div>
-
-            <div class="coach-bubble purpose-bubble">
-              <div class="bubble-header">
-                <ion-icon name="information-circle-outline"></ion-icon>
-                <span>OBJETIVO DESTA SESSÃO</span>
-              </div>
-              <p class="bubble-content">{{ workout().whyThisMatters }}</p>
-            </div>
-          </div>
-
+          <!-- Timeline Estruturada do Treino (Subiu para o campo de visão!) -->
           <div class="session-stepper-wrap">
             <h4 class="stepper-title">ESTRUTURA DA SESSÃO</h4>
             
@@ -151,6 +144,7 @@
             </div>
           </div>
 
+          <!-- Botão de Ação Imediato -->
           <div class="workout-action-wrap">
             @if (!workout().completed) {
               <ion-button expand="block" (click)="onCompleteWorkout()" class="btn-complete-workout">
@@ -171,8 +165,12 @@
         </div>
       </section>
 
+      <!-- ===================================================================
+           COLUNA LATERAL (DIREITA NO DESKTOP): DISCIPLINA & PRÓXIMO PASSO
+           =================================================================== -->
       <aside class="side-metrics-column">
         
+        <!-- Card: Consistência Semanal -->
         <div class="side-card consistency-hero-card">
           <div class="card-kicker-row">
             <span class="micro-kicker">DISCIPLINA SEMANAL</span>
@@ -185,6 +183,7 @@
             {{ progress().completedCount }} de {{ progress().plannedCount }} treinos realizados
           </h3>
 
+          <!-- Blocos de Dias da Semana -->
           <div class="week-pills-row">
             <div class="day-slot-card completed">
               <ion-icon name="checkmark-circle"></ion-icon>
@@ -212,20 +211,7 @@
           </div>
         </div>
 
-        <div class="side-card coaching-tip-box">
-          <div class="tip-top-badge">
-            <span class="bulb-icon">💡</span>
-            <span class="tip-tag">METODOLOGIA CORREJA</span>
-          </div>
-          <h4 class="tip-headline">Por que correr devagar na Zona 2?</h4>
-          <p class="tip-paragraph">
-            Atletas de elite correm 80% do tempo na <strong>Zona 2</strong>. Esse trote conversacional constrói novos capilares nos músculos, ensina o corpo a queimar gordura e fortalece tendões sem o risco de lesões.
-          </p>
-          <div class="tip-quote-footer">
-            "Correr devagar é o segredo para conseguir correr rápido no futuro."
-          </div>
-        </div>
-
+        <!-- Card: Próxima Sessão (Conectado diretamente com a consistência!) -->
         <div class="side-card next-workout-card">
           <span class="micro-kicker">PRÓXIMO PASSO</span>
           <h4 class="next-title">Sábado • Longão de Base</h4>
