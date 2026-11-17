@@ -12,8 +12,7 @@ import { IonButton, IonContent, IonIcon } from '@ionic/angular';
   imports: [CommonModule, RouterModule, IonContent, IonIcon, IonButton]
 })
 export class DashboardPage implements OnInit {
-  athleteName = 'Lucas';
-  currentDateFormatted = '';
+  athleteName = '';
 
   progress = signal({
     completedCount: 3,
@@ -35,33 +34,46 @@ export class DashboardPage implements OnInit {
     colorHex: '#10b981'
   };
 
-  public ngOnInit(): void {
-    this.loadDynamicDate();
-    this.loadUserData();
+  public get currentDateFormatted(): string {
+    const now = new Date();
+    const weekday = now.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const day = now.getDate();
+    const month = now.toLocaleDateString('pt-BR', { month: 'long' });
+    return `${weekday}, ${day} de ${month}`.toUpperCase();
   }
 
-  private loadDynamicDate(): void {
-    const now = new Date();
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'long', 
-      day: 'numeric', 
-      month: 'long' 
-    };
-    const formatted = now.toLocaleDateString('pt-BR', options);
-    this.currentDateFormatted = formatted.toUpperCase();
+  public get firstName(): string {
+    const cleanName = (this.athleteName ?? '').trim();
+    if (!cleanName) return '';
+    return cleanName.split(/\s+/)[0];
+  }
+
+  public get athleteInitials(): string {
+    const cleanName = (this.athleteName ?? '').trim();
+    if (!cleanName) return '';
+
+    const parts = cleanName.split(/\s+/);
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    }
+
+    const firstInitial = parts[0].charAt(0);
+    const lastInitial = parts[parts.length - 1].charAt(0);
+    return `${firstInitial}${lastInitial}`.toUpperCase();
+  }
+
+  public ngOnInit(): void {
+    this.loadUserData();
   }
 
   private loadUserData(): void {
     const savedName = localStorage.getItem('correja_user_name');
     if (savedName) {
-      this.athleteName = savedName;
+      this.athleteName = savedName.trim();
     }
   }
 
   public getAthleteInitials(): string {
-    const parts = this.athleteName.trim().split(' ');
-    if (parts.length === 0 || !parts[0]) return 'LM';
-    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return this.athleteInitials;
   }
 }

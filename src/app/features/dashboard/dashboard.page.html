@@ -1,125 +1,244 @@
 <ion-content [fullscreen]="true" class="dashboard-canvas">
-  <div class="narrow-container">
+  <div class="dashboard-shell">
     
-    <header class="natural-header">
-      <div class="greeting-box">
-        <span class="date-eyebrow">{{ currentDateFormatted }}</span>
-        <h1 class="user-greeting">Olá, {{ athleteName }}! 👋</h1>
-        <p class="friendly-sub">Seu treino não precisa ser perfeito. Só precisa continuar.</p>
+    <!-- Barra superior com Avatar de Iniciais -->
+    <div class="top-utility-bar">
+      <div class="user-avatar-badge" [title]="athleteName">
+        {{ athleteInitials }}
       </div>
+    </div>
 
-      <div class="active-plan-chip">
-        <span class="chip-status-dot"></span>
-        <span>Plano: <strong>Primeiros 5 km</strong></span>
-      </div>
-    </header>
-
-    <section class="habit-section">
-      <div class="clean-card habit-card">
-        <div class="habit-head">
-          <div>
-            <span class="micro-eyebrow">SUA SEMANA</span>
-            <h2 class="habit-title">{{ progress().completedCount }} de {{ progress().plannedCount }} treinos feitos</h2>
-          </div>
-          <span class="streak-badge">
-            <ion-icon name="flame-outline"></ion-icon> {{ progress().streakWeeks }} semanas firmes
-          </span>
-        </div>
-
-        <div class="week-days-strip">
-          <div class="day-slot done">
-            <ion-icon name="checkmark-circle"></ion-icon>
-            <span>Feito</span>
-          </div>
-          <div class="day-slot done">
-            <ion-icon name="checkmark-circle"></ion-icon>
-            <span>Feito</span>
-          </div>
-          <div class="day-slot active">
-            <div class="pulse-marker"></div>
-            <span>Hoje</span>
-          </div>
-        </div>
-
-        <div class="habit-footer">
-          <span>Meta: <strong>3 vezes na semana</strong></span>
-          <span class="status-ok">Tudo em dia! 🎯</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="today-workout-section">
-      <div class="section-title-wrap">
-        <span class="micro-eyebrow">TREINO DE HOJE</span>
-        <h2 class="section-headline">{{ workout().title }}</h2>
-        <p class="section-sub">{{ workout().subtitle }}</p>
-      </div>
-
-      <div class="clean-card workout-card" [class.is-done]="workout().completed" routerLink="/tabs/plans/p-5k" style="cursor: pointer;">
+    <div class="dashboard-grid">
+      
+      <!-- COLUNA PRINCIPAL (ESQUERDA) -->
+      <div class="main-column">
         
-        <div class="intensity-callout">
-          <div class="zone-pill-live" [style.background-color]="targetZone.colorHex">
-            {{ targetZone.id }}
-          </div>
-          <div class="intensity-text">
-            <strong class="intensity-name">{{ targetZone.shortName }}</strong>
-            <span class="intensity-hint">Ritmo confortável, sem ficar sem fôlego.</span>
-          </div>
-        </div>
+        <!-- Saudação e Data Dinâmica -->
+        <header class="natural-header">
+          <span class="date-eyebrow">{{ currentDateFormatted }}</span>
+          <h1 class="user-greeting">Olá, {{ firstName }}!</h1>
+          <p class="friendly-sub">Seu treino não precisa ser perfeito. Só precisa continuar.</p>
+        </header>
 
-        <div class="mini-spectrum-bar">
-          <div class="bar-seg z1" [class.active]="workout().primaryZone === 'Z1'">Z1</div>
-          <div class="bar-seg z2" [class.active]="workout().primaryZone === 'Z2'">Z2</div>
-          <div class="bar-seg z3" [class.active]="workout().primaryZone === 'Z3'">Z3</div>
-          <div class="bar-seg z4" [class.active]="workout().primaryZone === 'Z4'">Z4</div>
-          <div class="bar-seg z5" [class.active]="workout().primaryZone === 'Z5'">Z5</div>
-        </div>
+        <!-- Card Destaque Escuro: Plano Ativo -->
+        <section class="active-plan-hero-card">
+          <div class="hero-route-visual">
+            <span class="distance-watermark">5<small>KM</small></span>
+            <svg class="route-svg" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M25 135 C 20 95, 65 110, 60 75 C 55 45, 95 60, 105 25" stroke="#FF6B2B" stroke-width="3.5" stroke-linecap="round"/>
+              <circle cx="25" cy="135" r="5" fill="#FF6B2B"/>
+              <circle cx="105" cy="25" r="6" fill="#18181B" stroke="#FF6B2B" stroke-width="3"/>
+            </svg>
+          </div>
 
-        <div class="quick-stats-grid">
-          <div class="stat-pill-box">
-            <span class="pill-lbl">Tempo</span>
-            <strong class="pill-val">{{ workout().totalDurationMinutes }} <small>min</small></strong>
-          </div>
-          <div class="stat-pill-box">
-            <span class="pill-lbl">Ritmo</span>
-            <strong class="pill-val text-green">Leve</strong>
-          </div>
-          <div class="stat-pill-box">
-            <span class="pill-lbl">Sensação</span>
-            <strong class="pill-val">4 - 5 <small>/10</small></strong>
-          </div>
-        </div>
+          <div class="hero-plan-details">
+            <span class="plan-status-pill">PLANO ATIVO</span>
+            <h2 class="plan-hero-title">Primeiros 5 km</h2>
+            <p class="plan-hero-desc">Construa sua base e corra seus primeiros 5 km com confiança.</p>
 
-        <div class="workout-action-wrap">
-          @if (!workout().completed) {
-            <ion-button expand="block" routerLink="/tabs/plans/p-5k" class="btn-primary-finish">
-              <ion-icon slot="start" name="checkmark-circle"></ion-icon>
-              <span>REGISTRAR TREINO</span>
-            </ion-button>
-          } @else {
-            <div class="congrats-banner">
-              <ion-icon name="checkmark-circle"></ion-icon>
-              <div>
-                <strong>Treino concluído! 🎉</strong>
-                <p>Toque aqui para ver detalhes no cronograma.</p>
+            <div class="plan-metrics-row">
+              <div class="metric-item">
+                <span class="metric-lbl">NÍVEL</span>
+                <strong class="metric-val">Iniciante</strong>
+              </div>
+              <div class="metric-item">
+                <span class="metric-lbl">SEMANA</span>
+                <strong class="metric-val">{{ progress().streakWeeks || 3 }} de 8</strong>
+              </div>
+              <div class="metric-item">
+                <span class="metric-lbl">META</span>
+                <strong class="metric-val">5 km</strong>
               </div>
             </div>
-          }
+
+            <div class="plan-progress-block">
+              <div class="progress-labels">
+                <span>Progresso do plano</span>
+                <strong>38%</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: 38%"></div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-view-plan" routerLink="/tabs/plans/p-5k">
+              <span>VER MEU PLANO</span>
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+          </div>
+        </section>
+
+        <!-- Seção: Treino de Hoje -->
+        <section class="today-workout-section">
+          <div class="section-header-row">
+            <div>
+              <span class="micro-eyebrow orange-eyebrow">TREINO DE HOJE</span>
+              <h2 class="section-headline">{{ workout().title }}</h2>
+            </div>
+            <span class="zone-badge-pill" [style.background-color]="targetZone.colorHex + '20'" [style.color]="targetZone.colorHex">
+              {{ targetZone.id }} • {{ targetZone.shortName }}
+            </span>
+          </div>
+
+          <div class="clean-card workout-card" [class.is-done]="workout().completed">
+            <div class="workout-card-top">
+              <div class="objective-box">
+                <div class="target-icon-circle">
+                  <ion-icon name="radio-button-on-outline"></ion-icon>
+                </div>
+                <div>
+                  <span class="micro-eyebrow">OBJETIVO DA SESSÃO</span>
+                  <strong class="objective-title">{{ workout().subtitle || 'Ganhar resistência com controle' }}</strong>
+                </div>
+              </div>
+
+              <div class="duration-chip">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ workout().totalDurationMinutes }} min</span>
+              </div>
+            </div>
+
+            <!-- Blocos da Sessão (Aquecimento / Principal / Volta à calma) -->
+            <div class="workout-steps-grid">
+              <div class="step-box">
+                <span class="step-tag">AQUECIMENTO</span>
+                <strong class="step-duration">5 min</strong>
+                <span class="step-desc">Caminhada leve • trote leve</span>
+              </div>
+              <div class="step-box highlight-step">
+                <span class="step-tag orange-tag">PARTE PRINCIPAL</span>
+                <strong class="step-duration">5 × 3 min</strong>
+                <span class="step-desc">Corrida moderada • Pausa de 1 min</span>
+              </div>
+              <div class="step-box">
+                <span class="step-tag">VOLTA À CALMA</span>
+                <strong class="step-duration">5 min</strong>
+                <span class="step-desc">Caminhada sustentável</span>
+              </div>
+            </div>
+
+            <!-- Dica de Sensação -->
+            <div class="feeling-tip-banner">
+              <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+              <p>
+                <strong>Como deve parecer:</strong> Respiração mais pesada, mas controlada. Você consegue falar frases curtas.
+              </p>
+            </div>
+
+            <!-- Ação Principal -->
+            <div class="workout-action-wrap">
+              @if (!workout().completed) {
+                <button type="button" routerLink="/tabs/plans/p-5k" class="btn-primary-orange">
+                  <span>VER ORIENTAÇÕES</span>
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </button>
+              } @else {
+                <div class="congrats-banner" routerLink="/tabs/plans/p-5k">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                  <div>
+                    <strong>Treino concluído! 🎉</strong>
+                    <p>Toque aqui para ver detalhes no cronograma.</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- COLUNA LATERAL (DIREITA) -->
+      <aside class="side-column">
+        
+        <!-- Card: Semana Atual -->
+        <div class="clean-card side-card week-summary-card">
+          <div class="week-card-head">
+            <div>
+              <span class="micro-eyebrow">SEMANA ATUAL</span>
+              <h3 class="side-card-title">{{ progress().completedCount }} de {{ progress().plannedCount }}</h3>
+            </div>
+            <div class="flame-circle-badge">
+              <ion-icon name="flame"></ion-icon>
+            </div>
+          </div>
+
+          <div class="week-days-bubbles">
+            <div class="day-bubble-col">
+              <div class="bubble-circle done">
+                <ion-icon name="checkmark"></ion-icon>
+              </div>
+              <span>Seg</span>
+            </div>
+            <div class="day-bubble-col">
+              <div class="bubble-circle active">4</div>
+              <span class="active-lbl">Qua</span>
+            </div>
+            <div class="day-bubble-col">
+              <div class="bubble-circle pending">6</div>
+              <span>Sex</span>
+            </div>
+          </div>
         </div>
 
-      </div>
-    </section>
+        <!-- Card: Sua Evolução -->
+        <div class="clean-card side-card evolution-card">
+          <span class="micro-eyebrow">SUA EVOLUÇÃO</span>
+          <h3 class="side-card-title">Semana {{ progress().streakWeeks || 3 }}</h3>
 
-    <section class="next-step-section">
-      <div class="next-step-card" routerLink="/tabs/plans/p-5k" style="cursor: pointer;">
-        <div class="next-icon">📅</div>
-        <div class="next-text">
-          <span class="next-kicker">PRÓXIMO TREINO</span>
-          <strong class="next-title">Sábado • Trote de Base (40 min)</strong>
-          <p class="next-sub">Sessão suave para continuar acostumando o corpo.</p>
+          <div class="evolution-stats-row">
+            <div class="evo-stat">
+              <div class="evo-icon orange-bg">
+                <ion-icon name="flame-outline"></ion-icon>
+              </div>
+              <strong>{{ progress().completedCount }} <small>/{{ progress().plannedCount }}</small></strong>
+              <span>Treinos na semana</span>
+            </div>
+
+            <div class="evo-stat">
+              <div class="evo-icon neutral-bg">
+                <ion-icon name="calendar-outline"></ion-icon>
+              </div>
+              <strong>18</strong>
+              <span>Treinos concluídos</span>
+            </div>
+
+            <div class="evo-stat">
+              <div class="evo-icon green-bg">
+                <ion-icon name="trophy-outline"></ion-icon>
+              </div>
+              <strong>{{ progress().streakWeeks || 3 }}</strong>
+              <span>Semanas seguidas</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
 
+        <!-- Card: Próxima Sessão -->
+        <div class="clean-card side-card next-session-card" routerLink="/tabs/plans/p-5k">
+          <span class="micro-eyebrow">PRÓXIMA SESSÃO</span>
+          <h3 class="side-card-title">Sexta-feira</h3>
+
+          <div class="next-session-box">
+            <div class="next-cal-icon">
+              <ion-icon name="calendar-clear-outline"></ion-icon>
+            </div>
+            <div class="next-session-info">
+              <strong>Caminhada + corrida</strong>
+              <span>25 min • Zona Z2</span>
+            </div>
+          </div>
+
+          <div class="view-schedule-link">
+            <span>Ver cronograma completo</span>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Card: Citação Motivacional -->
+        <div class="clean-card side-card quote-card">
+          <p class="quote-text">"A consistência vence a pressa. Um treino de cada vez."</p>
+          <span class="quote-author">EQUIPE CORREJÁ</span>
+        </div>
+
+      </aside>
+    </div>
   </div>
 </ion-content>

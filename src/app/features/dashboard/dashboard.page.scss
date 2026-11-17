@@ -1,457 +1,630 @@
 .dashboard-canvas {
-  --background: #f8fafc;
+  --background: #f7f7f5;
+  color: #18181b;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ==========================================================================
-   CONTAINER ESTREITO (NARROW) - O SEGREDO DO DESIGN EQUILIBRADO
-   ========================================================================== */
-.narrow-container {
-  width: 100%;
-  max-width: 640px; // Mantém estreito e confortável tanto no celular quanto no PC
+.dashboard-shell {
+  max-width: 1180px;
   margin: 0 auto;
-  padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(48px + env(safe-area-inset-bottom, 0px));
+  padding: 20px 24px 48px;
+}
+
+.top-utility-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.user-avatar-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #18181b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.75fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.main-column,
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 /* Header */
 .natural-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 22px;
-  gap: 12px;
-  flex-wrap: wrap;
-
-  .greeting-box {
-    .user-greeting {
-      margin: 0;
-      font-size: 1.55rem;
-      font-weight: 900;
-      color: #0f172a;
-      letter-spacing: -0.02em;
-    }
-
-    .friendly-sub {
-      margin: 4px 0 0;
-      font-size: 0.88rem;
-      color: #64748b;
-    }
+  .date-eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #71717a;
+    text-transform: uppercase;
+    margin-bottom: 6px;
   }
 
-  .active-plan-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    color: #475569;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  .user-greeting {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px;
+    color: #18181b;
+  }
 
-    .chip-status-dot {
-      width: 7px;
-      height: 7px;
-      background: #10b981;
-      border-radius: 50%;
-    }
+  .friendly-sub {
+    font-size: 15px;
+    color: #52525b;
+    margin: 0;
   }
 }
 
-/* Card Base Limpo */
+/* Card Escuro: Plano Ativo */
+.active-plan-hero-card {
+  background: linear-gradient(135deg, #1c1c1f 0%, #121214 100%);
+  border-radius: 20px;
+  padding: 28px;
+  color: #ffffff;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 28px;
+  align-items: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.hero-route-visual {
+  position: relative;
+  height: 170px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  .distance-watermark {
+    position: absolute;
+    font-size: 56px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: -0.03em;
+
+    small {
+      font-size: 14px;
+      font-weight: 700;
+      margin-left: 2px;
+      color: #a1a1aa;
+    }
+  }
+
+  .route-svg {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.85;
+  }
+}
+
+.plan-status-pill {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.plan-hero-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.plan-hero-desc {
+  font-size: 13.5px;
+  color: #a1a1aa;
+  margin: 0 0 18px;
+}
+
+.plan-metrics-row {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 18px;
+
+  .metric-lbl {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #71717a;
+    margin-bottom: 2px;
+  }
+
+  .metric-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f4f4f5;
+  }
+}
+
+.plan-progress-block {
+  margin-bottom: 20px;
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #a1a1aa;
+    margin-bottom: 6px;
+
+    strong {
+      color: #ffffff;
+    }
+  }
+
+  .progress-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #10b981;
+    border-radius: 999px;
+  }
+}
+
+.btn-view-plan {
+  background: #ffffff;
+  color: #18181b;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Cards Base */
 .clean-card {
   background: #ffffff;
-  border-radius: 22px;
-  border: 1px solid #edf2f7;
-  padding: 20px;
-  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.04);
+  border: 1px solid #eaeae6;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .micro-eyebrow {
   display: block;
-  font-size: 0.68rem;
+  font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: #94a3b8;
+  color: #71717a;
   text-transform: uppercase;
-}
-
-/* ==========================================================================
-   CARD: SUA SEMANA
-   ========================================================================== */
-.habit-section {
-  margin-bottom: 22px;
-}
-
-.habit-card {
-  .habit-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 14px;
-
-    .habit-title {
-      margin: 4px 0 0;
-      font-size: 1.15rem;
-      font-weight: 900;
-      color: #0f172a;
-    }
-
-    .streak-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: #ecfdf5;
-      color: #059669;
-      font-size: 0.74rem;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 12px;
-      border: 1px solid #a7f3d0;
-    }
-  }
-
-  .week-days-strip {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 14px;
-
-    .day-slot {
-      background: #f8fafc;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 10px 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #64748b;
-
-      &.done {
-        background: #ecfdf5;
-        border-color: #a7f3d0;
-        color: #059669;
-        ion-icon { font-size: 1.15rem; }
-      }
-
-      &.active {
-        background: #f0f9ff;
-        border-color: #0284c7;
-        color: #0284c7;
-
-        .pulse-marker {
-          width: 8px;
-          height: 8px;
-          background: #0284c7;
-          border-radius: 50%;
-          box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
-        }
-      }
-    }
-  }
-
-  .habit-footer {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.78rem;
-    color: #64748b;
-    padding-top: 10px;
-    border-top: 1px solid #f1f5f9;
-
-    .status-ok {
-      font-weight: 800;
-      color: #059669;
-    }
-  }
-}
-
-/* ==========================================================================
-   CARD: TREINO DE HOJE
-   ========================================================================== */
-.today-workout-section {
-  margin-bottom: 20px;
-
-  .section-title-wrap {
-    margin-bottom: 12px;
-
-    .section-headline {
-      margin: 2px 0 0;
-      font-size: 1.35rem;
-      font-weight: 900;
-      color: #0f172a;
-    }
-
-    .section-sub {
-      margin: 2px 0 0;
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-  }
-}
-
-.workout-card {
-  .intensity-callout {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 16px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
-
-    .zone-pill-live {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 1.1rem;
-      font-weight: 900;
-      flex-shrink: 0;
-      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    }
-
-    .intensity-text {
-      .intensity-name {
-        display: block;
-        font-size: 0.95rem;
-        color: #14532d;
-        font-weight: 900;
-      }
-      .intensity-hint {
-        font-size: 0.8rem;
-        color: #166534;
-      }
-    }
-  }
-
-  /* Régua Fina */
-  .mini-spectrum-bar {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-    margin-bottom: 16px;
-
-    .bar-seg {
-      height: 24px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 800;
-      opacity: 0.25;
-
-      &.z1 { background: #0ea5e9; color: #fff; }
-      &.z2 { background: #10b981; color: #fff; }
-      &.z3 { background: #f59e0b; color: #000; }
-      &.z4 { background: #f97316; color: #fff; }
-      &.z5 { background: #ef4444; color: #fff; }
-
-      &.active {
-        opacity: 1;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
-      }
-    }
-  }
-
-  /* 3 Caixas de Telemetria */
-  .quick-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
-
-    .stat-pill-box {
-      background: #f8fafc;
-      border: 1px solid #f1f5f9;
-      border-radius: 12px;
-      padding: 10px 8px;
-      text-align: center;
-
-      .pill-lbl {
-        display: block;
-        font-size: 0.65rem;
-        font-weight: 800;
-        color: #94a3b8;
-        text-transform: uppercase;
-      }
-
-      .pill-val {
-        display: block;
-        font-size: 1.05rem;
-        font-weight: 900;
-        color: #0f172a;
-        margin-top: 2px;
-
-        small {
-          font-size: 0.72rem;
-          color: #64748b;
-          font-weight: 600;
-        }
-
-        &.text-green { color: #10b981; }
-      }
-    }
-  }
-
-  /* Como vai ser o treino */
-  .steps-flow-wrap {
-    margin-bottom: 22px;
-
-    .steps-heading {
-      margin: 0 0 10px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: #64748b;
-      letter-spacing: 0.04em;
-    }
-
-    .steps-flow-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      .flow-step-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        background: #f8fafc;
-        border: 1px solid #edf2f7;
-        border-radius: 12px;
-        padding: 10px 12px;
-
-        .step-time-bubble {
-          font-size: 0.78rem;
-          font-weight: 900;
-          color: #ffffff;
-          padding: 6px 8px;
-          border-radius: 8px;
-          min-width: 36px;
-          text-align: center;
-
-          &[data-zone="Z1"] { background: #0ea5e9; }
-          &[data-zone="Z2"] { background: #10b981; }
-          &[data-zone="Z3"] { background: #f59e0b; color: #000; }
-          &[data-zone="Z4"] { background: #f97316; }
-          &[data-zone="Z5"] { background: #ef4444; }
-        }
-
-        .step-info {
-          flex: 1;
-
-          .step-title {
-            display: block;
-            font-size: 0.86rem;
-            color: #0f172a;
-          }
-
-          .step-desc {
-            margin: 2px 0 0;
-            font-size: 0.76rem;
-            color: #64748b;
-          }
-        }
-      }
-    }
-  }
-
-  /* Botão de Ação */
-  .workout-action-wrap {
-    .btn-primary-finish {
-      --background: #ea580c; /* Laranja da logo */
-      --background-activated: #c2410c;
-      --border-radius: 14px;
-      height: 48px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.28);
-    }
-
-    .congrats-banner {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #ecfdf5;
-      border: 1px solid #6ee7b7;
-      border-radius: 14px;
-      padding: 14px 16px;
-      color: #065f46;
-
-      ion-icon {
-        font-size: 1.6rem;
-        color: #059669;
-        flex-shrink: 0;
-      }
-
-      strong {
-        display: block;
-        font-size: 0.9rem;
-      }
-
-      p {
-        margin: 2px 0 0;
-        font-size: 0.78rem;
-        color: #047857;
-      }
-    }
-  }
-}
-
-.date-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #888888;
-  text-transform: uppercase;
-  display: block;
   margin-bottom: 4px;
+
+  &.orange-eyebrow {
+    color: #ff5a1f;
+  }
 }
 
-/* ==========================================================================
-   CARD: PRÓXIMO PASSO
-   ========================================================================== */
-.next-step-section {
-  .next-step-card {
-    background: #ffffff;
-    border: 1px solid #edf2f7;
-    border-radius: 16px;
-    padding: 14px 16px;
+/* Treino de Hoje */
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.section-headline {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+  color: #18181b;
+}
+
+.zone-badge-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.workout-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.objective-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.target-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff3ed;
+  color: #ff5a1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.objective-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.duration-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f4f4f5;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #3f3f46;
+}
+
+.workout-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.step-box {
+  background: #fafaf9;
+  border: 1px solid #efefec;
+  border-radius: 12px;
+  padding: 14px;
+
+  &.highlight-step {
+    background: #fffaf7;
+    border-color: #ffd8c7;
+  }
+
+  .step-tag {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #71717a;
+    margin-bottom: 6px;
+
+    &.orange-tag {
+      color: #ff5a1f;
+    }
+  }
+
+  .step-duration {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: #18181b;
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: #52525b;
+  }
+}
+
+.feeling-tip-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f4f4f5;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 12.5px;
+  color: #3f3f46;
+
+  ion-icon {
+    font-size: 18px;
+    color: #71717a;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.btn-primary-orange {
+  width: 100%;
+  background: #ff5a1f;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(255, 90, 31, 0.25);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #e84e15;
+  }
+}
+
+/* Coluna Lateral */
+.side-card-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+  color: #18181b;
+}
+
+.week-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.flame-circle-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff3ed;
+  color: #ff5a1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.week-days-bubbles {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 4px;
+}
+
+.day-bubble-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #71717a;
+
+    &.active-lbl {
+      color: #ff5a1f;
+      font-weight: 800;
+    }
+  }
+}
+
+.bubble-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+
+  &.done {
+    background: #ff5a1f;
+    color: #ffffff;
+  }
+
+  &.active {
+    background: #fff3ed;
+    color: #ff5a1f;
+    border: 2px solid #ff5a1f;
+  }
+
+  &.pending {
+    background: #f4f4f5;
+    color: #71717a;
+  }
+}
+
+.evolution-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.evo-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .evo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+    justify-content: center;
+    margin-bottom: 8px;
+    font-size: 16px;
 
-    .next-icon {
-      font-size: 1.5rem;
+    &.orange-bg {
+      background: #fff3ed;
+      color: #ff5a1f;
     }
-
-    .next-text {
-      .next-kicker {
-        display: block;
-        font-size: 0.65rem;
-        font-weight: 800;
-        color: #ea580c;
-        letter-spacing: 0.08em;
-      }
-
-      .next-title {
-        font-size: 0.92rem;
-        color: #0f172a;
-        font-weight: 800;
-      }
-
-      .next-sub {
-        margin: 2px 0 0;
-        font-size: 0.78rem;
-        color: #64748b;
-      }
+    &.neutral-bg {
+      background: #f4f4f5;
+      color: #3f3f46;
     }
+    &.green-bg {
+      background: #ecfdf5;
+      color: #10b981;
+    }
+  }
+
+  strong {
+    font-size: 16px;
+    font-weight: 800;
+    color: #18181b;
+
+    small {
+      font-size: 11px;
+      color: #71717a;
+    }
+  }
+
+  span {
+    font-size: 10.5px;
+    color: #71717a;
+    line-height: 1.25;
+    margin-top: 2px;
+  }
+}
+
+.next-session-card {
+  cursor: pointer;
+}
+
+.next-session-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fafaf9;
+  border: 1px solid #efefec;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 14px 0;
+}
+
+.next-cal-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3f3f46;
+  font-size: 18px;
+}
+
+.next-session-info {
+  strong {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #18181b;
+  }
+
+  span {
+    font-size: 12px;
+    color: #71717a;
+  }
+}
+
+.view-schedule-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #ff5a1f;
+}
+
+.quote-card {
+  background: #fafaf9;
+
+  .quote-text {
+    font-size: 13.5px;
+    font-style: italic;
+    color: #3f3f46;
+    margin: 0 0 8px;
+    line-height: 1.45;
+  }
+
+  .quote-author {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #a1a1aa;
+  }
+}
+
+/* Responsividade (Tablets e Smartphones) */
+@media (max-width: 960px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-shell {
+    padding: 14px 16px 36px;
+  }
+
+  .active-plan-hero-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .hero-route-visual {
+    height: 110px;
+  }
+
+  .workout-steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-greeting {
+    font-size: 26px !important;
   }
 }
