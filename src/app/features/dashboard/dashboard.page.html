@@ -1,7 +1,5 @@
 <ion-content [fullscreen]="true" class="dashboard-canvas">
   <div class="dashboard-shell">
-    
-    <!-- Barra superior com Avatar de Iniciais -->
     <div class="top-utility-bar">
       <div class="user-avatar-badge" [title]="athleteName">
         {{ athleteInitials }}
@@ -9,18 +7,13 @@
     </div>
 
     <div class="dashboard-grid">
-      
-      <!-- COLUNA PRINCIPAL (ESQUERDA) -->
       <div class="main-column">
-        
-        <!-- Saudação e Data Dinâmica -->
         <header class="natural-header">
           <span class="date-eyebrow">{{ currentDateFormatted }}</span>
           <h1 class="user-greeting">Olá, {{ firstName }}!</h1>
           <p class="friendly-sub">Seu treino não precisa ser perfeito. Só precisa continuar.</p>
         </header>
 
-        <!-- Card Destaque Escuro: Plano Ativo -->
         <section class="active-plan-hero-card">
           <div class="hero-route-visual">
             <span class="distance-watermark">5<small>KM</small></span>
@@ -68,7 +61,6 @@
           </div>
         </section>
 
-        <!-- Seção: Treino de Hoje -->
         <section class="today-workout-section">
           <div class="section-header-row">
             <div>
@@ -98,7 +90,6 @@
               </div>
             </div>
 
-            <!-- Blocos da Sessão (Aquecimento / Principal / Volta à calma) -->
             <div class="workout-steps-grid">
               <div class="step-box">
                 <span class="step-tag">AQUECIMENTO</span>
@@ -117,7 +108,6 @@
               </div>
             </div>
 
-            <!-- Dica de Sensação -->
             <div class="feeling-tip-banner">
               <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
               <p>
@@ -125,7 +115,6 @@
               </p>
             </div>
 
-            <!-- Ação Principal -->
             <div class="workout-action-wrap">
               @if (!workout().completed) {
                 <button type="button" routerLink="/tabs/plans/p-5k" class="btn-primary-orange">
@@ -146,10 +135,7 @@
         </section>
       </div>
 
-      <!-- COLUNA LATERAL (DIREITA) -->
       <aside class="side-column">
-        
-        <!-- Card: Semana Atual -->
         <div class="clean-card side-card week-summary-card">
           <div class="week-card-head">
             <div>
@@ -179,7 +165,6 @@
           </div>
         </div>
 
-        <!-- Card: Sua Evolução -->
         <div class="clean-card side-card evolution-card">
           <span class="micro-eyebrow">SUA EVOLUÇÃO</span>
           <h3 class="side-card-title">Semana {{ progress().streakWeeks || 3 }}</h3>
@@ -211,7 +196,6 @@
           </div>
         </div>
 
-        <!-- Card: Próxima Sessão -->
         <div class="clean-card side-card next-session-card" routerLink="/tabs/plans/p-5k">
           <span class="micro-eyebrow">PRÓXIMA SESSÃO</span>
           <h3 class="side-card-title">Sexta-feira</h3>
@@ -232,12 +216,10 @@
           </div>
         </div>
 
-        <!-- Card: Citação Motivacional -->
         <div class="clean-card side-card quote-card">
           <p class="quote-text">"A consistência vence a pressa. Um treino de cada vez."</p>
           <span class="quote-author">EQUIPE CORREJÁ</span>
         </div>
-
       </aside>
     </div>
   </div>
