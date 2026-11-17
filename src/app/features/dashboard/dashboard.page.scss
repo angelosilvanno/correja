@@ -72,143 +72,162 @@
   }
 }
 
-/* Card Escuro: Plano Ativo */
 .active-plan-hero-card {
-  background: linear-gradient(135deg, #1c1c1f 0%, #121214 100%);
-  border-radius: 20px;
-  padding: 28px;
+  background: #0d0d0f;
+  border-radius: 22px;
+  padding: 0;
   color: #ffffff;
   display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 28px;
-  align-items: center;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  grid-template-columns: minmax(200px, 39%) 1fr;
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
 }
 
 .hero-route-visual {
   position: relative;
-  height: 170px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  min-height: 290px;
+  background: radial-gradient(circle at 28% 24%, #303033 0%, #1c1c1e 58%, #141416 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding: 24px;
 
   .distance-watermark {
-    position: absolute;
-    font-size: 56px;
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: baseline;
+    font-size: 68px;
     font-weight: 800;
-    color: rgba(255, 255, 255, 0.9);
-    letter-spacing: -0.03em;
+    line-height: 1;
+    color: #ffffff;
+    letter-spacing: -0.04em;
+    transform: translateY(-6px);
 
     small {
-      font-size: 14px;
+      font-size: 17px;
       font-weight: 700;
-      margin-left: 2px;
-      color: #a1a1aa;
+      margin-left: 4px;
+      color: #ffffff;
+      letter-spacing: 0.02em;
     }
   }
 
   .route-svg {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 1;
     width: 100%;
     height: 100%;
-    opacity: 0.85;
+    pointer-events: none;
   }
+}
+
+.hero-plan-details {
+  padding: 34px 38px;
+  background: #0d0d0f;
 }
 
 .plan-status-pill {
   display: inline-block;
   background: rgba(16, 185, 129, 0.16);
   color: #34d399;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 10.5px;
+  font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 999px;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
 .plan-hero-title {
-  font-size: 26px;
-  font-weight: 800;
-  margin: 0 0 6px;
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 0 8px;
   letter-spacing: -0.02em;
+  color: #ffffff;
 }
 
 .plan-hero-desc {
-  font-size: 13.5px;
+  font-size: 14px;
   color: #a1a1aa;
-  margin: 0 0 18px;
+  margin: 0 0 24px;
+  line-height: 1.5;
 }
 
 .plan-metrics-row {
   display: flex;
-  gap: 28px;
-  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 36px;
+  margin-bottom: 24px;
 
   .metric-lbl {
     display: block;
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 10.5px;
+    font-weight: 600;
     letter-spacing: 0.06em;
     color: #71717a;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   .metric-val {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    color: #f4f4f5;
+    color: #ffffff;
   }
 }
 
 .plan-progress-block {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   .progress-labels {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
+    font-size: 12.5px;
     color: #a1a1aa;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 
     strong {
       color: #ffffff;
+      font-weight: 700;
     }
   }
 
   .progress-track {
-    height: 6px;
-    background: rgba(255, 255, 255, 0.12);
+    height: 5px;
+    background: #ffffff;
     border-radius: 999px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: #10b981;
+    background: #ff5a1f;
     border-radius: 999px;
   }
 }
 
 .btn-view-plan {
   background: #ffffff;
-  color: #18181b;
+  color: #111113;
   border: none;
-  border-radius: 10px;
-  padding: 11px 18px;
-  font-size: 12px;
-  font-weight: 800;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-size: 12.5px;
+  font-weight: 700;
   letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   cursor: pointer;
   transition: transform 0.15s ease;
+
+  ion-icon {
+    font-size: 16px;
+  }
 
   &:hover {
     transform: translateY(-1px);
@@ -613,18 +632,127 @@
 
   .active-plan-hero-card {
     grid-template-columns: 1fr;
-    padding: 20px;
+    padding: 0;
   }
 
   .hero-route-visual {
-    height: 110px;
+    min-height: 145px;
+    height: 145px;
+    padding: 16px;
+
+    .distance-watermark {
+      font-size: 52px;
+      transform: translateY(-4px);
+
+      small {
+        font-size: 14px;
+      }
+    }
+  }  
+
+  .hero-plan-details {
+    padding: 22px 20px;
+  }
+
+  .plan-hero-title {
+    font-size: 24px;
+  }
+
+  .plan-metrics-row {
+    gap: 24px;
+  }
+
+}
+
+@media (min-width: 961px) {
+  .dashboard-shell {
+    max-width: none;
+    width: 100%;
+    padding: 24px 36px 56px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1.75fr) minmax(260px, 1fr);
+    gap: 26px;
+  }
+
+  .main-column {
+    gap: 28px;
+  }
+
+  .side-column {
+    gap: 24px;
+  }
+
+  .active-plan-hero-card {
+    grid-template-columns: minmax(175px, 34%) 1fr;
+    gap: 0;
+    padding: 0;
+    margin: 4px 0;
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  .hero-route-visual {
+    height: auto;
+    min-height: 280px;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0;
+    background: radial-gradient(circle at 35% 45%, rgba(255, 107, 43, 0.12), rgba(255, 255, 255, 0.02) 70%);
+    padding: 24px;
+
+    .distance-watermark {
+      font-size: 64px;
+
+      small {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .hero-plan-details {
+    padding: 32px 34px;
+  }
+
+  .plan-metrics-row {
+    gap: 36px;
   }
 
   .workout-steps-grid {
-    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-shell {
+    max-width: 1600px;
+    padding: 26px 44px 60px;
   }
 
-  .user-greeting {
-    font-size: 26px !important;
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 28%, 400px);
+    gap: 32px;
+  }
+
+  .main-column {
+    gap: 32px;
+  }
+
+  .active-plan-hero-card {
+    grid-template-columns: clamp(220px, 35%, 360px) 1fr;
+    margin: 6px 0;
+  }
+
+  .hero-route-visual {
+    min-height: 310px;
+
+    .distance-watermark {
+      font-size: 74px;
+    }
+  }
+
+  .hero-plan-details {
+    padding: 36px 40px;
   }
 }

@@ -1,21 +1,202 @@
-/* ==========================================================================
-   MOBILE (< 992px): Esconde a Sidebar e exibe a barra inferior normal
-   ========================================================================== */
+.correja-tabs {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
 .desktop-sidebar {
-  display: none;
+  width: 240px;
+  min-width: 240px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #f0f0ee;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 28px;
+}
+
+.brand-logo-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transform: skewX(-16deg);
+
+  .stripe {
+    height: 4px;
+    border-radius: 2px;
+    background: #ff5a1f;
+
+    &.s1 {
+      width: 22px;
+    }
+
+    &.s2 {
+      width: 18px;
+    }
+
+    &.s3 {
+      width: 14px;
+    }
+  }
+}
+
+.brand-name {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #18181b;
+
+  .brand-accent {
+    color: #ff5a1f;
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #71717a;
+  transition: all 0.15s ease;
+
+  ion-icon {
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: #fafaf9;
+    color: #18181b;
+  }
+
+  &.active {
+    background: #fff4ed;
+    color: #ff5a1f;
+    font-weight: 700;
+  }
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.motivation-card {
+  background: #141416;
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+
+  .sparkle-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ff6b2b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  p {
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: #a1a1aa;
+    margin: 0;
+  }
+}
+
+.user-profile-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px 0;
+  cursor: pointer;
+}
+
+.user-initials-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #141416;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+
+  strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #18181b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  span {
+    display: block;
+    font-size: 11px;
+    color: #71717a;
+  }
+}
+
+.arrow-icon {
+  font-size: 15px;
+  color: #71717a;
+  flex-shrink: 0;
 }
 
 .mobile-tab-bar {
+  display: none;
   --background: rgba(255, 255, 255, 0.96);
+  --color: #71717a;
+  --color-selected: #ff5a1f;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #f0f0ee;
   height: 60px;
   padding-bottom: env(safe-area-inset-bottom, 6px);
 
   ion-tab-button {
-    --color: #64748b;
-    --color-selected: #0284c7;
+    --color: #71717a;
+    --color-selected: #ff5a1f;
     font-weight: 700;
     font-size: 0.72rem;
 
@@ -26,29 +207,16 @@
   }
 }
 
-/* ==========================================================================
-   DESKTOP (≥ 992px): Sidebar Real e Perfeita
-   ========================================================================== */
-@media (min-width: 992px) {
-  /* Esconde a barra inferior no computador */
+@media (min-width: 769px) {
   .mobile-tab-bar {
     display: none !important;
   }
 
-  /* Exibe a Sidebar fixa na esquerda */
   .desktop-sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 240px;
-    height: 100vh;
-    background: #ffffff;
-    border-right: 1px solid #e2e8f0;
-    padding: 24px 14px 20px;
     z-index: 9999;
 
     .sidebar-brand {
@@ -65,15 +233,8 @@
         object-fit: contain;
       }
     }
-      
-    /* Navegação: Itens agrupados juntinhos no topo */
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 18px;
-      flex: 1;
 
+    .sidebar-nav {
       .sidebar-link {
         display: flex;
         align-items: center;
@@ -97,16 +258,14 @@
           color: #0f172a;
         }
 
-        /* Item Selecionado */
         &.active {
-          background: #f0f9ff;
-          color: #0284c7;
+          background: #fff4ed;
+          color: #ff5a1f;
           font-weight: 800;
         }
       }
     }
 
-    /* Rodapé da Sidebar */
     .sidebar-footer {
       border-top: 1px solid #f1f5f9;
       padding-top: 14px;
@@ -123,7 +282,7 @@
         .user-avatar {
           width: 32px;
           height: 32px;
-          background: #e0f2fe;
+          background: #fff4ed;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -144,5 +303,24 @@
         }
       }
     }
+  }
+
+  ion-router-outlet {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  .mobile-tab-bar {
+    display: flex;
+    --background: #ffffff;
+    --color: #71717a;
+    --color-selected: #ff5a1f;
+    border-top: 1px solid #f0f0ee;
   }
 }

@@ -13,14 +13,31 @@
           <h1 class="user-greeting">Olá, {{ firstName }}!</h1>
           <p class="friendly-sub">Seu treino não precisa ser perfeito. Só precisa continuar.</p>
         </header>
-
+          
         <section class="active-plan-hero-card">
           <div class="hero-route-visual">
             <span class="distance-watermark">5<small>KM</small></span>
-            <svg class="route-svg" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M25 135 C 20 95, 65 110, 60 75 C 55 45, 95 60, 105 25" stroke="#FF6B2B" stroke-width="3.5" stroke-linecap="round"/>
-              <circle cx="25" cy="135" r="5" fill="#FF6B2B"/>
-              <circle cx="105" cy="25" r="6" fill="#18181B" stroke="#FF6B2B" stroke-width="3"/>
+            <svg
+              class="route-svg"
+              viewBox="0 0 320 320"
+              preserveAspectRatio="xMidYMax slice"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M -20 292 C 45 232, 115 274, 178 228 C 236 184, 256 150, 340 148"
+                stroke="#2A2A2D"
+                stroke-width="28"
+                stroke-linecap="round"
+              />
+              <path
+                d="M -20 292 C 45 232, 115 274, 178 228 C 236 184, 256 150, 340 148"
+                stroke="#FF5A1F"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-dasharray="7 9"
+              />
             </svg>
           </div>
 
@@ -39,7 +56,7 @@
                 <strong class="metric-val">{{ progress().streakWeeks || 3 }} de 8</strong>
               </div>
               <div class="metric-item">
-                <span class="metric-lbl">META</span>
+                <span class="metric-lbl">OBJETIVO</span>
                 <strong class="metric-val">5 km</strong>
               </div>
             </div>
@@ -56,11 +73,11 @@
 
             <button type="button" class="btn-view-plan" routerLink="/tabs/plans/p-5k">
               <span>VER MEU PLANO</span>
-              <ion-icon name="arrow-forward-outline"></ion-icon>
+              <ion-icon name="chevron-forward-outline"></ion-icon>
             </button>
           </div>
         </section>
-
+        
         <section class="today-workout-section">
           <div class="section-header-row">
             <div>
