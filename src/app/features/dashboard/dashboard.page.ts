@@ -3,6 +3,21 @@ import type { OnInit } from '@angular/core';
 import { Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonButton, IonContent, IonIcon } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import {
+  arrowForwardOutline,
+  calendarClearOutline,
+  calendarOutline,
+  chatbubbleEllipsesOutline,
+  checkmark,
+  checkmarkCircle,
+  chevronForwardOutline,
+  flame,
+  flameOutline,
+  radioButtonOnOutline,
+  timeOutline,
+  trophyOutline
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,6 +49,23 @@ export class DashboardPage implements OnInit {
     colorHex: '#10b981'
   };
 
+  constructor() {
+    addIcons({
+      arrowForwardOutline,
+      calendarClearOutline,
+      calendarOutline,
+      chatbubbleEllipsesOutline,
+      checkmark,
+      checkmarkCircle,
+      chevronForwardOutline,
+      flame,
+      flameOutline,
+      radioButtonOnOutline,
+      timeOutline,
+      trophyOutline
+    });
+  }
+
   public get currentDateFormatted(): string {
     const now = new Date();
     const weekday = now.toLocaleDateString('pt-BR', { weekday: 'long' });
@@ -44,13 +76,13 @@ export class DashboardPage implements OnInit {
 
   public get firstName(): string {
     const cleanName = (this.athleteName ?? '').trim();
-    if (!cleanName) return '';
+    if (!cleanName) return 'Atleta';
     return cleanName.split(/\s+/)[0];
   }
 
   public get athleteInitials(): string {
     const cleanName = (this.athleteName ?? '').trim();
-    if (!cleanName) return '';
+    if (!cleanName) return 'AC';
 
     const parts = cleanName.split(/\s+/);
     if (parts.length === 1) {
