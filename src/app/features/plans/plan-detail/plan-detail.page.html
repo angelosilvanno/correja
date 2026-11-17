@@ -1,133 +1,210 @@
 <ion-content [fullscreen]="true" class="schedule-canvas">
   <div class="app-viewport-container">
-    
+
     <header class="schedule-topbar">
-      <button type="button" class="back-circle-btn" (click)="goBack()">
+      <button type="button" class="back-link-btn" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
+        <span>Voltar ao cronograma</span>
       </button>
-      <div class="top-title-wrap">
-        <span class="micro-eyebrow">CRONOGRAMA DO PLANO</span>
-        <h1 class="plan-headline">Primeiros 5 km</h1>
-      </div>
-    </header>
 
-    <section class="progress-hero-card">
-      <div class="hero-top">
-        <div>
-          <span class="kicker">Progresso Geral</span>
-          <h2 class="hero-stat-txt">Semana {{ selectedWeek }} de 6</h2>
-        </div>
-        <div class="completion-pill">
-          <strong>22%</strong> concluído
-        </div>
-      </div>
-
-      <div class="progress-track">
-        <div class="progress-fill" style="width: 22%"></div>
-      </div>
-
-      <div class="hero-details-row">
-        <span>Meta: <strong>3 treinos por semana</strong></span>
-        <span>Foco: <strong>Base Aeróbica (Z2)</strong></span>
-      </div>
-    </section>
-
-    <section class="weeks-carousel-section">
-      <h3 class="section-subheading">Escolha a Semana:</h3>
-      <div class="weeks-scroll">
+      <div class="weeks-selector-inline">
         @for (week of weeks; track week) {
-          <button 
-            type="button" 
-            class="week-chip" 
+          <button
+            type="button"
+            class="week-pill-mini"
             [class.selected]="selectedWeek === week"
-            [class.is-current]="week === 2"
             (click)="selectWeek(week)">
-            <span class="week-chip-title">Semana {{ week }}</span>
-            <span class="week-chip-sub">
-              {{ week === 2 ? 'Atual' : (week < 2 ? 'Concluída' : 'Futura') }}
-            </span>
+            Semana {{ week }}
           </button>
         }
       </div>
-    </section>
+    </header>
 
-    <section class="schedule-days-list">
-      <h3 class="section-subheading">Rotina da Semana {{ selectedWeek }}:</h3>
-
-      @for (session of currentWeekSessions; track session.dayName) {
-        <div 
-          class="day-card" 
-          [class.is-rest]="session.dayType === 'rest'"
-          [class.is-today]="session.status === 'today'"
-          [class.is-done]="session.status === 'completed'">
-          
-          <div class="day-card-head">
-            <div class="day-badge-wrap">
-              <span class="day-name">{{ session.dayName }}</span>
-              @if (session.status === 'today') {
-                <span class="today-tag">Treino de Hoje</span>
+    @if (activeSession; as session) {
+      <div class="workout-switcher-bar">
+        <div class="workout-tabs">
+          @for (item of workoutSessions; track item.dayName; let i = $index) {
+            <button
+              type="button"
+              class="workout-tab-pill"
+              [class.active]="selectedWorkoutIndex === i"
+              [class.done]="item.status === 'completed'"
+              (click)="selectWorkout(i)">
+              <span>Treino {{ i + 1 }} • {{ item.dayName }}</span>
+              @if (item.status === 'completed') {
+                <ion-icon name="checkmark-circle"></ion-icon>
               }
+            </button>
+          }
+        </div>
+
+        <div class="workout-arrows">
+          <button
+            type="button"
+            class="arrow-nav-btn"
+            [disabled]="selectedWorkoutIndex === 0"
+            (click)="prevWorkout()">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </button>
+          <span class="counter-lbl">{{ selectedWorkoutIndex + 1 }} de {{ workoutSessions.length }}</span>
+          <button
+            type="button"
+            class="arrow-nav-btn"
+            [disabled]="selectedWorkoutIndex === workoutSessions.length - 1"
+            (click)="nextWorkout()">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <section class="session-detail-hero">
+        <div class="hero-left-info">
+          <span class="session-kicker-badge">SEMANA {{ selectedWeek }} • TREINO {{ selectedWorkoutIndex + 1 }} ({{ session.dayName }})</span>
+          <h1 class="plan-headline">{{ session.title }}</h1>
+          <p class="session-subtitle">{{ session.purpose }}</p>
+        </div>
+
+        <div class="zone-circle-badge" [style.border-color]="session.zoneColor + '55'" [style.background-color]="session.zoneColor + '18'">
+          <strong [style.color]="session.zoneColor">{{ session.targetZone.split(' ')[0] }}</strong>
+          <span>Zona Alvo</span>
+        </div>
+      </section>
+
+      <section class="metrics-strip-card">
+        <div class="metric-col">
+          <div class="metric-icon-box">
+            <ion-icon name="time-outline"></ion-icon>
+          </div>
+          <div>
+            <span class="metric-lbl">DURAÇÃO</span>
+            <strong class="metric-val">{{ session.durationMinutes }} minutos</strong>
+          </div>
+        </div>
+
+        <div class="metric-divider"></div>
+
+        <div class="metric-col">
+          <div class="metric-icon-box">
+            <ion-icon name="pulse-outline"></ion-icon>
+          </div>
+          <div>
+            <span class="metric-lbl">INTENSIDADE</span>
+            <strong class="metric-val">Moderada</strong>
+          </div>
+        </div>
+
+        <div class="metric-divider"></div>
+
+        <div class="metric-col">
+          <div class="metric-icon-box">
+            <ion-icon name="happy-outline"></ion-icon>
+          </div>
+          <div>
+            <span class="metric-lbl">SENSAÇÃO</span>
+            <strong class="metric-val">Confortável forte</strong>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-two-col-grid">
+        <section class="clean-panel steps-panel">
+          <span class="micro-eyebrow orange-eyebrow">PASSO A PASSO</span>
+          <h2 class="panel-heading">Como executar este treino</h2>
+
+          <div class="steps-list">
+            <div class="step-row-card">
+              <div class="step-num-box">01</div>
+              <div class="step-body">
+                <div class="step-top-line">
+                  <strong>Aquecimento</strong>
+                  <span class="step-time-tag">5 minutos</span>
+                </div>
+                <p>Comece com 5 minutos de caminhada ativa. Depois, trote bem leve por 3 minutos. O corpo deve aquecer sem pressa.</p>
+              </div>
             </div>
 
-            @if (session.status === 'completed') {
-              <div class="status-indicator done">
-                <ion-icon name="checkmark-circle"></ion-icon>
-                <span>Concluído</span>
+            <div class="step-row-card highlight">
+              <div class="step-num-box orange">02</div>
+              <div class="step-body">
+                <div class="step-top-line">
+                  <strong>Parte principal</strong>
+                  <span class="step-time-tag orange">Bloco principal</span>
+                </div>
+                <p>{{ session.structure }}</p>
               </div>
-            } @else if (session.status === 'rest') {
-              <div class="status-indicator rest">
-                <ion-icon name="bed-outline"></ion-icon>
-                <span>Descanso</span>
+            </div>
+
+            <div class="step-row-card">
+              <div class="step-num-box">03</div>
+              <div class="step-body">
+                <div class="step-top-line">
+                  <strong>Volta à calma</strong>
+                  <span class="step-time-tag">5 minutos</span>
+                </div>
+                <p>Reduza aos poucos. Trote leve por 2 minutos e finalize com 3 minutos de caminhada confortável.</p>
               </div>
-            }
+            </div>
+          </div>
+        </section>
+
+        <aside class="detail-side-stack">
+          <div class="clean-panel intensity-panel">
+            <span class="micro-eyebrow orange-eyebrow">ENTENDA A INTENSIDADE</span>
+            <h3 class="side-panel-title">Como deve parecer?</h3>
+
+            <div class="rpe-bars-grid">
+              <div class="rpe-item">
+                <span class="rpe-bar active-green"></span>
+                <small>Muito leve</small>
+              </div>
+              <div class="rpe-item">
+                <span class="rpe-bar active-green"></span>
+                <small>Leve</small>
+              </div>
+              <div class="rpe-item">
+                <span class="rpe-bar active-amber"></span>
+                <small>Moderado</small>
+              </div>
+              <div class="rpe-item">
+                <span class="rpe-bar"></span>
+                <small>Forte</small>
+              </div>
+              <div class="rpe-item">
+                <span class="rpe-bar"></span>
+                <small>Máximo</small>
+              </div>
+            </div>
+
+            <p class="intensity-desc">
+              Respiração mais presente, mas controlada. Você consegue falar frases curtas sem ficar ofegante.
+            </p>
           </div>
 
-          <h4 class="session-title">{{ session.title }}</h4>
-
-          @if (session.dayType === 'workout') {
-            <div class="session-metrics-row">
-              <div class="metric-chip">
-                <ion-icon name="time-outline"></ion-icon>
-                <span>{{ session.durationMinutes }} minutos</span>
-              </div>
-              <div class="zone-chip" [style.background-color]="session.zoneColor">
-                {{ session.targetZone }}
-              </div>
+          <div class="clean-panel why-panel">
+            <div class="why-icon-circle">
+              <ion-icon name="bulb-outline"></ion-icon>
             </div>
+            <h4 class="why-title">Por que este treino importa?</h4>
+            <p class="why-desc">{{ session.purpose }}</p>
+          </div>
 
-            <div class="session-structure-box">
-              <span class="box-lbl">Passo a passo:</span>
-              <p>{{ session.structure }}</p>
-            </div>
-
-            <div class="session-purpose-box">
-              <ion-icon name="information-circle-outline"></ion-icon>
-              <span>{{ session.purpose }}</span>
-            </div>
-
-            <div class="workout-action-wrap" style="margin-top: 16px;">
-              @if (session.status !== 'completed') {
-                <ion-button expand="block" class="btn-primary-finish" (click)="completeSession(session)">
-                  <ion-icon slot="start" name="checkmark-circle"></ion-icon>
-                  <span>REGISTRAR TREINO</span>
-                </ion-button>
-              } @else {
-                <div class="congrats-banner" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(var(--ion-color-success-rgb), 0.1); border-radius: 12px;">
-                  <ion-icon name="checkmark-circle" style="font-size: 24px; color: var(--ion-color-success);"></ion-icon>
-                  <div>
-                    <strong style="display: block; font-size: 14px;">Treino concluído! 🎉</strong>
-                    <p style="margin: 0; font-size: 12px; opacity: 0.8;">Excelente constância. Continue firme.</p>
-                  </div>
-                </div>
-              }
-            </div>
-          } @else {
-            <p class="rest-desc">{{ session.purpose }}</p>
-          }
-
-        </div>
-      }
-    </section>
+          <div class="workout-action-wrap">
+            @if (session.status !== 'completed') {
+              <button type="button" class="btn-complete-workout" (click)="completeSession(session)">
+                <span>MARCAR COMO CONCLUÍDO</span>
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </button>
+            } @else {
+              <button type="button" class="btn-complete-workout is-completed" (click)="completeSession(session)">
+                <ion-icon name="checkmark-outline"></ion-icon>
+                <span>TREINO CONCLUÍDO</span>
+              </button>
+            }
+            <span class="action-helper-note">Você pode editar ou desfazer a qualquer momento.</span>
+          </div>
+        </aside>
+      </div>
+    }
 
   </div>
 </ion-content>
