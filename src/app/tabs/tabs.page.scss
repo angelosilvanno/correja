@@ -311,13 +311,30 @@
   }
 }
 
+@media (min-width: 769px) {
+  .correja-tabs {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+  }
+
+  .mobile-tab-bar {
+    display: none !important;
+  }
+
+  ion-tabs > .tabs-inner {
+    margin-left: 240px !important;
+    width: calc(100% - 240px) !important;
+  }
+}
+
 @media (max-width: 768px) {
   .desktop-sidebar {
     display: none !important;
   }
 
   .mobile-tab-bar {
-    display: flex;
+    display: flex !important;
     --background: #ffffff;
     --color: #71717a;
     --color-selected: #ff5a1f;

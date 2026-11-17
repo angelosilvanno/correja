@@ -5,9 +5,59 @@
 }
 
 .dashboard-shell {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 20px 24px 48px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.main-column,
+.side-column,
+.hero-plan-details,
+.clean-card,
+.active-plan-hero-card {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .dashboard-shell {
+    padding: 14px 16px 84px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .active-plan-hero-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .hero-route-visual {
+    height: 110px;
+  }
+
+  .plan-metrics-row {
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .section-header-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .workout-card-top {
+    flex-wrap: wrap;
+  }
+
+  .workout-steps-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 .top-utility-bar {
