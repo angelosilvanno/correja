@@ -1,99 +1,173 @@
 <ion-content [fullscreen]="true" class="zones-canvas">
   <div class="zones-viewport">
-    
-    <!-- Cabeçalho -->
+
     <header class="zones-header">
-      <div class="header-badge">
-        <ion-icon name="sparkles-outline"></ion-icon>
-        <span>EXERCÍCIOS</span>
-      </div>
-      <h1 class="header-title">Zonas de Treino</h1>
-      <p class="header-subtitle">
-        Cada zona tem um propósito no seu corpo. Veja como executar cada uma delas, com exercícios estruturados do nível iniciante ao avançado.
-      </p>
+      <h1 class="header-title">Zonas de treinamento</h1>
+      <p class="header-subtitle">Aprenda a reconhecer a intensidade pelo que seu corpo sente.</p>
     </header>
 
-    <!-- Barra de Filtro Interativo por Nível -->
-    <section class="level-filter-bar">
-      <span class="filter-label">Filtrar por nível:</span>
-      <div class="filter-buttons">
-        <button 
-          type="button" 
-          class="filter-chip" 
-          [class.active]="selectedLevel() === 'all'" 
-          (click)="setLevel('all')">
-          Todos os Níveis
-        </button>
-        <button 
-          type="button" 
-          class="filter-chip" 
-          [class.active]="selectedLevel() === 'iniciante'" 
-          (click)="setLevel('iniciante')">
-          🌱 Iniciante
-        </button>
-        <button 
-          type="button" 
-          class="filter-chip" 
-          [class.active]="selectedLevel() === 'intermediario'" 
-          (click)="setLevel('intermediario')">
-          ⚡ Intermediário
-        </button>
-        <button 
-          type="button" 
-          class="filter-chip" 
-          [class.active]="selectedLevel() === 'avancado'" 
-          (click)="setLevel('avancado')">
-          🔥 Avançado
-        </button>
+    <section class="zones-hero-banner">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">CORRA COM INTENÇÃO</span>
+        <h2 class="hero-headline">Cada ritmo tem um propósito.</h2>
+        <p class="hero-sub">Você não precisa de números complicados. Use sua respiração e sua fala para encontrar a zona certa.</p>
+      </div>
+
+      <div class="hero-bars-chart">
+        @for (z of zones; track z.id; let idx = $index) {
+          <button
+            type="button"
+            class="chart-bar-col"
+            [class.active]="activeZone().id === z.id"
+            (click)="selectZone(z)">
+            <span
+              class="bar-pillar"
+              [style.height.px]="34 + idx * 14"
+              [style.background-color]="z.colorHex">
+              {{ z.id }}
+            </span>
+          </button>
+        }
       </div>
     </section>
 
-    <!-- Grade Responsiva com os Cards e os Exercícios por Nível -->
-    <section class="zones-grid">
-      @for (zone of zones; track zone.id) {
-        <div class="zone-detailed-card" [class.highlighted-z2]="zone.id === 'Z2'">
-          
-          <!-- Cabeçalho da Zona -->
-          <div class="card-top-row">
-            <div class="zone-badge-pill" [style.background-color]="zone.colorHex" [style.color]="zone.textColorHex">
+    <section class="talk-test-callout">
+      <div class="callout-icon-circle">
+        <ion-icon name="chatbubble-outline"></ion-icon>
+      </div>
+      <div class="callout-copy">
+        <strong>O teste da fala</strong>
+        <p>É a forma mais simples de medir esforço: quanto mais difícil conversar, maior a intensidade. Ouça seu corpo.</p>
+      </div>
+    </section>
+
+    <section class="zones-interactive-split">
+      <div class="zones-selector-list">
+        @for (zone of zones; track zone.id) {
+          <button
+            type="button"
+            class="zone-nav-card"
+            [class.active]="activeZone().id === zone.id"
+            [style.--zone-color]="zone.colorHex"
+            (click)="selectZone(zone)">
+            <span
+              class="zone-square-pill"
+              [style.background-color]="zone.colorHex + '20'"
+              [style.color]="zone.colorHex">
               {{ zone.id }}
+            </span>
+
+            <div class="zone-nav-text">
+              <strong>{{ zone.name }}</strong>
+              <span>{{ zone.perceivedEffort }}</span>
             </div>
-            <div class="zone-name-block">
-              <div class="name-line">
-                <h3 class="zone-title">{{ zone.name }}</h3>
-                @if (zone.id === 'Z2') {
-                  <span class="star-pill">⭐ Mais Importante</span>
-                }
-              </div>
-              <span class="effort-indicator">
-                <ion-icon name="speedometer-outline"></ion-icon>
-                Esforço: <strong>{{ zone.perceivedEffort }}</strong>
+
+            <ion-icon name="chevron-forward-outline" class="zone-nav-arrow"></ion-icon>
+          </button>
+        }
+      </div>
+
+      @if (activeZone(); as currentZone) {
+        <div class="zone-detail-panel">
+          <div class="detail-panel-head">
+            <div
+              class="detail-zone-badge"
+              [style.background-color]="currentZone.colorHex + '22'"
+              [style.color]="currentZone.colorHex">
+              {{ currentZone.id }}
+            </div>
+
+            <div class="detail-title-group">
+              <span class="detail-effort-kicker" [style.color]="currentZone.colorHex">
+                {{ currentZone.perceivedEffort }}
               </span>
+              <h3 class="detail-zone-name">{{ currentZone.name }}</h3>
+            </div>
+
+            @if (currentZone.id === 'Z2') {
+              <span class="star-pill">Base recomendada</span>
+            }
+          </div>
+
+          <div class="detail-specs-grid">
+            <div class="spec-detail-box">
+              <div class="spec-lbl-row">
+                <ion-icon name="mic-outline"></ion-icon>
+                <span>SENSAÇÃO</span>
+              </div>
+              <p>{{ currentZone.talkTest }}</p>
+            </div>
+
+            <div class="spec-detail-box">
+              <div class="spec-lbl-row">
+                <ion-icon name="radio-button-on-outline"></ion-icon>
+                <span>OBJETIVO FISIOLÓGICO</span>
+              </div>
+              <p>{{ currentZone.tagline }}</p>
+            </div>
+
+            <div class="spec-detail-box">
+              <div class="spec-lbl-row">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>QUANDO USAR</span>
+              </div>
+              <p>{{ getWhenToUse(currentZone.id) }}</p>
+            </div>
+
+            <div class="spec-detail-box">
+              <div class="spec-lbl-row">
+                <ion-icon name="flash-outline"></ion-icon>
+                <span>EXEMPLO DE TREINO</span>
+              </div>
+              <p>{{ getWorkoutSummary(currentZone) }}</p>
             </div>
           </div>
 
-          <div class="tagline-box">
-            "{{ zone.tagline }}"
+          <div class="z2-reminder-box">
+            <strong>Lembre-se:</strong> a maior parte dos seus treinos será em Z1 e Z2. Correr leve também é treinar.
           </div>
 
-          <!-- Teste da Fala -->
-          <div class="insight-block talk-test-block">
-            <div class="block-label">
-              <ion-icon name="chatbubbles-outline"></ion-icon>
-              <span>TESTE DA FALA (COMO RECONHECER)</span>
-            </div>
-            <p class="block-text">{{ zone.talkTest }}</p>
-          </div>
-
-          <!-- SEÇÃO PRÁTICA: EXERCÍCIOS DO INICIANTE AO AVANÇADO -->
           <div class="workouts-prescription-block">
-            <div class="prescription-header">
-              <ion-icon name="fitness-outline"></ion-icon>
-              <span>EXERCÍCIOS PRÁTICOS:</span>
+            <div class="prescription-top-bar">
+              <div class="prescription-header">
+                <ion-icon name="fitness-outline"></ion-icon>
+                <span>EXERCÍCIOS POR NÍVEL</span>
+              </div>
+
+              <div class="filter-buttons">
+                <button
+                  type="button"
+                  class="filter-chip"
+                  [class.active]="selectedLevel() === 'all'"
+                  (click)="setLevel('all')">
+                  Todos
+                </button>
+                <button
+                  type="button"
+                  class="filter-chip"
+                  [class.active]="selectedLevel() === 'iniciante'"
+                  (click)="setLevel('iniciante')">
+                  Iniciante
+                </button>
+                <button
+                  type="button"
+                  class="filter-chip"
+                  [class.active]="selectedLevel() === 'intermediario'"
+                  (click)="setLevel('intermediario')">
+                  Intermediário
+                </button>
+                <button
+                  type="button"
+                  class="filter-chip"
+                  [class.active]="selectedLevel() === 'avancado'"
+                  (click)="setLevel('avancado')">
+                  Avançado
+                </button>
+              </div>
             </div>
 
             <div class="workout-items-list">
-              @for (workout of getFilteredWorkouts(zone.workoutExamples); track workout.workoutTitle) {
+              @for (workout of getFilteredWorkouts(currentZone.workoutExamples); track workout.workoutTitle) {
                 <div class="workout-level-card" [attr.data-level]="workout.level">
                   <div class="workout-card-head">
                     <span class="level-badge" [attr.data-level]="workout.level">
@@ -109,7 +183,6 @@
               }
             </div>
           </div>
-
         </div>
       }
     </section>
