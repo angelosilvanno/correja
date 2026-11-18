@@ -228,7 +228,7 @@ export class ProfilePage implements OnInit {
 
   public logout(): void {
     localStorage.removeItem(this.nameStorageKey);
-    this.router.navigate(['/auth']);
+    this.router.navigate(['/']);
   }
 
   private validateDraft(): boolean {
