@@ -1,52 +1,274 @@
 <ion-content [fullscreen]="true" class="page-canvas">
   <div class="app-viewport-container">
-    <header class="page-header">
-      <span class="micro-tag">Evolução Orientada</span>
-      <h1 class="page-title">Planos de Treino</h1>
-      <p class="page-desc">Escolha uma metodologia gradual para correr com saúde e constância.</p>
-    </header>
 
-    <div class="plans-list">
-      @for (plan of plans; track plan.id) {
-        <div class="plan-card" [class.is-active]="plan.active">
-          <div class="plan-head">
-            <div>
-              <span class="level-chip">{{ plan.level }}</span>
-              <h2 class="plan-title">{{ plan.title }}</h2>
-              <p class="plan-sub">{{ plan.subtitle }}</p>
-            </div>
-            @if (plan.active) {
-              <div class="active-tag">
-                <ion-icon name="checkmark-circle"></ion-icon> Em Andamento
-              </div>
-            }
+    @if (!selectedPlan) {
+      <header class="page-header">
+        <h1 class="page-title">Planos de treinamento</h1>
+        <p class="page-desc">Escolha seu próximo objetivo. Nós mostramos o caminho.</p>
+      </header>
+
+      <section class="progression-hero-banner">
+        <div class="hero-copy">
+          <span class="hero-eyebrow">EVOLUÇÃO PASSO A PASSO</span>
+          <h2 class="hero-headline">Do primeiro passo aos 21 km.</h2>
+          <p class="hero-sub">Programas estruturados para o seu momento, com orientação clara em cada sessão.</p>
+        </div>
+
+        <div class="hero-milestones">
+          <div class="milestone-node active">
+            <span class="node-circle">5 km</span>
           </div>
-
-          <div class="plan-meta">
-            <div class="meta-item">
-              <ion-icon name="time-outline"></ion-icon>
-              <span>{{ plan.durationWeeks }} semanas</span>
-            </div>
-            <div class="meta-divider">•</div>
-            <div class="meta-item">
-              <ion-icon name="flag-outline"></ion-icon>
-              <span>{{ plan.sessionsPerWeek }} treinos/sem</span>
-            </div>
+          <span class="milestone-line"></span>
+          <div class="milestone-node">
+            <span class="node-circle">10 km</span>
           </div>
-
-          <div class="plan-actions">
-            @if (plan.active) {
-              <ion-button expand="block" fill="outline" class="btn-manage" (click)="viewSchedule(plan.id)">
-                VER CRONOGRAMA
-              </ion-button>
-            } @else {
-              <ion-button expand="block" class="btn-start" (click)="viewSchedule(plan.id)">
-                ESCOLHER ESTE PLANO
-              </ion-button>
-            }
+          <span class="milestone-line"></span>
+          <div class="milestone-node">
+            <span class="node-circle">21 km</span>
           </div>
         </div>
-      }
-    </div>
+      </section>
+
+      <div class="section-bar-head">
+        <div>
+          <span class="micro-tag">ENCONTRE SEU PLANO</span>
+          <h2 class="section-heading">Qual é o seu próximo desafio?</h2>
+        </div>
+        <span class="plans-count-note">{{ plans.length }} programas disponíveis</span>
+      </div>
+
+      <div class="plans-list">
+        @for (plan of plans; track plan.id) {
+          <div class="plan-card" [class.is-active]="plan.active">
+            <div class="plan-card-top">
+              <span class="level-chip" [attr.data-level]="plan.level">{{ plan.level }}</span>
+              @if (plan.active) {
+                <span class="active-tag">PLANO ATUAL</span>
+              }
+            </div>
+
+            <div class="plan-distance-hero">
+              <strong>{{ getPlanDistanceNumber(plan) }}</strong>
+              <span>KM</span>
+            </div>
+
+            <h3 class="plan-title">{{ plan.title }}</h3>
+            <p class="plan-sub">{{ plan.subtitle }}</p>
+
+            <div class="plan-meta">
+              <div class="meta-item">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>{{ plan.durationWeeks }} semanas</span>
+              </div>
+              <div class="meta-item">
+                <ion-icon name="repeat-outline"></ion-icon>
+                <span>{{ plan.sessionsPerWeek }} treinos/semana</span>
+              </div>
+            </div>
+
+            <ul class="plan-highlights">
+              @for (item of getPlanHighlights(plan); track item) {
+                <li>
+                  <ion-icon name="checkmark-outline"></ion-icon>
+                  <span>{{ item }}</span>
+                </li>
+              }
+            </ul>
+
+            <div class="plan-actions">
+              @if (plan.active) {
+                <button type="button" class="btn-start" (click)="openPlanSchedule(plan)">
+                  <span>CONTINUAR PLANO</span>
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </button>
+              } @else {
+                <button type="button" class="btn-manage" (click)="openPlanSchedule(plan)">
+                  <span>CONHECER PLANO</span>
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="help-footer-banner">
+        <div class="help-left">
+          <div class="help-icon-circle">
+            <ion-icon name="help-circle-outline"></ion-icon>
+          </div>
+          <div>
+            <strong>Não sabe qual plano escolher?</strong>
+            <p>Se você está começando agora ou quer completar os 5 km com conforto, comece pelo <strong>Primeiros 5 km</strong>. Evoluir com segurança é sempre mais importante do que a rapidez.</p>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="schedule-back-bar">
+        <button type="button" class="back-plans-btn" (click)="closePlanSchedule()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+          <span>Todos os planos</span>
+        </button>
+
+        <div class="month-nav-pill">
+          <button type="button" class="month-arrow-btn" (click)="changeMonth(-1)">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </button>
+          <span class="current-month-label">{{ currentMonthYearLabel }}</span>
+          <button type="button" class="month-arrow-btn" (click)="changeMonth(1)">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <section class="selected-plan-dark-banner">
+        <div class="banner-main-info">
+          <span class="banner-status-badge">{{ selectedPlan.active ? 'EM ANDAMENTO' : selectedPlan.level }}</span>
+          <h1 class="banner-plan-title">{{ selectedPlan.title }}</h1>
+          <p class="banner-plan-desc">{{ selectedPlan.subtitle }} Cada treino explica o que fazer, como fazer e por que ele importa.</p>
+
+          <div class="banner-specs-row">
+            <div class="spec-box">
+              <div class="spec-icon"><ion-icon name="location-outline"></ion-icon></div>
+              <div>
+                <small>DISTÂNCIA</small>
+                <strong>{{ getPlanDistanceNumber(selectedPlan) }} km</strong>
+              </div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-icon"><ion-icon name="calendar-outline"></ion-icon></div>
+              <div>
+                <small>DURAÇÃO</small>
+                <strong>{{ selectedPlan.durationWeeks }} semanas</strong>
+              </div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-icon"><ion-icon name="repeat-outline"></ion-icon></div>
+              <div>
+                <small>FREQUÊNCIA</small>
+                <strong>{{ selectedPlan.sessionsPerWeek }}x por semana</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="banner-watermark">
+          <strong>{{ getPlanDistanceNumber(selectedPlan) }}</strong>
+          <span>KM</span>
+        </div>
+      </section>
+
+      <section class="schedule-controls-section">
+        <div class="controls-top-row">
+          <div>
+            <span class="micro-tag">CRONOGRAMA COMPLETO</span>
+            <h2 class="section-heading">Seu planejamento</h2>
+            <p class="controls-sub">Toque em um treino para ver todas as orientações.</p>
+          </div>
+
+          <div class="week-pagination">
+            <span class="week-label-eyebrow">SEMANA</span>
+            <div class="week-stepper">
+              <button type="button" [disabled]="selectedWeek === 1" (click)="selectWeek(selectedWeek - 1)">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+              </button>
+              <strong>{{ selectedWeek }} de {{ selectedPlan.durationWeeks }}</strong>
+              <button type="button" [disabled]="selectedWeek === selectedPlan.durationWeeks" (click)="selectWeek(selectedWeek + 1)">
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="weeks-strip">
+          @for (week of planWeeks; track week) {
+            <button
+              type="button"
+              class="week-square-btn"
+              [class.selected]="selectedWeek === week"
+              (click)="selectWeek(week)">
+              {{ week }}
+            </button>
+          }
+        </div>
+      </section>
+
+      <section class="month-days-strip-card">
+        <div class="month-days-scroll">
+          @for (dayItem of calendarDays; track dayItem.isoDate) {
+            <button
+              type="button"
+              class="calendar-day-pill"
+              [class.is-today]="dayItem.isToday"
+              [class.is-selected]="dayItem.isoDate === selectedDateIso"
+              (click)="selectCalendarDate(dayItem)">
+              <span class="cal-weekday">{{ dayItem.weekdayShort }}</span>
+              <strong class="cal-day-num">{{ dayItem.dayNumber }}</strong>
+              @if (dayItem.isToday) {
+                <span class="today-dot"></span>
+              }
+            </button>
+          }
+        </div>
+      </section>
+
+      <section class="week-sessions-panel">
+        <div class="week-panel-head">
+          <div>
+            <span class="micro-tag orange-tag">SEMANA {{ selectedWeek }}</span>
+            <h3 class="week-phase-title">{{ getWeekPhaseTitle(selectedWeek) }}</h3>
+          </div>
+
+          <div class="intensity-legend">
+            <span><i class="dot green"></i> Leve</span>
+            <span><i class="dot amber"></i> Moderado</span>
+            <span><i class="dot orange"></i> No seu ritmo</span>
+          </div>
+        </div>
+
+        <div class="sessions-rows-list">
+          @for (row of weekScheduleRows; track row.isoDate) {
+              <div class="session-day-row" role="button" tabindex="0" 
+              [class.is-today]="row.isToday" [class.is-selected]="row.isoDate === selectedDateIso"
+               [class.is-rest]="row.isRest" (click)="onSelectScheduleRow(row)" 
+              (keydown.enter)="onSelectScheduleRow(row)">
+              
+              <div class="row-date-col">
+                <span class="row-weekday">{{ row.weekdayShort }}</span>
+                <strong class="row-day">{{ row.dayNumber }}</strong>
+              </div>
+
+              <div class="row-type-icon" [class.rest]="row.isRest" [class.today]="row.isToday">
+                <ion-icon [name]="row.isRest ? 'moon-outline' : 'flash-outline'"></ion-icon>
+              </div>
+
+              <div class="row-info-col">
+                <strong>{{ row.title }}</strong>
+                <span>{{ row.subtitle }}</span>
+              </div>
+
+              <div class="row-meta-col">
+                <span>{{ row.durationLabel }}</span>
+              </div>
+
+              <div class="row-status-col">
+                @if (row.isToday) {
+                  <span class="badge-today">TREINO DE HOJE</span>
+                } @else if (row.status === 'completed') {
+                  <span class="badge-done">
+                    <ion-icon name="checkmark-circle"></ion-icon> CONCLUÍDO
+                  </span>
+                } @else {
+                  <span class="badge-upcoming">PREVISTO</span>
+                }
+              </div>
+
+              <ion-icon name="chevron-forward-outline" class="row-chevron"></ion-icon>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
   </div>
 </ion-content>
