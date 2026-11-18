@@ -1,160 +1,313 @@
 <ion-content [fullscreen]="true" class="profile-canvas">
   <div class="profile-viewport">
-    
+
     <header class="profile-header">
-      <div class="header-titles">
-        <span class="brand-pill">
-          <ion-icon name="sparkles-outline"></ion-icon> PAINEL DO ATLETA
-        </span>
-        <h1 class="page-title">Meu Perfil</h1>
-      </div>
-      <div class="streak-badge-top">
-        <ion-icon name="flame-outline"></ion-icon>
-        <span>2 Semanas de Hábito</span>
-      </div>
+      <h1 class="page-title">Meu perfil</h1>
+      <p class="page-subtitle">Seus dados, objetivos e preferências.</p>
     </header>
 
+    @if (feedbackMessage) {
+      <div class="feedback-toast-banner" [class.is-error]="feedbackType === 'error'">
+        <ion-icon [name]="feedbackType === 'error' ? 'alert-circle-outline' : 'checkmark-circle-outline'"></ion-icon>
+        <span>{{ feedbackMessage }}</span>
+      </div>
+    }
+
     <div class="profile-grid-layout">
-      
-      <!-- ===================================================================
-           COLUNA DA ESQUERDA
-           =================================================================== -->
+
       <div class="profile-left-col">
-        
+
         <section class="athlete-identity-card">
           <div class="avatar-ring-wrapper">
-            <div class="athlete-avatar">🏃</div>
-            <button type="button" class="avatar-edit-btn" (click)="editName()" title="Editar Nome">
-              <ion-icon name="create-outline"></ion-icon>
+            @if (profilePhotoUrl) {
+              <img [src]="profilePhotoUrl" [alt]="athleteName" class="athlete-avatar-img" />
+            } @else {
+              <div class="athlete-avatar-initials">{{ athleteInitials }}</div>
+            }
+          </div>
+
+          <h2 class="athlete-name">{{ athleteName }}</h2>
+
+          <span class="runner-level-pill">CORREDOR INICIANTE</span>
+
+          <input
+            #photoInput
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            class="hidden-file-input"
+            (change)="onPhotoSelected($event)" />
+
+          <div class="photo-actions-group">
+            <button type="button" class="btn-change-photo" (click)="triggerPhotoPicker(photoInput)">
+              <ion-icon name="camera-outline"></ion-icon>
+              <span>ALTERAR FOTO</span>
             </button>
-          </div>
 
-          <div class="name-edit-row">
-            <h2 class="athlete-name">{{ athleteName }}</h2>
-            <button type="button" class="btn-text-edit" (click)="editName()">Editar</button>
-          </div>
-          <span class="athlete-role">Membro CorreJa • Foco em Saúde e Base</span>
-
-          <!-- Acessível: agora é <button> em vez de <div> -->
-          <button type="button" class="active-plan-pill" (click)="goToPlans()" title="Ver Plano">
-            <span class="pulse-dot"></span>
-            <span>Plano Ativo: <strong>Primeiros 5 km</strong></span>
-            <ion-icon name="chevron-forward-outline"></ion-icon>
-          </button>
-
-          <div class="athlete-telemetry-grid">
-            <div class="telemetry-cell">
-              <span class="cell-num">14</span>
-              <span class="cell-lbl">Treinos</span>
-            </div>
-            <div class="cell-divider"></div>
-            <div class="telemetry-cell">
-              <span class="cell-num">6h 40m</span>
-              <span class="cell-lbl">Tempo Ativo</span>
-            </div>
-            <div class="cell-divider"></div>
-            <div class="telemetry-cell">
-              <span class="cell-num zone-highlight">Z2</span>
-              <span class="cell-lbl">Zona Média</span>
-            </div>
+            @if (pendingPhotoPreview) {
+              <div class="photo-confirm-bar">
+                <button type="button" class="btn-photo-cancel" (click)="cancelPhotoChange(photoInput)">Cancelar</button>
+                <button type="button" class="btn-photo-save" (click)="confirmPhotoChange(photoInput)">Salvar foto</button>
+              </div>
+            }
           </div>
         </section>
 
         <section class="goal-progress-card">
-          <div class="goal-card-top">
-            <div class="goal-icon-badge">
-              <ion-icon name="flame-outline"></ion-icon>
+          <span class="goal-micro">SEU OBJETIVO</span>
+
+          <div class="goal-plan-row">
+            <div class="goal-km-badge">
+              <strong>5</strong>
+              <span>KM</span>
             </div>
             <div class="goal-title-group">
-              <span class="goal-micro">META EM ANDAMENTO</span>
-              <strong class="goal-name">Correr 5 km direto com conforto</strong>
+              <strong class="goal-name">Primeiros 5 km</strong>
+              <span class="goal-sub">Semana 3 de 8</span>
             </div>
           </div>
 
           <div class="goal-meter-track">
-            <div class="goal-meter-fill" style="width: 35%"></div>
+            <div class="goal-meter-fill" style="width: 38%"></div>
           </div>
 
-          <div class="goal-details-footer">
-            <span>Adaptação pulmonar e articular</span>
-            <strong>35% concluído</strong>
-          </div>
+          <button type="button" class="btn-goal-link" (click)="goToPlans()">
+            <span>Ver meu plano</span>
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </button>
         </section>
 
       </div>
 
-      <!-- ===================================================================
-           COLUNA DA DIREITA
-           =================================================================== -->
       <div class="profile-right-col">
-        
-        <section class="settings-block">
-          <h3 class="block-heading">JORNADA & METODOLOGIA</h3>
+
+        <section class="info-panel-card">
+          <div class="panel-top-row">
+            <div>
+              <span class="micro-eyebrow">INFORMAÇÕES PESSOAIS</span>
+              <h3 class="panel-heading">Sobre você</h3>
+            </div>
+
+            @if (!isEditingProfile) {
+              <button type="button" class="btn-edit-outline" (click)="openEditForm()">
+                <ion-icon name="create-outline"></ion-icon>
+                <span>Editar</span>
+              </button>
+            }
+          </div>
+
+          @if (!isEditingProfile) {
+            <div class="personal-info-grid">
+              <div class="info-cell">
+                <span class="info-lbl">NOME COMPLETO</span>
+                <strong class="info-val">{{ profileForm.fullName }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">E-MAIL</span>
+                <strong class="info-val">{{ profileForm.email || 'Não informado' }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">IDADE</span>
+                <strong class="info-val">{{ profileForm.age ? profileForm.age + ' anos' : 'Não informada' }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">ALTURA</span>
+                <strong class="info-val">{{ profileForm.height || 'Não informada' }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">PESO</span>
+                <strong class="info-val">{{ profileForm.weight || 'Não informado' }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">EXPERIÊNCIA</span>
+                <strong class="info-val">{{ profileForm.experience }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">FREQUÊNCIA SEMANAL</span>
+                <strong class="info-val">{{ profileForm.weeklyFrequency }}</strong>
+              </div>
+
+              <div class="info-cell">
+                <span class="info-lbl">DISTÂNCIA OBJETIVO</span>
+                <strong class="info-val">{{ profileForm.targetDistance }}</strong>
+              </div>
+            </div>
+          } @else {
+            <form class="edit-profile-form" (ngSubmit)="saveProfileChanges()">
+              <div class="form-fields-grid">
+                <div class="form-group">
+                  <label for="fullName">Nome completo *</label>
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    [(ngModel)]="editDraft.fullName"
+                    required />
+                  @if (validationErrors['fullName']) {
+                    <span class="field-error">{{ validationErrors['fullName'] }}</span>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="email">E-mail *</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    [(ngModel)]="editDraft.email"
+                    required />
+                  @if (validationErrors['email']) {
+                    <span class="field-error">{{ validationErrors['email'] }}</span>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Telefone</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    [(ngModel)]="editDraft.phone" />
+                </div>
+
+                <div class="form-group">
+                  <label for="city">Cidade</label>
+                  <input
+                    id="city"
+                    name="city"
+                    type="text"
+                    [(ngModel)]="editDraft.city" />
+                </div>
+
+                <div class="form-group">
+                  <label for="age">Idade</label>
+                  <input
+                    id="age"
+                    name="age"
+                    type="number"
+                    min="10"
+                    max="110"
+                    [(ngModel)]="editDraft.age" />
+                  @if (validationErrors['age']) {
+                    <span class="field-error">{{ validationErrors['age'] }}</span>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="height">Altura</label>
+                  <input
+                    id="height"
+                    name="height"
+                    type="text"
+                    [(ngModel)]="editDraft.height" />
+                </div>
+
+                <div class="form-group">
+                  <label for="weight">Peso</label>
+                  <input
+                    id="weight"
+                    name="weight"
+                    type="text"
+                    [(ngModel)]="editDraft.weight" />
+                </div>
+
+                <div class="form-group">
+                  <label for="experience">Experiência</label>
+                  <select id="experience" name="experience" [(ngModel)]="editDraft.experience">
+                    <option value="Estou começando">Estou começando</option>
+                    <option value="Corro ocasionalmente">Corro ocasionalmente</option>
+                    <option value="Corredor intermediário">Corredor intermediário</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="weeklyFrequency">Frequência semanal</label>
+                  <select id="weeklyFrequency" name="weeklyFrequency" [(ngModel)]="editDraft.weeklyFrequency">
+                    <option value="2 vezes por semana">2 vezes por semana</option>
+                    <option value="3 vezes por semana">3 vezes por semana</option>
+                    <option value="4 vezes por semana">4 vezes por semana</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="targetDistance">Distância objetivo</label>
+                  <select id="targetDistance" name="targetDistance" [(ngModel)]="editDraft.targetDistance">
+                    <option value="5 km">5 km</option>
+                    <option value="10 km">10 km</option>
+                    <option value="21 km">21 km</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-actions-bar">
+                <button type="button" class="btn-form-cancel" (click)="cancelEditForm()">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn-form-save">
+                  Salvar alterações
+                </button>
+              </div>
+            </form>
+          }
+        </section>
+
+        <section class="info-panel-card settings-panel">
+          <span class="micro-eyebrow">CONTA E PREFERÊNCIAS</span>
+          <h3 class="panel-heading">Configurações</h3>
+
           <div class="settings-card-menu">
-            
-            <!-- Acessível: agora é <button> em vez de <div> -->
-            <button type="button" class="menu-action-row" (click)="goToZones()">
-              <div class="row-icon-box icon-blue">
-                <ion-icon name="speedometer-outline"></ion-icon>
+            <div class="menu-action-row no-hover">
+              <div class="row-icon-box">
+                <ion-icon name="notifications-outline"></ion-icon>
               </div>
               <div class="row-info">
-                <strong class="row-title">Minhas Zonas de Treino</strong>
-                <span class="row-sub">Z1 a Z5 e calibração pelo Teste da Fala</span>
+                <strong class="row-title">Notificações</strong>
+                <span class="row-sub">Lembretes de treinos</span>
+              </div>
+              <ion-toggle
+                [(ngModel)]="notificationsEnabled"
+                (ionChange)="onToggleNotifications()"
+                aria-label="Notificações">
+              </ion-toggle>
+            </div>
+
+            <button type="button" class="menu-action-row" (click)="openEditForm()">
+              <div class="row-icon-box">
+                <ion-icon name="person-outline"></ion-icon>
+              </div>
+              <div class="row-info">
+                <strong class="row-title">Editar informações pessoais</strong>
+                <span class="row-sub">Nome, dados físicos, objetivo</span>
               </div>
               <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
             </button>
 
-            <div class="menu-action-row">
-              <div class="row-icon-box icon-gold">
-                <ion-icon name="trophy-outline"></ion-icon>
+            <button type="button" class="menu-action-row" (click)="goToZones()">
+              <div class="row-icon-box">
+                <ion-icon name="options-outline"></ion-icon>
               </div>
               <div class="row-info">
-                <strong class="row-title">Conquistas e Hábitos</strong>
-                <span class="row-sub">3 medalhas de disciplina desbloqueadas</span>
+                <strong class="row-title">Preferências de treinamento</strong>
+                <span class="row-sub">Zonas, frequência e ritmo</span>
               </div>
               <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
-            </div>
+            </button>
 
-            <div class="menu-action-row">
-              <div class="row-icon-box icon-emerald">
-                <ion-icon name="pulse-outline"></ion-icon>
+            <button type="button" class="menu-action-row" (click)="goToPlans()">
+              <div class="row-icon-box">
+                <ion-icon name="calendar-outline"></ion-icon>
               </div>
               <div class="row-info">
-                <strong class="row-title">Histórico de Percepção</strong>
-                <span class="row-sub">Sensações de esforço registradas pós-treino</span>
+                <strong class="row-title">Meu cronograma ativo</strong>
+                <span class="row-sub">Acompanhar semanas e sessões</span>
               </div>
               <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
-            </div>
-
-          </div>
-        </section>
-
-        <section class="settings-block">
-          <h3 class="block-heading">PREFERÊNCIAS & CONEXÕES</h3>
-          <div class="settings-card-menu">
-            
-            <div class="menu-action-row">
-              <div class="row-icon-box icon-slate">
-                <ion-icon name="notifications-outline"></ion-icon>
-              </div>
-              <div class="row-info">
-                <strong class="row-title">Lembretes de Rotina</strong>
-                <span class="row-sub">Ter, Qui e Sáb às 07:00</span>
-              </div>
-              <ion-icon class="arrow-right" name="chevron-forward-outline"></ion-icon>
-            </div>
-
-            <div class="menu-action-row">
-              <div class="row-icon-box icon-orange">
-                <ion-icon name="time-outline"></ion-icon>
-              </div>
-              <div class="row-info">
-                <strong class="row-title">Importação Strava (Fase 5)</strong>
-                <span class="row-sub">Leitura passiva dos treinos gravados</span>
-              </div>
-              <span class="status-pill-soon">EM BREVE</span>
-            </div>
-
+            </button>
           </div>
         </section>
 
@@ -163,7 +316,7 @@
             <ion-icon name="log-out-outline"></ion-icon>
             <span>Sair da conta</span>
           </button>
-          <span class="version-label">CorreJa v1.0.0 • Treine com propósito</span>
+          <span class="version-label">CorreJa v1.0.0</span>
         </footer>
 
       </div>
