@@ -368,3 +368,150 @@
     font-size: 22px;
   }
 }
+
+@media (max-width: 992px) {
+  .auth-split-layout {
+    flex-direction: column;
+    min-height: 100vh;
+    background: #111111;
+  }
+
+  .brand-showcase-pane {
+    flex: 0 0 auto;
+    min-height: auto;
+    padding: calc(20px + env(safe-area-inset-top, 0px)) 24px 36px;
+  }
+
+  .brand-content-wrap {
+    margin: 0;
+    gap: 14px;
+    max-width: 100%;
+  }
+
+  .logo-wrap {
+    margin-bottom: 4px;
+  }
+
+  .brand-kicker {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    margin-bottom: 6px;
+  }
+
+  .brand-headline {
+    font-size: 23px;
+    line-height: 1.22;
+    margin: 0;
+  }
+
+  .brand-sub,
+  .brand-footer-note {
+    display: none;
+  }
+
+  .form-pane {
+    flex: 1;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 26px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+    margin-top: -18px;
+    border-radius: 22px 22px 0 0;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 3;
+  }
+
+  .form-container-box {
+    max-width: 100%;
+  }
+
+  .form-top-header {
+    margin-bottom: 20px;
+
+    .form-eyebrow {
+      font-size: 10.5px;
+      margin-bottom: 4px;
+    }
+
+    .form-main-title {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .form-desc {
+      font-size: 13.5px;
+    }
+  }
+
+  .form-content {
+    gap: 16px;
+  }
+
+  .field-group {
+    gap: 5px;
+
+    label {
+      font-size: 12.5px;
+    }
+  }
+
+  .input-box {
+    height: 46px;
+    padding: 0 13px;
+
+    ion-icon {
+      font-size: 17px;
+      margin-right: 10px;
+    }
+
+    input {
+      font-size: 14px;
+    }
+  }
+
+  .terms-checkbox-row {
+    margin: 2px 0;
+  }
+
+  .btn-primary-action {
+    height: 48px;
+    margin-top: 6px;
+  }
+
+  .form-switch-footer {
+    margin-top: 18px;
+  }
+}
+
+
+@media (max-width: 992px) {
+  .auth-split-layout.is-login-view {
+    .brand-showcase-pane {
+      padding: calc(34px + env(safe-area-inset-top, 0px)) 24px 52px;
+    }
+
+    .brand-content-wrap {
+      gap: 18px;
+    }
+
+    .logo-wrap {
+      margin-bottom: 8px;
+    }
+
+    .brand-headline {
+      font-size: 27px;
+      line-height: 1.18;
+    }
+
+    .brand-sub {
+      display: block;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .form-pane {
+      padding: 32px 24px calc(32px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+}
