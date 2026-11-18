@@ -55,6 +55,13 @@
           }
         </header>
 
+        @if (authFeedbackMessage) {
+          <div class="auth-feedback-alert" [class.is-error]="authFeedbackType === 'error'">
+            <ion-icon [name]="authFeedbackType === 'error' ? 'alert-circle-outline' : 'checkmark-circle-outline'"></ion-icon>
+            <span>{{ authFeedbackMessage }}</span>
+          </div>
+        }
+
         @if (isLoginMode) {
           <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="form-content">
             <div class="field-group">
@@ -117,7 +124,7 @@
                   autocomplete="name" />
               </div>
               @if (registerForm.get('name')?.touched && registerForm.get('name')?.invalid) {
-                <span class="input-error">Por favor, informe seu nome</span>
+                <span class="input-error">Por favor, informe seu nome completo</span>
               }
             </div>
 
@@ -151,7 +158,7 @@
                 </button>
               </div>
               @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
-                <span class="input-error">A senha precisa ter no mínimo 6 caracteres</span>
+                <span class="input-error">A senha precisa ter no mínimo 8 caracteres</span>
               }
             </div>
 
@@ -161,19 +168,30 @@
                 <ion-icon name="lock-closed-outline"></ion-icon>
                 <input
                   id="reg-pass-confirm"
-                  type="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="confirmPassword"
                   placeholder="Digite novamente" />
               </div>
+              @if (registerForm.get('confirmPassword')?.touched && registerForm.hasError('passwordMismatch')) {
+                <span class="input-error">As senhas não coincidem</span>
+              }
             </div>
 
             <div class="terms-checkbox-row">
               <label class="checkbox-label">
-                <input type="checkbox" required />
+                <input type="checkbox" formControlName="acceptTerms" />
                 <span>Li e aceito os <a href="#" (click)="$event.preventDefault()">Termos de uso</a> e a <a href="#" (click)="$event.preventDefault()">Política de privacidade</a>.</span>
               </label>
+              @if (registerForm.get('acceptTerms')?.touched && registerForm.get('acceptTerms')?.invalid) {
+                <span class="input-error">É obrigatório aceitar os Termos de uso e a Política de privacidade</span>
+              }
             </div>
 
-            <ion-button expand="block" type="submit" class="btn-primary-action">
+            <ion-button
+              expand="block"
+              type="submit"
+              class="btn-primary-action"
+              [disabled]="registerForm.invalid">
               <span>CRIAR CONTA</span>
               <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
             </ion-button>
