@@ -24,7 +24,6 @@
   position: relative;
   overflow: hidden;
 
-  // Detalhe sutil de gradiente ao fundo igual ao protótipo
   &::after {
     content: '';
     position: absolute;
@@ -52,10 +51,55 @@
   gap: 32px;
 }
 
-.brand-logo {
-  height: 36px;
-  width: auto;
-  object-fit: contain;
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.brand-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+}
+
+.brand-logo-stripes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transform: skewX(-18deg);
+
+  .stripe {
+    display: block;
+    height: 5px;
+    border-radius: 3px;
+    background: #ff5a1f;
+
+    &.s1 {
+      width: 26px;
+    }
+
+    &.s2 {
+      width: 21px;
+    }
+
+    &.s3 {
+      width: 16px;
+    }
+  }
+}
+
+.brand-logo-text {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: #ffffff;
+
+  .brand-accent {
+    color: #ff5a1f;
+  }
 }
 
 .brand-kicker {
@@ -273,7 +317,7 @@
 
 .terms-checkbox-row {
   margin: 4px 0;
-  
+
   .checkbox-label {
     display: flex;
     align-items: flex-start;
@@ -317,4 +361,10 @@
 .recovery-link-btn {
   font-size: 12px;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .brand-logo-text {
+    font-size: 22px;
+  }
 }

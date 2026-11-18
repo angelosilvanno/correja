@@ -1,16 +1,22 @@
 <ion-content [fullscreen]="true" class="auth-canvas">
   <div class="auth-split-layout">
-    
-    <!-- Painel Esquerdo: Identidade Dinâmica (Muda conforme Login ou Cadastro) -->
+
     <div class="brand-showcase-pane">
       <div class="brand-content-wrap">
         <div class="logo-wrap">
-          <img src="assets/logo.png" alt="CorreJa" class="brand-logo" />
+          <div class="brand-logo-mark" aria-label="CorreJa">
+            <div class="brand-logo-stripes">
+              <span class="stripe s1"></span>
+              <span class="stripe s2"></span>
+              <span class="stripe s3"></span>
+            </div>
+            <span class="brand-logo-text">Corre<span class="brand-accent">Ja</span></span>
+          </div>
         </div>
-        
+
         <div class="brand-text-block">
           <span class="brand-kicker">CORREJA • TREINADOR DIGITAL</span>
-          
+
           @if (isLoginMode) {
             <h1 class="brand-headline">
               Sua evolução começa com o <span>próximo passo.</span>
@@ -34,10 +40,9 @@
       </div>
     </div>
 
-    <!-- Painel Direito: Formulário de Acesso / Cadastro -->
     <div class="form-pane">
       <div class="form-container-box">
-        
+
         <header class="form-top-header">
           @if (isLoginMode) {
             <span class="form-eyebrow">BEM-VINDO DE VOLTA</span>
@@ -50,18 +55,17 @@
           }
         </header>
 
-        <!-- Formulário: Entrar -->
         @if (isLoginMode) {
           <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="form-content">
             <div class="field-group">
               <label for="email-in">E-mail</label>
               <div class="input-box">
                 <ion-icon name="mail-outline"></ion-icon>
-                <input 
+                <input
                   id="email-in"
-                  type="email" 
-                  formControlName="email" 
-                  placeholder="voce@email.com" 
+                  type="email"
+                  formControlName="email"
+                  placeholder="voce@email.com"
                   autocomplete="email" />
               </div>
               @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
@@ -78,10 +82,10 @@
               </div>
               <div class="input-box">
                 <ion-icon name="lock-closed-outline"></ion-icon>
-                <input 
+                <input
                   id="pass-in"
-                  [type]="showPassword ? 'text' : 'password'" 
-                  formControlName="password" 
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
                   placeholder="Digite sua senha" />
                 <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
                   <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
@@ -99,18 +103,17 @@
           </form>
         }
 
-        <!-- Formulário: Criar Conta -->
         @if (!isLoginMode) {
           <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="form-content">
             <div class="field-group">
               <label for="reg-name">Nome completo</label>
               <div class="input-box">
                 <ion-icon name="person-outline"></ion-icon>
-                <input 
+                <input
                   id="reg-name"
-                  type="text" 
-                  formControlName="name" 
-                  placeholder="Como podemos chamar você?" 
+                  type="text"
+                  formControlName="name"
+                  placeholder="Como podemos chamar você?"
                   autocomplete="name" />
               </div>
               @if (registerForm.get('name')?.touched && registerForm.get('name')?.invalid) {
@@ -122,11 +125,11 @@
               <label for="reg-email">E-mail</label>
               <div class="input-box">
                 <ion-icon name="mail-outline"></ion-icon>
-                <input 
+                <input
                   id="reg-email"
-                  type="email" 
-                  formControlName="email" 
-                  placeholder="voce@email.com" 
+                  type="email"
+                  formControlName="email"
+                  placeholder="voce@email.com"
                   autocomplete="email" />
               </div>
               @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
@@ -138,10 +141,10 @@
               <label for="reg-pass">Senha</label>
               <div class="input-box">
                 <ion-icon name="lock-closed-outline"></ion-icon>
-                <input 
+                <input
                   id="reg-pass"
-                  [type]="showPassword ? 'text' : 'password'" 
-                  formControlName="password" 
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
                   placeholder="Mínimo de 8 caracteres" />
                 <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
                   <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
@@ -156,9 +159,9 @@
               <label for="reg-pass-confirm">Confirme sua senha</label>
               <div class="input-box">
                 <ion-icon name="lock-closed-outline"></ion-icon>
-                <input 
+                <input
                   id="reg-pass-confirm"
-                  type="password" 
+                  type="password"
                   placeholder="Digite novamente" />
               </div>
             </div>
