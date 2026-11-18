@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import type { OnInit } from '@angular/core';
 import { Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { IonButton, IonContent, IonIcon } from '@ionic/angular';
+import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   arrowForwardOutline,
@@ -24,10 +24,11 @@ import {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule, IonContent, IonIcon, IonButton]
+  imports: [CommonModule, RouterModule, IonContent, IonIcon]
 })
 export class DashboardPage implements OnInit {
   athleteName = '';
+  profilePhotoUrl: string | null = null;
 
   progress = signal({
     completedCount: 3,
@@ -102,6 +103,11 @@ export class DashboardPage implements OnInit {
     const savedName = localStorage.getItem('correja_user_name');
     if (savedName) {
       this.athleteName = savedName.trim();
+    }
+
+    const savedPhoto = localStorage.getItem('correja_user_photo');
+    if (savedPhoto) {
+      this.profilePhotoUrl = savedPhoto;
     }
   }
 
