@@ -1,20 +1,18 @@
-.correja-tabs {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-}
-
 .desktop-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 240px;
   min-width: 240px;
-  height: 100vh;
   background: #ffffff;
   border-right: 1px solid #f0f0ee;
   padding: 24px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 10;
+  z-index: 100;
+  box-sizing: border-box;
 }
 
 .brand-header {
@@ -183,134 +181,6 @@
   flex-shrink: 0;
 }
 
-.mobile-tab-bar {
-  display: none;
-  --background: rgba(255, 255, 255, 0.96);
-  --color: #71717a;
-  --color-selected: #ff5a1f;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid #f0f0ee;
-  height: 60px;
-  padding-bottom: env(safe-area-inset-bottom, 6px);
-
-  ion-tab-button {
-    --color: #71717a;
-    --color-selected: #ff5a1f;
-    font-weight: 700;
-    font-size: 0.72rem;
-
-    ion-icon {
-      font-size: 1.35rem;
-      margin-bottom: 2px;
-    }
-  }
-}
-
-@media (min-width: 769px) {
-  .mobile-tab-bar {
-    display: none !important;
-  }
-
-  .desktop-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 9999;
-
-    .sidebar-brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 10px 18px;
-      border-bottom: 1px solid #f1f5f9;
-
-      .brand-logo-img {
-        max-width: 190px;
-        height: auto;
-        max-height: 70px;
-        object-fit: contain;
-      }
-    }
-
-    .sidebar-nav {
-      .sidebar-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        height: 42px;
-        padding: 0 14px;
-        border-radius: 10px;
-        text-decoration: none;
-        color: #64748b;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: all 0.15s ease;
-
-        ion-icon {
-          font-size: 1.25rem;
-          color: inherit;
-        }
-
-        &:hover {
-          background: #f8fafc;
-          color: #0f172a;
-        }
-
-        &.active {
-          background: #fff4ed;
-          color: #ff5a1f;
-          font-weight: 800;
-        }
-      }
-    }
-
-    .sidebar-footer {
-      border-top: 1px solid #f1f5f9;
-      padding-top: 14px;
-
-      .user-chip {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 10px;
-        background: #f8fafc;
-        border: 1px solid #edf2f7;
-        border-radius: 12px;
-
-        .user-avatar {
-          width: 32px;
-          height: 32px;
-          background: #fff4ed;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1rem;
-        }
-
-        .user-name {
-          display: block;
-          font-size: 0.8rem;
-          color: #0f172a;
-        }
-
-        .user-status {
-          font-size: 0.7rem;
-          font-weight: 700;
-          color: #10b981;
-        }
-      }
-    }
-  }
-
-  ion-router-outlet {
-    margin-left: 240px;
-    width: calc(100% - 240px);
-  }
-}
-
 @media (min-width: 769px) {
   .correja-tabs {
     display: flex;
@@ -322,9 +192,9 @@
     display: none !important;
   }
 
-  ion-tabs > .tabs-inner {
-    margin-left: 240px !important;
-    width: calc(100% - 240px) !important;
+  ion-router-outlet {
+    margin-left: 240px;
+    width: calc(100% - 240px);
   }
 }
 
@@ -333,11 +203,35 @@
     display: none !important;
   }
 
-  .mobile-tab-bar {
+  ion-tab-bar.mobile-tab-bar {
     display: flex !important;
-    --background: #ffffff;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: calc(62px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --background: rgba(255, 255, 255, 0.96);
     --color: #71717a;
     --color-selected: #ff5a1f;
-    border-top: 1px solid #f0f0ee;
+    --border: 1px solid #f0f0ee;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 9999;
+
+    ion-tab-button {
+      --color: #71717a;
+      --color-selected: #ff5a1f;
+      --padding-top: 6px;
+      --padding-bottom: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+
+      ion-icon {
+        font-size: 1.35rem;
+        margin-bottom: 2px;
+      }
+    }
   }
 }
