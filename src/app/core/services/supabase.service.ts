@@ -154,8 +154,20 @@ export class SupabaseService {
 
     const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
 
+    // Garante que full_name e email estejam preenchidos caso a linha ainda não exista em 'profiles'
+    const existingProfile = await this.getProfile();
+    const fallbackName =
+      existingProfile?.full_name ||
+      (user.user_metadata?.['full_name'] as string | undefined) ||
+      localStorage.getItem('correja_user_name') ||
+      'Atleta CorreJa';
+
     await this.upsertProfile({
       id: user.id,
+      full_name: fallbackName,
+      email: existingProfile?.email || user.email || '',
+      level: existingProfile?.level || 'Iniciante',
+      active_plan_id: existingProfile?.active_plan_id || '5k',
       avatar_url: publicUrl,
     });
 
