@@ -92,6 +92,27 @@ export class SupabaseService {
     return data.user;
   }
 
+  async resetPassword(email: string): Promise<void> {
+    const redirectTo = `${window.location.origin}/`;
+    const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+    if (error) throw new Error(error.message);
+  }
+
+  async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await this.supabase.auth.updateUser({
+      password: newPassword,
+    });
+    if (error) throw new Error(error.message);
+  }
+
+  onAuthStateChange(callback: (event: string) => void): void {
+    this.supabase.auth.onAuthStateChange((event) => {
+      callback(event);
+    });
+  }
+
   // --- PERFIL DO ATLETA & AVATAR ---
   async getProfile(): Promise<RunnerProfile | null> {
     const user = await this.getCurrentUser();

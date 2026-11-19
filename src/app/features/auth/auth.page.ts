@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import type { OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import type {
   AbstractControl,
   FormGroup,
@@ -15,6 +16,7 @@ import { IonButton, IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   alertCircleOutline,
+  arrowBackOutline,
   arrowForwardOutline,
   checkmarkCircleOutline,
   eyeOffOutline,
@@ -30,6 +32,8 @@ import {
   SupabaseService
 } from '../../core/services/supabase.service';
 
+export type AuthViewMode = 'login' | 'register' | 'forgot' | 'reset';
+
 @Component({
   selector: 'app-auth',
   standalone: true,
@@ -37,14 +41,16 @@ import {
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss']
 })
-export class AuthPage {
+export class AuthPage implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private supabaseService = inject(SupabaseService);
+  private cdr = inject(ChangeDetectorRef);
 
   private readonly activeUserNameKey = 'correja_user_name';
   private readonly activeUserProfileKey = 'correja_user_profile';
 
+  authMode: AuthViewMode = 'login';
   isLoginMode = true;
   isSubmitting = false;
   showPassword = false;
@@ -68,9 +74,22 @@ export class AuthPage {
     { validators: this.passwordsMatchValidator }
   );
 
+  forgotForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]]
+  });
+
+  resetForm: FormGroup = this.fb.group(
+    {
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]]
+    },
+    { validators: this.passwordsMatchValidator }
+  );
+
   constructor() {
     addIcons({
       alertCircleOutline,
+      arrowBackOutline,
       arrowForwardOutline,
       checkmarkCircleOutline,
       eyeOffOutline,
@@ -81,14 +100,99 @@ export class AuthPage {
     });
   }
 
-  public toggleMode(mode: 'login' | 'register'): void {
+  public ngOnInit(): void {
+    // Detecta se o usuário abriu o app pelo link de recuperação enviado no e-mail
+    if (window.location.hash.includes('type=recovery')) {
+      this.toggleMode('reset');
+    }
+
+    this.supabaseService.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        this.toggleMode('reset');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  public toggleMode(mode: AuthViewMode): void {
+    this.authMode = mode;
     this.isLoginMode = mode === 'login';
     this.showPassword = false;
     this.authFeedbackMessage = '';
+
+    if (mode === 'forgot') {
+      const typedEmail = String(this.loginForm.value.email ?? '').trim();
+      if (typedEmail) {
+        this.forgotForm.patchValue({ email: typedEmail });
+      }
+    }
   }
 
   public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  public async onForgotPassword(): Promise<void> {
+    this.forgotForm.markAllAsTouched();
+
+    if (this.forgotForm.invalid) {
+      this.setFeedback('Informe um e-mail válido para receber o link de recuperação.', 'error');
+      return;
+    }
+
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+    this.authFeedbackMessage = '';
+
+    const email = String(this.forgotForm.value.email ?? '').trim().toLowerCase();
+
+    try {
+      await this.supabaseService.resetPassword(email);
+      this.setFeedback(
+        'Enviamos um link de redefinição de senha para o seu e-mail! Verifique sua caixa de entrada ou spam.',
+        'success'
+      );
+    } catch (err: unknown) {
+      this.setFeedback(this.translateAuthError(err), 'error');
+    } finally {
+      this.isSubmitting = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  public async onResetPassword(): Promise<void> {
+    this.resetForm.markAllAsTouched();
+
+    if (this.resetForm.invalid) {
+      if (this.resetForm.errors?.['passwordMismatch']) {
+        this.setFeedback('As senhas digitadas não coincidem.', 'error');
+      } else {
+        this.setFeedback('A nova senha deve ter no mínimo 8 caracteres.', 'error');
+      }
+      return;
+    }
+
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+    this.authFeedbackMessage = '';
+
+    const newPassword = String(this.resetForm.value.password ?? '');
+
+    try {
+      await this.supabaseService.updatePassword(newPassword);
+      this.resetForm.reset();
+      this.setFeedback('Senha atualizada com sucesso! Entrando no seu painel...', 'success');
+
+      setTimeout(async () => {
+        this.toggleMode('login');
+        await this.router.navigate(['/tabs/dashboard']);
+      }, 1500);
+    } catch (err: unknown) {
+      this.setFeedback(this.translateAuthError(err), 'error');
+    } finally {
+      this.isSubmitting = false;
+      this.cdr.detectChanges();
+    }
   }
 
   public async onRegister(): Promise<void> {
@@ -134,6 +238,7 @@ export class AuthPage {
       this.setFeedback(this.translateAuthError(err), 'error');
     } finally {
       this.isSubmitting = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -168,6 +273,7 @@ export class AuthPage {
       this.setFeedback(this.translateAuthError(err), 'error');
     } finally {
       this.isSubmitting = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -217,6 +323,9 @@ export class AuthPage {
     }
     if (message.includes('email not confirmed')) {
       return 'Confirme seu e-mail antes de entrar ou desative a confirmação no painel.';
+    }
+    if (message.includes('rate limit') || message.includes('too many requests')) {
+      return 'Muitas tentativas seguidas. Aguarde alguns instantes e tente novamente.';
     }
     return 'Não foi possível concluir a autenticação. Tente novamente.';
   }
