@@ -24,11 +24,11 @@ import {
   personOutline
 } from 'ionicons/icons';
 
-interface RegisteredAccount {
-  name: string;
-  email: string;
-  password: string;
-}
+import {
+  type AthleteLevel,
+  type RunnerProfile,
+  SupabaseService
+} from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-auth',
@@ -40,12 +40,13 @@ interface RegisteredAccount {
 export class AuthPage {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private supabaseService = inject(SupabaseService);
 
-  private readonly accountsStorageKey = 'correja_registered_accounts';
   private readonly activeUserNameKey = 'correja_user_name';
   private readonly activeUserProfileKey = 'correja_user_profile';
 
   isLoginMode = true;
+  isSubmitting = false;
   showPassword = false;
   authFeedbackMessage = '';
   authFeedbackType: 'success' | 'error' = 'success';
@@ -59,6 +60,7 @@ export class AuthPage {
     {
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
+      level: ['Iniciante', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
       acceptTerms: [false, [Validators.requiredTrue]]
@@ -82,53 +84,60 @@ export class AuthPage {
   public toggleMode(mode: 'login' | 'register'): void {
     this.isLoginMode = mode === 'login';
     this.showPassword = false;
+    this.authFeedbackMessage = '';
   }
 
   public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  public onRegister(): void {
+  public async onRegister(): Promise<void> {
     this.registerForm.markAllAsTouched();
 
     if (this.registerForm.invalid) {
       if (this.registerForm.get('acceptTerms')?.invalid) {
-        this.setFeedback('Você precisa aceitar os Termos de uso e a Política de privacidade para criar sua conta.', 'error');
+        this.setFeedback(
+          'Você precisa aceitar os Termos de uso e a Política de privacidade para criar sua conta.',
+          'error'
+        );
       } else {
         this.setFeedback('Preencha corretamente todos os campos obrigatórios.', 'error');
       }
       return;
     }
 
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+    this.authFeedbackMessage = '';
+
     const name = String(this.registerForm.value.name ?? '').trim();
     const email = String(this.registerForm.value.email ?? '').trim().toLowerCase();
+    const level = (this.registerForm.value.level ?? 'Iniciante') as AthleteLevel;
     const password = String(this.registerForm.value.password ?? '');
 
-    const accounts = this.getStoredAccounts();
-    const alreadyExists = accounts.some((acc) => acc.email.toLowerCase() === email);
+    try {
+      await this.supabaseService.signUp(email, password, name, level);
 
-    if (alreadyExists) {
-      this.setFeedback('Já existe uma conta cadastrada com este e-mail.', 'error');
-      return;
+      this.registerForm.reset({
+        name: '',
+        email: '',
+        level: 'Iniciante',
+        password: '',
+        confirmPassword: '',
+        acceptTerms: false
+      });
+
+      this.toggleMode('login');
+      this.loginForm.patchValue({ email, password: '' });
+      this.setFeedback('Conta criada com sucesso! Entre com seu e-mail e senha.', 'success');
+    } catch (err: unknown) {
+      this.setFeedback(this.translateAuthError(err), 'error');
+    } finally {
+      this.isSubmitting = false;
     }
-
-    const updatedAccounts: RegisteredAccount[] = [...accounts, { name, email, password }];
-    localStorage.setItem(this.accountsStorageKey, JSON.stringify(updatedAccounts));
-
-    this.registerForm.reset({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      acceptTerms: false
-    });
-
-    this.toggleMode('login');
-    this.loginForm.patchValue({ email, password: '' });
-    this.setFeedback('Conta criada com sucesso! Entre com seu e-mail e senha.', 'success');
   }
 
-  public onLogin(): void {
+  public async onLogin(): Promise<void> {
     this.loginForm.markAllAsTouched();
 
     if (this.loginForm.invalid) {
@@ -136,23 +145,30 @@ export class AuthPage {
       return;
     }
 
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+    this.authFeedbackMessage = '';
+
     const email = String(this.loginForm.value.email ?? '').trim().toLowerCase();
     const password = String(this.loginForm.value.password ?? '');
 
-    const accounts = this.getStoredAccounts();
-    const matchedAccount = accounts.find(
-      (acc) => acc.email.toLowerCase() === email && acc.password === password
-    );
+    try {
+      const user = await this.supabaseService.signIn(email, password);
+      const profile = await this.supabaseService.getProfile();
 
-    if (!matchedAccount) {
-      this.setFeedback('E-mail ou senha incorretos. Verifique seus dados ou cadastre-se.', 'error');
-      return;
+      const displayName =
+        profile?.full_name || user?.email?.split('@')[0] || 'Corredor';
+
+      localStorage.setItem(this.activeUserNameKey, displayName);
+      this.syncProfileCache(email, displayName, profile);
+
+      this.authFeedbackMessage = '';
+      await this.router.navigate(['/tabs/dashboard']);
+    } catch (err: unknown) {
+      this.setFeedback(this.translateAuthError(err), 'error');
+    } finally {
+      this.isSubmitting = false;
     }
-
-    localStorage.setItem(this.activeUserNameKey, matchedAccount.name);
-    this.syncProfileStorage(matchedAccount);
-    this.authFeedbackMessage = '';
-    this.router.navigate(['/tabs/dashboard']);
   }
 
   private passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -162,33 +178,47 @@ export class AuthPage {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
-  private getStoredAccounts(): RegisteredAccount[] {
-    try {
-      const raw = localStorage.getItem(this.accountsStorageKey);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private syncProfileStorage(account: RegisteredAccount): void {
+  private syncProfileCache(
+    email: string,
+    fullName: string,
+    profile: RunnerProfile | null
+  ): void {
     try {
       const rawProfile = localStorage.getItem(this.activeUserProfileKey);
       const currentProfile = rawProfile ? JSON.parse(rawProfile) : {};
       const updatedProfile = {
         ...currentProfile,
-        fullName: account.name,
-        email: account.email
+        fullName,
+        email,
+        level: profile?.level ?? currentProfile.level ?? 'Iniciante',
+        activePlanId: profile?.active_plan_id ?? currentProfile.activePlanId ?? '5k'
       };
       localStorage.setItem(this.activeUserProfileKey, JSON.stringify(updatedProfile));
     } catch {
       localStorage.setItem(
         this.activeUserProfileKey,
-        JSON.stringify({ fullName: account.name, email: account.email })
+        JSON.stringify({ fullName, email })
       );
     }
+  }
+
+  private translateAuthError(err: unknown): string {
+    const message =
+      err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+
+    if (message.includes('invalid login credentials')) {
+      return 'E-mail ou senha incorretos. Verifique seus dados ou cadastre-se.';
+    }
+    if (message.includes('user already registered')) {
+      return 'Já existe uma conta cadastrada com este e-mail.';
+    }
+    if (message.includes('password should be at least')) {
+      return 'A senha deve ter pelo menos 8 caracteres.';
+    }
+    if (message.includes('email not confirmed')) {
+      return 'Confirme seu e-mail antes de entrar ou desative a confirmação no painel.';
+    }
+    return 'Não foi possível concluir a autenticação. Tente novamente.';
   }
 
   private setFeedback(message: string, type: 'success' | 'error'): void {
