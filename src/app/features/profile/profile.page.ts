@@ -61,6 +61,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   athleteName = '';
   athleteLevel: AthleteLevel = 'Iniciante';
   profilePhotoUrl: string | null = null;
+  activePlanId = '5k';
 
   isPhotoModalOpen = false;
   photoPreviewUrl: string | null = null;
@@ -120,16 +121,24 @@ export class ProfilePage implements OnInit, OnDestroy {
     return `${first}${last}`.toUpperCase();
   }
 
+  public get activeGoalMeta(): { km: string; title: string; totalWeeks: number } {
+    if (this.activePlanId === '21k' || this.profileForm.targetDistance === '21 km') {
+      return { km: '21', title: 'Meia Maratona 21 km', totalWeeks: 12 };
+    }
+    if (this.activePlanId === '10k' || this.profileForm.targetDistance === '10 km') {
+      return { km: '10', title: 'Evolução 10 km', totalWeeks: 10 };
+    }
+    return { km: '5', title: 'Primeiros 5 km', totalWeeks: 8 };
+  }
+
   public async ngOnInit(): Promise<void> {
     this.loadStoredProfile();
 
-    // Aplica imediatamente o perfil já carregado em memória pelo Dashboard/Tabs
     const cached = this.supabaseService.currentProfileValue;
     if (cached) {
       this.applyCloudProfile(cached);
     }
 
-    // Escuta qualquer atualização em tempo real sem precisar de recarregar
     this.profileSub = this.supabaseService.profile$.subscribe((profile) => {
       if (profile) {
         this.applyCloudProfile(profile);
@@ -260,6 +269,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     const cleanedHeight = this.editDraft.height.trim();
     const cleanedWeight = this.editDraft.weight.trim();
     const mappedLevel = this.mapExperienceToLevel(this.editDraft.experience);
+    const mappedPlanId = this.mapDistanceToPlanId(this.editDraft.targetDistance);
 
     this.profileForm = {
       ...this.editDraft,
@@ -273,6 +283,11 @@ export class ProfilePage implements OnInit, OnDestroy {
 
     this.athleteName = cleanedFullName;
     this.athleteLevel = mappedLevel;
+    this.activePlanId = mappedPlanId;
+
+    // Persiste imediatamente no cache local antes da chamada remota
+    localStorage.setItem(this.nameStorageKey, cleanedFullName);
+    localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
 
     try {
       const user = await this.supabaseService.getCurrentUser();
@@ -297,16 +312,15 @@ export class ProfilePage implements OnInit, OnDestroy {
         city: cleanedCity || null,
         age: this.profileForm.age ?? null,
         level: mappedLevel,
+        active_plan_id: mappedPlanId,
         goal_distance: this.profileForm.targetDistance,
         weekly_frequency: Number.isNaN(parsedFreq) ? 3 : parsedFreq,
         weight_kg: Number.isNaN(parsedWeight) ? null : parsedWeight,
         height_cm: parsedHeightCm
       });
 
-      localStorage.setItem(this.nameStorageKey, cleanedFullName);
-      localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
       this.isEditingProfile = false;
-      this.showFeedback('Informações pessoais salvas no banco de dados!', 'success');
+      this.showFeedback('Informações e plano atualizados com sucesso!', 'success');
     } catch (err: unknown) {
       const detail = err instanceof Error ? err.message : 'Erro desconhecido';
       this.showFeedback(`Erro ao salvar no banco: ${detail}`, 'error');
@@ -364,7 +378,23 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   private applyCloudProfile(cloudProfile: RunnerProfile, fallbackEmail = ''): void {
-    this.athleteLevel = cloudProfile.level || 'Iniciante';
+    const cloudLevel = cloudProfile.level || 'Iniciante';
+    this.athleteLevel = cloudLevel;
+    this.activePlanId =
+      cloudProfile.active_plan_id ||
+      this.mapDistanceToPlanId(cloudProfile.goal_distance || '5 km');
+
+    // Mantém a opção de experiência escolhida localmente se ela corresponder ao mesmo nível
+    const localExpMatchesLevel =
+      this.mapExperienceToLevel(this.profileForm.experience) === cloudLevel;
+
+    const resolvedExperience = localExpMatchesLevel
+      ? this.profileForm.experience
+      : this.mapLevelToExperience(cloudLevel);
+
+    const resolvedDistance =
+      cloudProfile.goal_distance || this.mapPlanIdToDistance(this.activePlanId);
+
     this.profileForm = {
       ...this.profileForm,
       fullName: cloudProfile.full_name || this.profileForm.fullName,
@@ -372,8 +402,8 @@ export class ProfilePage implements OnInit, OnDestroy {
       phone: cloudProfile.phone ?? this.profileForm.phone,
       city: cloudProfile.city ?? this.profileForm.city,
       age: cloudProfile.age ?? this.profileForm.age,
-      experience: this.mapLevelToExperience(cloudProfile.level),
-      targetDistance: cloudProfile.goal_distance || this.profileForm.targetDistance,
+      experience: resolvedExperience,
+      targetDistance: resolvedDistance,
       weeklyFrequency: cloudProfile.weekly_frequency
         ? `${cloudProfile.weekly_frequency} vezes por semana`
         : this.profileForm.weeklyFrequency,
@@ -415,12 +445,29 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
+  private mapDistanceToPlanId(distance: string): string {
+    if (distance.includes('21')) return '21k';
+    if (distance.includes('10')) return '10k';
+    return '5k';
+  }
+
+  private mapPlanIdToDistance(planId: string): string {
+    if (planId === '21k') return '21 km';
+    if (planId === '10k') return '10 km';
+    return '5 km';
+  }
+
   private mapExperienceToLevel(experience: string): AthleteLevel {
     const normalized = experience.toLowerCase();
     if (normalized.includes('avanç') || normalized.includes('21') || normalized.includes('experiente')) {
       return 'Avançado';
     }
-    if (normalized.includes('intermed') || normalized.includes('10') || normalized.includes('já corro')) {
+    if (
+      normalized.includes('intermed') ||
+      normalized.includes('10') ||
+      normalized.includes('já corro') ||
+      normalized.includes('ocasionalmente')
+    ) {
       return 'Intermediário';
     }
     return 'Iniciante';
@@ -469,6 +516,7 @@ export class ProfilePage implements OnInit, OnDestroy {
           ...this.profileForm,
           ...parsed
         };
+        this.activePlanId = this.mapDistanceToPlanId(this.profileForm.targetDistance);
       } catch {
         this.profileForm.fullName = savedName;
       }

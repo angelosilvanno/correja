@@ -54,12 +54,12 @@
 
           <div class="goal-plan-row">
             <div class="goal-km-badge">
-              <strong>5</strong>
+              <strong>{{ activeGoalMeta.km }}</strong>
               <span>KM</span>
             </div>
             <div class="goal-title-group">
-              <strong class="goal-name">Primeiros 5 km</strong>
-              <span class="goal-sub">Semana 3 de 8</span>
+              <strong class="goal-name">{{ activeGoalMeta.title }}</strong>
+              <span class="goal-sub">Semana 1 de {{ activeGoalMeta.totalWeeks }}</span>
             </div>
           </div>
 
