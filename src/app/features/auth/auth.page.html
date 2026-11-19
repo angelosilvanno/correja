@@ -1,5 +1,5 @@
 <ion-content [fullscreen]="true" class="auth-canvas">
-  <div class="auth-split-layout" [class.is-login-view]="isLoginMode">
+  <div class="auth-split-layout" [class.is-login-view]="authMode === 'login'">
 
     <div class="brand-showcase-pane">
       <div class="brand-content-wrap">
@@ -17,12 +17,19 @@
         <div class="brand-text-block">
           <span class="brand-kicker">CORREJA • TREINADOR DIGITAL</span>
 
-          @if (isLoginMode) {
+          @if (authMode === 'login') {
             <h1 class="brand-headline">
               Sua evolução começa com o <span>próximo passo.</span>
             </h1>
             <p class="brand-sub">
               Treinos que fazem sentido para o seu momento, do primeiro passo aos 21 km.
+            </p>
+          } @else if (authMode === 'forgot' || authMode === 'reset') {
+            <h1 class="brand-headline">
+              Recupere seu acesso e volte a <span>evoluir.</span>
+            </h1>
+            <p class="brand-sub">
+              Seu plano de corrida e histórico continuam salvos na nuvem esperando por você.
             </p>
           } @else {
             <h1 class="brand-headline">
@@ -44,10 +51,18 @@
       <div class="form-container-box">
 
         <header class="form-top-header">
-          @if (isLoginMode) {
+          @if (authMode === 'login') {
             <span class="form-eyebrow">BEM-VINDO DE VOLTA</span>
             <h2 class="form-main-title">Entre na sua jornada</h2>
             <p class="form-desc">Acesse seu plano e continue evoluindo.</p>
+          } @else if (authMode === 'forgot') {
+            <span class="form-eyebrow">RECUPERAÇÃO DE ACESSO</span>
+            <h2 class="form-main-title">Esqueceu sua senha?</h2>
+            <p class="form-desc">Informe seu e-mail para receber o link de redefinição.</p>
+          } @else if (authMode === 'reset') {
+            <span class="form-eyebrow">NOVA SENHA</span>
+            <h2 class="form-main-title">Defina sua nova senha</h2>
+            <p class="form-desc">Escolha uma senha segura de no mínimo 8 caracteres.</p>
           } @else {
             <span class="form-eyebrow">CRIE SUA CONTA</span>
             <h2 class="form-main-title">Vamos correr juntos?</h2>
@@ -62,7 +77,7 @@
           </div>
         }
 
-        @if (isLoginMode) {
+        @if (authMode === 'login') {
           <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="form-content">
             <div class="field-group">
               <label for="email-in">E-mail</label>
@@ -84,7 +99,7 @@
               <div class="label-row">
                 <label for="pass-in">Senha</label>
                 <div class="recovery-row">
-                  <button type="button" class="recovery-link-btn" (click)="toggleMode('login')">Esqueceu minha senha?</button>
+                  <button type="button" class="recovery-link-btn" (click)="toggleMode('forgot')">Esqueceu minha senha?</button>
                 </div>
               </div>
               <div class="input-box">
@@ -103,14 +118,81 @@
               }
             </div>
 
-            <ion-button expand="block" type="submit" class="btn-primary-action">
-              <span>ENTRAR</span>
+            <ion-button expand="block" type="submit" class="btn-primary-action" [disabled]="isSubmitting">
+              <span>{{ isSubmitting ? 'ENTRANDO...' : 'ENTRAR' }}</span>
               <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
             </ion-button>
           </form>
         }
 
-        @if (!isLoginMode) {
+        @if (authMode === 'forgot') {
+          <form [formGroup]="forgotForm" (ngSubmit)="onForgotPassword()" class="form-content">
+            <div class="field-group">
+              <label for="forgot-email">E-mail cadastrado</label>
+              <div class="input-box">
+                <ion-icon name="mail-outline"></ion-icon>
+                <input
+                  id="forgot-email"
+                  type="email"
+                  formControlName="email"
+                  placeholder="voce@email.com"
+                  autocomplete="email" />
+              </div>
+              @if (forgotForm.get('email')?.touched && forgotForm.get('email')?.invalid) {
+                <span class="input-error">Informe um e-mail válido</span>
+              }
+            </div>
+
+            <ion-button expand="block" type="submit" class="btn-primary-action" [disabled]="isSubmitting">
+              <span>{{ isSubmitting ? 'ENVIANDO...' : 'ENVIAR LINK DE RECUPERAÇÃO' }}</span>
+              <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+            </ion-button>
+          </form>
+        }
+
+        @if (authMode === 'reset') {
+          <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" class="form-content">
+            <div class="field-group">
+              <label for="reset-pass">Nova senha</label>
+              <div class="input-box">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input
+                  id="reset-pass"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Mínimo de 8 caracteres" />
+                <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
+                  <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                </button>
+              </div>
+              @if (resetForm.get('password')?.touched && resetForm.get('password')?.invalid) {
+                <span class="input-error">A senha precisa ter no mínimo 8 caracteres</span>
+              }
+            </div>
+
+            <div class="field-group">
+              <label for="reset-pass-confirm">Confirme a nova senha</label>
+              <div class="input-box">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input
+                  id="reset-pass-confirm"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  placeholder="Digite novamente" />
+              </div>
+              @if (resetForm.get('confirmPassword')?.touched && resetForm.hasError('passwordMismatch')) {
+                <span class="input-error">As senhas não coincidem</span>
+              }
+            </div>
+
+            <ion-button expand="block" type="submit" class="btn-primary-action" [disabled]="isSubmitting">
+              <span>{{ isSubmitting ? 'SALVANDO...' : 'SALVAR NOVA SENHA' }}</span>
+              <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+            </ion-button>
+          </form>
+        }
+
+        @if (authMode === 'register') {
           <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="form-content">
             <div class="field-group">
               <label for="reg-name">Nome completo</label>
@@ -191,18 +273,18 @@
               expand="block"
               type="submit"
               class="btn-primary-action"
-              [disabled]="registerForm.invalid">
-              <span>CRIAR CONTA</span>
+              [disabled]="registerForm.invalid || isSubmitting">
+              <span>{{ isSubmitting ? 'CRIANDO CONTA...' : 'CRIAR CONTA' }}</span>
               <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
             </ion-button>
           </form>
         }
 
         <div class="form-switch-footer">
-          @if (isLoginMode) {
+          @if (authMode === 'login') {
             <p>Ainda não tem uma conta? <button type="button" class="switch-link-btn" (click)="toggleMode('register')">Cadastre-se</button></p>
           } @else {
-            <p>Já tem uma conta? <button type="button" class="switch-link-btn" (click)="toggleMode('login')">Voltar ao login</button></p>
+            <p>Lembrou sua senha? <button type="button" class="switch-link-btn" (click)="toggleMode('login')">Voltar ao login</button></p>
           }
         </div>
 
