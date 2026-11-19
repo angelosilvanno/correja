@@ -19,6 +19,11 @@ import {
   personOutline
 } from 'ionicons/icons';
 
+import {
+  type AthleteLevel,
+  SupabaseService
+} from '../../core/services/supabase.service';
+
 export interface UserProfileData {
   fullName: string;
   email: string;
@@ -41,6 +46,7 @@ export interface UserProfileData {
 })
 export class ProfilePage implements OnInit {
   private router = inject(Router);
+  private supabaseService = inject(SupabaseService);
 
   private readonly nameStorageKey = 'correja_user_name';
   private readonly profileStorageKey = 'correja_user_profile';
@@ -50,8 +56,11 @@ export class ProfilePage implements OnInit {
   athleteName = '';
   profilePhotoUrl: string | null = null;
   pendingPhotoPreview: string | null = null;
+  private pendingPhotoFile: File | null = null;
   private previousPhotoUrl: string | null = null;
 
+  isUploadingPhoto = false;
+  isSavingProfile = false;
   isEditingProfile = false;
   notificationsEnabled = true;
   feedbackMessage = '';
@@ -103,8 +112,9 @@ export class ProfilePage implements OnInit {
     return `${first}${last}`.toUpperCase();
   }
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     this.loadStoredProfile();
+    await this.loadCloudProfile();
   }
 
   public triggerPhotoPicker(input: HTMLInputElement): void {
@@ -136,6 +146,7 @@ export class ProfilePage implements OnInit {
         if (!this.pendingPhotoPreview) {
           this.previousPhotoUrl = this.profilePhotoUrl;
         }
+        this.pendingPhotoFile = file;
         this.pendingPhotoPreview = reader.result;
         this.profilePhotoUrl = reader.result;
       }
@@ -149,19 +160,30 @@ export class ProfilePage implements OnInit {
   public cancelPhotoChange(input: HTMLInputElement): void {
     this.profilePhotoUrl = this.previousPhotoUrl;
     this.pendingPhotoPreview = null;
+    this.pendingPhotoFile = null;
     input.value = '';
   }
 
-  public confirmPhotoChange(input: HTMLInputElement): void {
-    if (!this.pendingPhotoPreview) return;
+  public async confirmPhotoChange(input: HTMLInputElement): Promise<void> {
+    if (!this.pendingPhotoPreview || !this.pendingPhotoFile) return;
+    if (this.isUploadingPhoto) return;
+
+    this.isUploadingPhoto = true;
     try {
-      localStorage.setItem(this.photoStorageKey, this.pendingPhotoPreview);
-      this.previousPhotoUrl = this.pendingPhotoPreview;
+      const publicUrl = await this.supabaseService.uploadAvatar(this.pendingPhotoFile);
+
+      this.profilePhotoUrl = publicUrl;
+      this.previousPhotoUrl = publicUrl;
       this.pendingPhotoPreview = null;
+      this.pendingPhotoFile = null;
       input.value = '';
-      this.showFeedback('Foto de perfil atualizada com sucesso.', 'success');
+
+      localStorage.setItem(this.photoStorageKey, publicUrl);
+      this.showFeedback('Foto de perfil salva na nuvem com sucesso!', 'success');
     } catch {
-      this.showFeedback('Não foi possível salvar a imagem no dispositivo.', 'error');
+      this.showFeedback('Não foi possível enviar a foto para o servidor. Verifique sua conexão.', 'error');
+    } finally {
+      this.isUploadingPhoto = false;
     }
   }
 
@@ -181,32 +203,59 @@ export class ProfilePage implements OnInit {
     this.isEditingProfile = false;
   }
 
-  public saveProfileChanges(): void {
+  public async saveProfileChanges(): Promise<void> {
     if (!this.validateDraft()) {
       this.showFeedback('Verifique os campos obrigatórios antes de salvar.', 'error');
       return;
     }
 
+    if (this.isSavingProfile) return;
+    this.isSavingProfile = true;
+
     const cleanedFullName = this.editDraft.fullName.trim();
+    const cleanedEmail = this.editDraft.email.trim();
+    const cleanedHeight = this.editDraft.height.trim();
+    const cleanedWeight = this.editDraft.weight.trim();
+
     this.profileForm = {
       ...this.editDraft,
       fullName: cleanedFullName,
-      email: this.editDraft.email.trim(),
+      email: cleanedEmail,
       phone: this.editDraft.phone.trim(),
       city: this.editDraft.city.trim(),
-      height: this.editDraft.height.trim(),
-      weight: this.editDraft.weight.trim()
+      height: cleanedHeight,
+      weight: cleanedWeight
     };
 
     this.athleteName = cleanedFullName;
 
     try {
+      const user = await this.supabaseService.getCurrentUser();
+      if (user) {
+        const parsedWeight = parseFloat(cleanedWeight.replace(',', '.'));
+        const parsedHeight = parseInt(cleanedHeight.replace(/\D/g, ''), 10);
+        const parsedFreq = parseInt(this.profileForm.weeklyFrequency.replace(/\D/g, ''), 10);
+
+        await this.supabaseService.upsertProfile({
+          id: user.id,
+          full_name: cleanedFullName,
+          email: cleanedEmail,
+          level: this.mapExperienceToLevel(this.profileForm.experience),
+          goal_distance: this.profileForm.targetDistance,
+          weekly_frequency: Number.isNaN(parsedFreq) ? 3 : parsedFreq,
+          weight_kg: Number.isNaN(parsedWeight) ? undefined : parsedWeight,
+          height_cm: Number.isNaN(parsedHeight) ? undefined : parsedHeight
+        });
+      }
+
       localStorage.setItem(this.nameStorageKey, cleanedFullName);
       localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
       this.isEditingProfile = false;
-      this.showFeedback('Informações pessoais atualizadas com sucesso.', 'success');
+      this.showFeedback('Informações pessoais sincronizadas com sucesso.', 'success');
     } catch {
-      this.showFeedback('Erro ao salvar as alterações do perfil.', 'error');
+      this.showFeedback('Erro ao salvar as alterações no banco de dados.', 'error');
+    } finally {
+      this.isSavingProfile = false;
     }
   }
 
@@ -226,9 +275,72 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/tabs/zones']);
   }
 
-  public logout(): void {
+  public async logout(): Promise<void> {
+    try {
+      await this.supabaseService.signOut();
+    } catch {
+      // ignora erro de rede ao sair e limpa sessão local
+    }
     localStorage.removeItem(this.nameStorageKey);
-    this.router.navigate(['/']);
+    localStorage.removeItem(this.photoStorageKey);
+    await this.router.navigate(['/']);
+  }
+
+  private async loadCloudProfile(): Promise<void> {
+    try {
+      const user = await this.supabaseService.getCurrentUser();
+      if (!user) return;
+
+      const cloudProfile = await this.supabaseService.getProfile();
+      if (!cloudProfile) {
+        if (user.email && !this.profileForm.email) {
+          this.profileForm.email = user.email;
+        }
+        return;
+      }
+
+      this.profileForm = {
+        ...this.profileForm,
+        fullName: cloudProfile.full_name || this.profileForm.fullName,
+        email: cloudProfile.email || user.email || this.profileForm.email,
+        experience: this.mapLevelToExperience(cloudProfile.level),
+        targetDistance: cloudProfile.goal_distance || this.profileForm.targetDistance,
+        weeklyFrequency: cloudProfile.weekly_frequency
+          ? `${cloudProfile.weekly_frequency} vezes por semana`
+          : this.profileForm.weeklyFrequency,
+        weight: cloudProfile.weight_kg ? String(cloudProfile.weight_kg) : this.profileForm.weight,
+        height: cloudProfile.height_cm ? String(cloudProfile.height_cm) : this.profileForm.height
+      };
+
+      this.athleteName = this.profileForm.fullName || 'Atleta CorreJa';
+      localStorage.setItem(this.nameStorageKey, this.athleteName);
+      localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
+
+      if (cloudProfile.avatar_url) {
+        this.profilePhotoUrl = cloudProfile.avatar_url;
+        this.previousPhotoUrl = cloudProfile.avatar_url;
+        localStorage.setItem(this.photoStorageKey, cloudProfile.avatar_url);
+      }
+    } catch {
+      // mantém dados locais caso esteja offline
+    }
+  }
+
+  private mapExperienceToLevel(experience: string): AthleteLevel {
+    const normalized = experience.toLowerCase();
+    if (normalized.includes('avanç') || normalized.includes('21') || normalized.includes('experiente')) {
+      return 'Avançado';
+    }
+    if (normalized.includes('intermed') || normalized.includes('10') || normalized.includes('já corro')) {
+      return 'Intermediário';
+    }
+    return 'Iniciante';
+  }
+
+  private mapLevelToExperience(level?: AthleteLevel): string {
+    if (level === 'Avançado') return 'Corredor avançado';
+    if (level === 'Intermediário') return 'Já corro regularmente';
+    return 'Estou começando';
   }
 
   private validateDraft(): boolean {
