@@ -10,7 +10,7 @@
       <div class="main-column">
         <header class="natural-header">
           <span class="date-eyebrow">{{ currentDateFormatted }}</span>
-          <h1 class="user-greeting">Olá, {{ firstName }}!</h1>
+          <h1 class="user-greeting">{{ firstName ? 'Olá, ' + firstName + '!' : 'Olá!' }}</h1>
           <p class="friendly-sub">Seu treino não precisa ser perfeito. Só precisa continuar.</p>
         </header>
           

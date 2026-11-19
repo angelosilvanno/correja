@@ -83,7 +83,7 @@ export class DashboardPage implements OnInit {
   public get firstName(): string {
     const cleanName = (this.athleteName ?? '').trim();
     if (!cleanName || cleanName === 'Corredor' || cleanName === 'Atleta CorreJa') {
-      return 'Atleta';
+      return '';
     }
     return cleanName.split(/\s+/)[0];
   }
@@ -124,10 +124,22 @@ export class DashboardPage implements OnInit {
 
   private async syncCloudUser(): Promise<void> {
     try {
-      const profile = await this.supabaseService.getProfile();
+      const [user, profile] = await Promise.all([
+        this.supabaseService.getCurrentUser(),
+        this.supabaseService.getProfile()
+      ]);
+
       if (profile?.full_name) {
         this.athleteName = profile.full_name.trim();
         localStorage.setItem('correja_user_name', this.athleteName);
+
+        // Garante que contas antigas também gravem o full_name no user_metadata do Auth
+        if (user && user.user_metadata?.['full_name'] !== this.athleteName) {
+          await this.supabaseService.upsertProfile({
+            id: user.id,
+            full_name: this.athleteName
+          });
+        }
       }
 
       if (profile?.avatar_url) {

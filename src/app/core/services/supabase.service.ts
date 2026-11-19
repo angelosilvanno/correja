@@ -144,6 +144,13 @@ export class SupabaseService {
       .single();
 
     if (error) throw new Error(error.message);
+
+    if (profile.full_name) {
+      await this.supabase.auth.updateUser({
+        data: { full_name: profile.full_name },
+      });
+    }
+
     return data as RunnerProfile;
   }
 
