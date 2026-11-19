@@ -1,4 +1,11 @@
 <ion-content [fullscreen]="true" class="profile-canvas">
+  <input
+    #photoInput
+    type="file"
+    accept="image/jpeg,image/jpg,image/png,image/webp"
+    class="hidden-file-input"
+    (change)="onPhotoSelected($event)" />
+
   <div class="profile-viewport">
 
     <header class="profile-header">
@@ -29,13 +36,6 @@
           <h2 class="athlete-name">{{ athleteName }}</h2>
 
           <span class="runner-level-pill">CORREDOR {{ athleteLevel | uppercase }}</span>
-
-          <input
-            #photoInput
-            type="file"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
-            class="hidden-file-input"
-            (change)="onPhotoSelected($event)" />
 
           <div class="photo-actions-group">
             <button

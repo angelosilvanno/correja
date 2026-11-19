@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import type { OnInit } from '@angular/core';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonContent, IonIcon, IonToggle } from '@ionic/angular';
@@ -48,6 +48,7 @@ export interface UserProfileData {
 export class ProfilePage implements OnInit {
   private router = inject(Router);
   private supabaseService = inject(SupabaseService);
+  private cdr = inject(ChangeDetectorRef);
 
   private readonly nameStorageKey = 'correja_user_name';
   private readonly profileStorageKey = 'correja_user_profile';
@@ -146,36 +147,42 @@ export class ProfilePage implements OnInit {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        this.selectedPhotoFile = file;
-        this.photoPreviewUrl = reader.result;
-        this.isPhotoModalOpen = true;
-      }
-    };
-    reader.onerror = () => {
-      this.showFeedback('Não foi possível ler a imagem selecionada.', 'error');
-    };
-    reader.readAsDataURL(file);
+    if (this.photoPreviewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
+
+    this.selectedPhotoFile = file;
+    this.photoPreviewUrl = URL.createObjectURL(file);
+    this.isPhotoModalOpen = true;
+    this.cdr.detectChanges();
   }
 
   public closePhotoModal(input: HTMLInputElement): void {
     if (this.isUploadingPhoto) return;
+    if (this.photoPreviewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.photoPreviewUrl);
+    }
     this.isPhotoModalOpen = false;
     this.photoPreviewUrl = null;
     this.selectedPhotoFile = null;
     input.value = '';
+    this.cdr.detectChanges();
   }
 
   public async confirmPhotoUpload(input: HTMLInputElement): Promise<void> {
     if (!this.selectedPhotoFile || this.isUploadingPhoto) return;
 
     this.isUploadingPhoto = true;
+    this.cdr.detectChanges();
+
     try {
       const publicUrl = await this.supabaseService.uploadAvatar(this.selectedPhotoFile);
       this.profilePhotoUrl = publicUrl;
       localStorage.setItem(this.photoStorageKey, publicUrl);
+
+      if (this.photoPreviewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(this.photoPreviewUrl);
+      }
 
       this.isPhotoModalOpen = false;
       this.photoPreviewUrl = null;
@@ -188,6 +195,7 @@ export class ProfilePage implements OnInit {
       this.showFeedback(`Falha ao salvar foto: ${detail}`, 'error');
     } finally {
       this.isUploadingPhoto = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -275,6 +283,7 @@ export class ProfilePage implements OnInit {
       this.showFeedback(`Erro ao salvar no banco: ${detail}`, 'error');
     } finally {
       this.isSavingProfile = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -345,6 +354,8 @@ export class ProfilePage implements OnInit {
         this.profilePhotoUrl = cloudProfile.avatar_url;
         localStorage.setItem(this.photoStorageKey, cloudProfile.avatar_url);
       }
+
+      this.cdr.detectChanges();
     } catch {
       // mantém dados locais caso esteja offline
     }
@@ -426,9 +437,11 @@ export class ProfilePage implements OnInit {
   private showFeedback(message: string, type: 'success' | 'error'): void {
     this.feedbackMessage = message;
     this.feedbackType = type;
+    this.cdr.detectChanges();
     setTimeout(() => {
       if (this.feedbackMessage === message) {
         this.feedbackMessage = '';
+        this.cdr.detectChanges();
       }
     }, 4000);
   }
