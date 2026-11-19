@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import type { OnInit } from '@angular/core';
+import type { OnDestroy, OnInit } from '@angular/core';
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,9 +19,11 @@ import {
   optionsOutline,
   personOutline
 } from 'ionicons/icons';
+import type { Subscription } from 'rxjs';
 
 import {
   type AthleteLevel,
+  type RunnerProfile,
   SupabaseService
 } from '../../core/services/supabase.service';
 
@@ -45,10 +47,11 @@ export interface UserProfileData {
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss']
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, OnDestroy {
   private router = inject(Router);
   private supabaseService = inject(SupabaseService);
   private cdr = inject(ChangeDetectorRef);
+  private profileSub?: Subscription;
 
   private readonly nameStorageKey = 'correja_user_name';
   private readonly profileStorageKey = 'correja_user_profile';
@@ -59,7 +62,6 @@ export class ProfilePage implements OnInit {
   athleteLevel: AthleteLevel = 'Iniciante';
   profilePhotoUrl: string | null = null;
 
-  // Controle do Modal de Pré-visualização da Foto
   isPhotoModalOpen = false;
   photoPreviewUrl: string | null = null;
   private selectedPhotoFile: File | null = null;
@@ -120,11 +122,33 @@ export class ProfilePage implements OnInit {
 
   public async ngOnInit(): Promise<void> {
     this.loadStoredProfile();
+
+    // Aplica imediatamente o perfil já carregado em memória pelo Dashboard/Tabs
+    const cached = this.supabaseService.currentProfileValue;
+    if (cached) {
+      this.applyCloudProfile(cached);
+    }
+
+    // Escuta qualquer atualização em tempo real sem precisar de recarregar
+    this.profileSub = this.supabaseService.profile$.subscribe((profile) => {
+      if (profile) {
+        this.applyCloudProfile(profile);
+      }
+    });
+
     await this.loadCloudProfile();
+  }
+
+  public ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
   }
 
   public async ionViewWillEnter(): Promise<void> {
     this.loadStoredProfile();
+    const cached = this.supabaseService.currentProfileValue;
+    if (cached) {
+      this.applyCloudProfile(cached);
+    }
     await this.loadCloudProfile();
   }
 
@@ -312,9 +336,10 @@ export class ProfilePage implements OnInit {
     try {
       await this.supabaseService.signOut();
     } catch {
-      // ignora erro de rede ao sair e limpa sessão local
+      // ignora erro de rede ao sair
     }
 
+    this.supabaseService.clearProfileState();
     localStorage.removeItem(this.nameStorageKey);
     localStorage.removeItem(this.photoStorageKey);
     localStorage.removeItem(this.profileStorageKey);
@@ -338,6 +363,38 @@ export class ProfilePage implements OnInit {
     await this.router.navigate(['/'], { replaceUrl: true });
   }
 
+  private applyCloudProfile(cloudProfile: RunnerProfile, fallbackEmail = ''): void {
+    this.athleteLevel = cloudProfile.level || 'Iniciante';
+    this.profileForm = {
+      ...this.profileForm,
+      fullName: cloudProfile.full_name || this.profileForm.fullName,
+      email: cloudProfile.email || fallbackEmail || this.profileForm.email,
+      phone: cloudProfile.phone ?? this.profileForm.phone,
+      city: cloudProfile.city ?? this.profileForm.city,
+      age: cloudProfile.age ?? this.profileForm.age,
+      experience: this.mapLevelToExperience(cloudProfile.level),
+      targetDistance: cloudProfile.goal_distance || this.profileForm.targetDistance,
+      weeklyFrequency: cloudProfile.weekly_frequency
+        ? `${cloudProfile.weekly_frequency} vezes por semana`
+        : this.profileForm.weeklyFrequency,
+      weight: cloudProfile.weight_kg ? String(cloudProfile.weight_kg) : this.profileForm.weight,
+      height: cloudProfile.height_cm
+        ? (cloudProfile.height_cm / 100).toFixed(2)
+        : this.profileForm.height
+    };
+
+    this.athleteName = this.profileForm.fullName || 'Atleta CorreJa';
+    localStorage.setItem(this.nameStorageKey, this.athleteName);
+    localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
+
+    if (cloudProfile.avatar_url) {
+      this.profilePhotoUrl = cloudProfile.avatar_url;
+      localStorage.setItem(this.photoStorageKey, cloudProfile.avatar_url);
+    }
+
+    this.cdr.detectChanges();
+  }
+
   private async loadCloudProfile(): Promise<void> {
     try {
       const user = await this.supabaseService.getCurrentUser();
@@ -347,42 +404,12 @@ export class ProfilePage implements OnInit {
       if (!cloudProfile) {
         if (user.email && !this.profileForm.email) {
           this.profileForm.email = user.email;
+          this.cdr.detectChanges();
         }
         return;
       }
 
-      this.athleteLevel = cloudProfile.level || 'Iniciante';
-      this.profileForm = {
-        ...this.profileForm,
-        fullName: cloudProfile.full_name || this.profileForm.fullName,
-        email: cloudProfile.email || user.email || this.profileForm.email,
-        phone: cloudProfile.phone ?? this.profileForm.phone,
-        city: cloudProfile.city ?? this.profileForm.city,
-        age: cloudProfile.age ?? this.profileForm.age,
-        experience: this.mapLevelToExperience(cloudProfile.level),
-        targetDistance: cloudProfile.goal_distance || this.profileForm.targetDistance,
-        weeklyFrequency: cloudProfile.weekly_frequency
-          ? `${cloudProfile.weekly_frequency} vezes por semana`
-          : this.profileForm.weeklyFrequency,
-        weight: cloudProfile.weight_kg ? String(cloudProfile.weight_kg) : this.profileForm.weight,
-        height: cloudProfile.height_cm
-          ? (cloudProfile.height_cm / 100).toFixed(2)
-          : this.profileForm.height
-      };
-
-      this.athleteName = this.profileForm.fullName || 'Atleta CorreJa';
-      localStorage.setItem(this.nameStorageKey, this.athleteName);
-      localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
-
-      if (cloudProfile.avatar_url) {
-        this.profilePhotoUrl = cloudProfile.avatar_url;
-        localStorage.setItem(this.photoStorageKey, cloudProfile.avatar_url);
-      } else {
-        this.profilePhotoUrl = null;
-        localStorage.removeItem(this.photoStorageKey);
-      }
-
-      this.cdr.detectChanges();
+      this.applyCloudProfile(cloudProfile, user.email || '');
     } catch {
       // mantém dados locais caso esteja offline
     }
@@ -445,19 +472,6 @@ export class ProfilePage implements OnInit {
       } catch {
         this.profileForm.fullName = savedName;
       }
-    } else {
-      this.profileForm = {
-        fullName: savedName,
-        email: '',
-        phone: '',
-        city: '',
-        age: null,
-        height: '',
-        weight: '',
-        experience: 'Estou começando',
-        weeklyFrequency: '3 vezes por semana',
-        targetDistance: '5 km'
-      };
     }
 
     if (savedName && !this.profileForm.fullName) {
@@ -470,6 +484,8 @@ export class ProfilePage implements OnInit {
     if (savedNotifications !== null) {
       this.notificationsEnabled = savedNotifications === 'true';
     }
+
+    this.cdr.detectChanges();
   }
 
   private showFeedback(message: string, type: 'success' | 'error'): void {
