@@ -123,6 +123,11 @@ export class ProfilePage implements OnInit {
     await this.loadCloudProfile();
   }
 
+  public async ionViewWillEnter(): Promise<void> {
+    this.loadStoredProfile();
+    await this.loadCloudProfile();
+  }
+
   public triggerPhotoPicker(input: HTMLInputElement): void {
     if (this.isUploadingPhoto) return;
     input.click();
@@ -309,9 +314,28 @@ export class ProfilePage implements OnInit {
     } catch {
       // ignora erro de rede ao sair e limpa sessão local
     }
+
     localStorage.removeItem(this.nameStorageKey);
     localStorage.removeItem(this.photoStorageKey);
-    await this.router.navigate(['/']);
+    localStorage.removeItem(this.profileStorageKey);
+
+    this.athleteName = '';
+    this.profilePhotoUrl = null;
+    this.isEditingProfile = false;
+    this.profileForm = {
+      fullName: '',
+      email: '',
+      phone: '',
+      city: '',
+      age: null,
+      height: '',
+      weight: '',
+      experience: 'Estou começando',
+      weeklyFrequency: '3 vezes por semana',
+      targetDistance: '5 km'
+    };
+
+    await this.router.navigate(['/'], { replaceUrl: true });
   }
 
   private async loadCloudProfile(): Promise<void> {
@@ -353,6 +377,9 @@ export class ProfilePage implements OnInit {
       if (cloudProfile.avatar_url) {
         this.profilePhotoUrl = cloudProfile.avatar_url;
         localStorage.setItem(this.photoStorageKey, cloudProfile.avatar_url);
+      } else {
+        this.profilePhotoUrl = null;
+        localStorage.removeItem(this.photoStorageKey);
       }
 
       this.cdr.detectChanges();
@@ -406,6 +433,8 @@ export class ProfilePage implements OnInit {
     const savedProfileRaw = localStorage.getItem(this.profileStorageKey);
     const savedNotifications = localStorage.getItem(this.notificationsStorageKey);
 
+    this.profilePhotoUrl = savedPhoto || null;
+
     if (savedProfileRaw) {
       try {
         const parsed = JSON.parse(savedProfileRaw) as Partial<UserProfileData>;
@@ -416,6 +445,19 @@ export class ProfilePage implements OnInit {
       } catch {
         this.profileForm.fullName = savedName;
       }
+    } else {
+      this.profileForm = {
+        fullName: savedName,
+        email: '',
+        phone: '',
+        city: '',
+        age: null,
+        height: '',
+        weight: '',
+        experience: 'Estou começando',
+        weeklyFrequency: '3 vezes por semana',
+        targetDistance: '5 km'
+      };
     }
 
     if (savedName && !this.profileForm.fullName) {
@@ -424,10 +466,6 @@ export class ProfilePage implements OnInit {
 
     this.athleteName = this.profileForm.fullName || 'Atleta CorreJa';
     this.profileForm.fullName = this.athleteName;
-
-    if (savedPhoto) {
-      this.profilePhotoUrl = savedPhoto;
-    }
 
     if (savedNotifications !== null) {
       this.notificationsEnabled = savedNotifications === 'true';

@@ -12,7 +12,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonButton, IonContent, IonIcon } from '@ionic/angular';
+import { IonButton, IonContent, IonIcon, IonSpinner } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   alertCircleOutline,
@@ -28,7 +28,6 @@ import {
 
 import {
   type AthleteLevel,
-  type RunnerProfile,
   SupabaseService
 } from '../../core/services/supabase.service';
 
@@ -37,7 +36,7 @@ export type AuthViewMode = 'login' | 'register' | 'forgot' | 'reset';
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IonContent, IonIcon, IonButton],
+  imports: [CommonModule, ReactiveFormsModule, IonContent, IonIcon, IonButton, IonSpinner],
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss']
 })
@@ -48,7 +47,6 @@ export class AuthPage implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   private readonly activeUserNameKey = 'correja_user_name';
-  private readonly activeUserProfileKey = 'correja_user_profile';
 
   authMode: AuthViewMode = 'login';
   isLoginMode = true;
@@ -101,7 +99,6 @@ export class AuthPage implements OnInit {
   }
 
   public ngOnInit(): void {
-    // Detecta se o usuário abriu o app pelo link de recuperação enviado no e-mail
     if (window.location.hash.includes('type=recovery')) {
       this.toggleMode('reset');
     }
@@ -112,6 +109,24 @@ export class AuthPage implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  public ionViewWillEnter(): void {
+    this.loginForm.reset({ email: '', password: '' });
+    this.registerForm.reset({
+      name: '',
+      email: '',
+      level: 'Iniciante',
+      password: '',
+      confirmPassword: '',
+      acceptTerms: false
+    });
+    this.forgotForm.reset({ email: '' });
+    this.resetForm.reset({ password: '', confirmPassword: '' });
+    this.showPassword = false;
+    this.isSubmitting = false;
+    this.authFeedbackMessage = '';
+    this.cdr.detectChanges();
   }
 
   public toggleMode(mode: AuthViewMode): void {
@@ -143,6 +158,7 @@ export class AuthPage implements OnInit {
     if (this.isSubmitting) return;
     this.isSubmitting = true;
     this.authFeedbackMessage = '';
+    this.cdr.detectChanges();
 
     const email = String(this.forgotForm.value.email ?? '').trim().toLowerCase();
 
@@ -175,6 +191,7 @@ export class AuthPage implements OnInit {
     if (this.isSubmitting) return;
     this.isSubmitting = true;
     this.authFeedbackMessage = '';
+    this.cdr.detectChanges();
 
     const newPassword = String(this.resetForm.value.password ?? '');
 
@@ -185,7 +202,7 @@ export class AuthPage implements OnInit {
 
       setTimeout(async () => {
         this.toggleMode('login');
-        await this.router.navigate(['/tabs/dashboard']);
+        await this.router.navigate(['/tabs/dashboard'], { replaceUrl: true });
       }, 1500);
     } catch (err: unknown) {
       this.setFeedback(this.translateAuthError(err), 'error');
@@ -213,6 +230,7 @@ export class AuthPage implements OnInit {
     if (this.isSubmitting) return;
     this.isSubmitting = true;
     this.authFeedbackMessage = '';
+    this.cdr.detectChanges();
 
     const name = String(this.registerForm.value.name ?? '').trim();
     const email = String(this.registerForm.value.email ?? '').trim().toLowerCase();
@@ -253,22 +271,22 @@ export class AuthPage implements OnInit {
     if (this.isSubmitting) return;
     this.isSubmitting = true;
     this.authFeedbackMessage = '';
+    this.cdr.detectChanges();
 
     const email = String(this.loginForm.value.email ?? '').trim().toLowerCase();
     const password = String(this.loginForm.value.password ?? '');
 
     try {
       const user = await this.supabaseService.signIn(email, password);
-      const profile = await this.supabaseService.getProfile();
+      const fallbackName =
+        (user?.user_metadata?.['full_name'] as string | undefined) ||
+        email.split('@')[0] ||
+        'Corredor';
 
-      const displayName =
-        profile?.full_name || user?.email?.split('@')[0] || 'Corredor';
+      localStorage.setItem(this.activeUserNameKey, fallbackName);
+      this.loginForm.reset({ email: '', password: '' });
 
-      localStorage.setItem(this.activeUserNameKey, displayName);
-      this.syncProfileCache(email, displayName, profile);
-
-      this.authFeedbackMessage = '';
-      await this.router.navigate(['/tabs/dashboard']);
+      await this.router.navigate(['/tabs/dashboard'], { replaceUrl: true });
     } catch (err: unknown) {
       this.setFeedback(this.translateAuthError(err), 'error');
     } finally {
@@ -282,30 +300,6 @@ export class AuthPage implements OnInit {
     const confirmPassword = control.get('confirmPassword')?.value;
     if (!confirmPassword) return null;
     return password === confirmPassword ? null : { passwordMismatch: true };
-  }
-
-  private syncProfileCache(
-    email: string,
-    fullName: string,
-    profile: RunnerProfile | null
-  ): void {
-    try {
-      const rawProfile = localStorage.getItem(this.activeUserProfileKey);
-      const currentProfile = rawProfile ? JSON.parse(rawProfile) : {};
-      const updatedProfile = {
-        ...currentProfile,
-        fullName,
-        email,
-        level: profile?.level ?? currentProfile.level ?? 'Iniciante',
-        activePlanId: profile?.active_plan_id ?? currentProfile.activePlanId ?? '5k'
-      };
-      localStorage.setItem(this.activeUserProfileKey, JSON.stringify(updatedProfile));
-    } catch {
-      localStorage.setItem(
-        this.activeUserProfileKey,
-        JSON.stringify({ fullName, email })
-      );
-    }
   }
 
   private translateAuthError(err: unknown): string {

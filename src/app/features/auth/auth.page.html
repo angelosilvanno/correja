@@ -78,7 +78,7 @@
         }
 
         @if (authMode === 'login') {
-          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="form-content">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" autocomplete="off" class="form-content">
             <div class="field-group">
               <label for="email-in">E-mail</label>
               <div class="input-box">
@@ -88,7 +88,7 @@
                   type="email"
                   formControlName="email"
                   placeholder="voce@email.com"
-                  autocomplete="email" />
+                  autocomplete="off" />
               </div>
               @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
                 <span class="input-error">Informe um e-mail válido</span>
@@ -108,7 +108,8 @@
                   id="pass-in"
                   [type]="showPassword ? 'text' : 'password'"
                   formControlName="password"
-                  placeholder="Digite sua senha" />
+                  placeholder="Digite sua senha"
+                  autocomplete="new-password" />
                 <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
                   <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
                 </button>
@@ -119,14 +120,19 @@
             </div>
 
             <ion-button expand="block" type="submit" class="btn-primary-action" [disabled]="isSubmitting">
-              <span>{{ isSubmitting ? 'ENTRANDO...' : 'ENTRAR' }}</span>
-              <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              @if (isSubmitting) {
+                <ion-spinner name="crescent" style="width: 18px; height: 18px; margin-right: 8px;"></ion-spinner>
+                <span>ENTRANDO...</span>
+              } @else {
+                <span>ENTRAR</span>
+                <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              }
             </ion-button>
           </form>
         }
 
         @if (authMode === 'forgot') {
-          <form [formGroup]="forgotForm" (ngSubmit)="onForgotPassword()" class="form-content">
+          <form [formGroup]="forgotForm" (ngSubmit)="onForgotPassword()" autocomplete="off" class="form-content">
             <div class="field-group">
               <label for="forgot-email">E-mail cadastrado</label>
               <div class="input-box">
@@ -136,7 +142,7 @@
                   type="email"
                   formControlName="email"
                   placeholder="voce@email.com"
-                  autocomplete="email" />
+                  autocomplete="off" />
               </div>
               @if (forgotForm.get('email')?.touched && forgotForm.get('email')?.invalid) {
                 <span class="input-error">Informe um e-mail válido</span>
@@ -144,14 +150,19 @@
             </div>
 
             <ion-button expand="block" type="submit" class="btn-primary-action" [disabled]="isSubmitting">
-              <span>{{ isSubmitting ? 'ENVIANDO...' : 'ENVIAR LINK DE RECUPERAÇÃO' }}</span>
-              <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              @if (isSubmitting) {
+                <ion-spinner name="crescent" style="width: 18px; height: 18px; margin-right: 8px;"></ion-spinner>
+                <span>ENVIANDO...</span>
+              } @else {
+                <span>ENVIAR LINK DE RECUPERAÇÃO</span>
+                <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              }
             </ion-button>
           </form>
         }
 
         @if (authMode === 'reset') {
-          <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" class="form-content">
+          <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" autocomplete="off" class="form-content">
             <div class="field-group">
               <label for="reset-pass">Nova senha</label>
               <div class="input-box">
@@ -160,7 +171,8 @@
                   id="reset-pass"
                   [type]="showPassword ? 'text' : 'password'"
                   formControlName="password"
-                  placeholder="Mínimo de 8 caracteres" />
+                  placeholder="Mínimo de 8 caracteres"
+                  autocomplete="new-password" />
                 <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
                   <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
                 </button>
@@ -178,7 +190,8 @@
                   id="reset-pass-confirm"
                   [type]="showPassword ? 'text' : 'password'"
                   formControlName="confirmPassword"
-                  placeholder="Digite novamente" />
+                  placeholder="Digite novamente"
+                  autocomplete="new-password" />
               </div>
               @if (resetForm.get('confirmPassword')?.touched && resetForm.hasError('passwordMismatch')) {
                 <span class="input-error">As senhas não coincidem</span>
@@ -186,14 +199,19 @@
             </div>
 
             <ion-button expand="block" type="submit" class="btn-primary-action" [disabled]="isSubmitting">
-              <span>{{ isSubmitting ? 'SALVANDO...' : 'SALVAR NOVA SENHA' }}</span>
-              <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              @if (isSubmitting) {
+                <ion-spinner name="crescent" style="width: 18px; height: 18px; margin-right: 8px;"></ion-spinner>
+                <span>SALVANDO...</span>
+              } @else {
+                <span>SALVAR NOVA SENHA</span>
+                <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              }
             </ion-button>
           </form>
         }
 
         @if (authMode === 'register') {
-          <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="form-content">
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()" autocomplete="off" class="form-content">
             <div class="field-group">
               <label for="reg-name">Nome completo</label>
               <div class="input-box">
@@ -203,7 +221,7 @@
                   type="text"
                   formControlName="name"
                   placeholder="Como podemos chamar você?"
-                  autocomplete="name" />
+                  autocomplete="off" />
               </div>
               @if (registerForm.get('name')?.touched && registerForm.get('name')?.invalid) {
                 <span class="input-error">Por favor, informe seu nome completo</span>
@@ -219,7 +237,7 @@
                   type="email"
                   formControlName="email"
                   placeholder="voce@email.com"
-                  autocomplete="email" />
+                  autocomplete="off" />
               </div>
               @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
                 <span class="input-error">Informe um e-mail válido</span>
@@ -234,7 +252,8 @@
                   id="reg-pass"
                   [type]="showPassword ? 'text' : 'password'"
                   formControlName="password"
-                  placeholder="Mínimo de 8 caracteres" />
+                  placeholder="Mínimo de 8 caracteres"
+                  autocomplete="new-password" />
                 <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
                   <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
                 </button>
@@ -252,7 +271,8 @@
                   id="reg-pass-confirm"
                   [type]="showPassword ? 'text' : 'password'"
                   formControlName="confirmPassword"
-                  placeholder="Digite novamente" />
+                  placeholder="Digite novamente"
+                  autocomplete="new-password" />
               </div>
               @if (registerForm.get('confirmPassword')?.touched && registerForm.hasError('passwordMismatch')) {
                 <span class="input-error">As senhas não coincidem</span>
@@ -274,8 +294,13 @@
               type="submit"
               class="btn-primary-action"
               [disabled]="registerForm.invalid || isSubmitting">
-              <span>{{ isSubmitting ? 'CRIANDO CONTA...' : 'CRIAR CONTA' }}</span>
-              <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              @if (isSubmitting) {
+                <ion-spinner name="crescent" style="width: 18px; height: 18px; margin-right: 8px;"></ion-spinner>
+                <span>CRIANDO CONTA...</span>
+              } @else {
+                <span>CRIAR CONTA</span>
+                <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+              }
             </ion-button>
           </form>
         }
