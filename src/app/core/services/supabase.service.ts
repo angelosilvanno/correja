@@ -55,6 +55,11 @@ export class SupabaseService {
     const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          full_name: fullName,
+        },
+      },
     });
 
     if (error) throw new Error(error.message);
@@ -175,7 +180,6 @@ export class SupabaseService {
 
     const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
 
-    // Garante que full_name e email estejam preenchidos caso a linha ainda não exista em 'profiles'
     const existingProfile = await this.getProfile();
     const fallbackName =
       existingProfile?.full_name ||

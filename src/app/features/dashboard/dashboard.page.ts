@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import type { OnInit } from '@angular/core';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -19,6 +19,8 @@ import {
   trophyOutline
 } from 'ionicons/icons';
 
+import { SupabaseService } from '../../core/services/supabase.service';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -27,6 +29,9 @@ import {
   imports: [CommonModule, RouterModule, IonContent, IonIcon]
 })
 export class DashboardPage implements OnInit {
+  private supabaseService = inject(SupabaseService);
+  private cdr = inject(ChangeDetectorRef);
+
   athleteName = '';
   profilePhotoUrl: string | null = null;
 
@@ -77,7 +82,9 @@ export class DashboardPage implements OnInit {
 
   public get firstName(): string {
     const cleanName = (this.athleteName ?? '').trim();
-    if (!cleanName) return 'Atleta';
+    if (!cleanName || cleanName === 'Corredor' || cleanName === 'Atleta CorreJa') {
+      return 'Atleta';
+    }
     return cleanName.split(/\s+/)[0];
   }
 
@@ -95,19 +102,42 @@ export class DashboardPage implements OnInit {
     return `${firstInitial}${lastInitial}`.toUpperCase();
   }
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     this.loadUserData();
+    await this.syncCloudUser();
+  }
+
+  public async ionViewWillEnter(): Promise<void> {
+    this.loadUserData();
+    await this.syncCloudUser();
   }
 
   private loadUserData(): void {
     const savedName = localStorage.getItem('correja_user_name');
-    if (savedName) {
+    if (savedName && savedName.trim() !== 'Corredor') {
       this.athleteName = savedName.trim();
     }
 
     const savedPhoto = localStorage.getItem('correja_user_photo');
-    if (savedPhoto) {
-      this.profilePhotoUrl = savedPhoto;
+    this.profilePhotoUrl = savedPhoto || null;
+  }
+
+  private async syncCloudUser(): Promise<void> {
+    try {
+      const profile = await this.supabaseService.getProfile();
+      if (profile?.full_name) {
+        this.athleteName = profile.full_name.trim();
+        localStorage.setItem('correja_user_name', this.athleteName);
+      }
+
+      if (profile?.avatar_url) {
+        this.profilePhotoUrl = profile.avatar_url;
+        localStorage.setItem('correja_user_photo', profile.avatar_url);
+      }
+
+      this.cdr.detectChanges();
+    } catch {
+      // mantém dados locais caso esteja offline
     }
   }
 

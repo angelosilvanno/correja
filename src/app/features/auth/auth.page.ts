@@ -280,11 +280,17 @@ export class AuthPage implements OnInit {
       const user = await this.supabaseService.signIn(email, password);
       const fallbackName =
         (user?.user_metadata?.['full_name'] as string | undefined) ||
-        email.split('@')[0] ||
         'Corredor';
 
       localStorage.setItem(this.activeUserNameKey, fallbackName);
       this.loginForm.reset({ email: '', password: '' });
+
+      // Atualiza o nome real salvo na tabela 'profiles' em segundo plano sem atrasar a navegação
+      this.supabaseService.getProfile().then((profile) => {
+        if (profile?.full_name) {
+          localStorage.setItem(this.activeUserNameKey, profile.full_name);
+        }
+      });
 
       await this.router.navigate(['/tabs/dashboard'], { replaceUrl: true });
     } catch (err: unknown) {
