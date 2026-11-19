@@ -9,14 +9,18 @@ export interface RunnerProfile {
   id: string;
   full_name: string;
   email: string;
+  phone?: string | null;
+  city?: string | null;
+  age?: number | null;
   level: AthleteLevel;
   active_plan_id: string;
-  avatar_url?: string;
-  goal_distance?: string;
-  target_pace?: string;
-  weekly_frequency?: number;
-  weight_kg?: number;
-  height_cm?: number;
+  avatar_url?: string | null;
+  goal_distance?: string | null;
+  target_pace?: string | null;
+  weekly_frequency?: number | null;
+  weight_kg?: number | null;
+  height_cm?: number | null;
+  updated_at?: string;
 }
 
 export interface CompletedWorkoutRecord {

@@ -218,6 +218,8 @@ export class ProfilePage implements OnInit {
 
     const cleanedFullName = this.editDraft.fullName.trim();
     const cleanedEmail = this.editDraft.email.trim();
+    const cleanedPhone = this.editDraft.phone.trim();
+    const cleanedCity = this.editDraft.city.trim();
     const cleanedHeight = this.editDraft.height.trim();
     const cleanedWeight = this.editDraft.weight.trim();
     const mappedLevel = this.mapExperienceToLevel(this.editDraft.experience);
@@ -226,8 +228,8 @@ export class ProfilePage implements OnInit {
       ...this.editDraft,
       fullName: cleanedFullName,
       email: cleanedEmail,
-      phone: this.editDraft.phone.trim(),
-      city: this.editDraft.city.trim(),
+      phone: cleanedPhone,
+      city: cleanedCity,
       height: cleanedHeight,
       weight: cleanedWeight
     };
@@ -237,29 +239,40 @@ export class ProfilePage implements OnInit {
 
     try {
       const user = await this.supabaseService.getCurrentUser();
-      if (user) {
-        const parsedWeight = parseFloat(cleanedWeight.replace(',', '.'));
-        const parsedHeight = parseInt(cleanedHeight.replace(/\D/g, ''), 10);
-        const parsedFreq = parseInt(this.profileForm.weeklyFrequency.replace(/\D/g, ''), 10);
-
-        await this.supabaseService.upsertProfile({
-          id: user.id,
-          full_name: cleanedFullName,
-          email: cleanedEmail,
-          level: mappedLevel,
-          goal_distance: this.profileForm.targetDistance,
-          weekly_frequency: Number.isNaN(parsedFreq) ? 3 : parsedFreq,
-          weight_kg: Number.isNaN(parsedWeight) ? undefined : parsedWeight,
-          height_cm: Number.isNaN(parsedHeight) ? undefined : parsedHeight
-        });
+      if (!user) {
+        throw new Error('Usuário não autenticado. Faça login novamente.');
       }
+
+      const parsedWeight = parseFloat(cleanedWeight.replace(',', '.'));
+      const rawHeight = parseFloat(cleanedHeight.replace(',', '.'));
+      const parsedHeightCm = Number.isNaN(rawHeight)
+        ? null
+        : rawHeight < 3
+          ? Math.round(rawHeight * 100)
+          : Math.round(rawHeight);
+      const parsedFreq = parseInt(this.profileForm.weeklyFrequency.replace(/\D/g, ''), 10);
+
+      await this.supabaseService.upsertProfile({
+        id: user.id,
+        full_name: cleanedFullName,
+        email: cleanedEmail,
+        phone: cleanedPhone || null,
+        city: cleanedCity || null,
+        age: this.profileForm.age ?? null,
+        level: mappedLevel,
+        goal_distance: this.profileForm.targetDistance,
+        weekly_frequency: Number.isNaN(parsedFreq) ? 3 : parsedFreq,
+        weight_kg: Number.isNaN(parsedWeight) ? null : parsedWeight,
+        height_cm: parsedHeightCm
+      });
 
       localStorage.setItem(this.nameStorageKey, cleanedFullName);
       localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
       this.isEditingProfile = false;
-      this.showFeedback('Informações pessoais sincronizadas com sucesso.', 'success');
-    } catch {
-      this.showFeedback('Erro ao salvar as alterações no banco de dados.', 'error');
+      this.showFeedback('Informações pessoais salvas no banco de dados!', 'success');
+    } catch (err: unknown) {
+      const detail = err instanceof Error ? err.message : 'Erro desconhecido';
+      this.showFeedback(`Erro ao salvar no banco: ${detail}`, 'error');
     } finally {
       this.isSavingProfile = false;
     }
@@ -310,13 +323,18 @@ export class ProfilePage implements OnInit {
         ...this.profileForm,
         fullName: cloudProfile.full_name || this.profileForm.fullName,
         email: cloudProfile.email || user.email || this.profileForm.email,
+        phone: cloudProfile.phone ?? this.profileForm.phone,
+        city: cloudProfile.city ?? this.profileForm.city,
+        age: cloudProfile.age ?? this.profileForm.age,
         experience: this.mapLevelToExperience(cloudProfile.level),
         targetDistance: cloudProfile.goal_distance || this.profileForm.targetDistance,
         weeklyFrequency: cloudProfile.weekly_frequency
           ? `${cloudProfile.weekly_frequency} vezes por semana`
           : this.profileForm.weeklyFrequency,
         weight: cloudProfile.weight_kg ? String(cloudProfile.weight_kg) : this.profileForm.weight,
-        height: cloudProfile.height_cm ? String(cloudProfile.height_cm) : this.profileForm.height
+        height: cloudProfile.height_cm
+          ? (cloudProfile.height_cm / 100).toFixed(2)
+          : this.profileForm.height
       };
 
       this.athleteName = this.profileForm.fullName || 'Atleta CorreJa';
