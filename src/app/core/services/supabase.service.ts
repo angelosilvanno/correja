@@ -57,7 +57,7 @@ export class SupabaseService {
       password,
     });
 
-    if (error) throw error;
+    if (error) throw new Error(error.message);
 
     if (data.user) {
       await this.upsertProfile({
@@ -78,13 +78,13 @@ export class SupabaseService {
       password,
     });
 
-    if (error) throw error;
+    if (error) throw new Error(error.message);
     return data.user;
   }
 
   async signOut(): Promise<void> {
     const { error } = await this.supabase.auth.signOut();
-    if (error) throw error;
+    if (error) throw new Error(error.message);
   }
 
   async getCurrentUser(): Promise<User | null> {
@@ -117,7 +117,7 @@ export class SupabaseService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) throw new Error(error.message);
     return data as RunnerProfile;
   }
 
@@ -132,26 +132,34 @@ export class SupabaseService {
       .from('avatars')
       .upload(filePath, optimizedBlob, {
         contentType: 'image/jpeg',
-        upsert: true
+        cacheControl: '3600',
+        upsert: false,
       });
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Tempo limite excedido ao enviar a foto. Verifique sua conexão ou as chaves do Supabase em produção.')), 15000)
+      setTimeout(
+        () => reject(new Error('Tempo limite excedido ao enviar a foto.')),
+        15000
+      )
     );
 
     const { error: uploadError } = await Promise.race([uploadPromise, timeoutPromise]);
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      throw new Error(uploadError.message || 'Erro de permissão no bucket avatars.');
+    }
 
     const { data } = this.supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
 
+    const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
+
     await this.upsertProfile({
       id: user.id,
-      avatar_url: data.publicUrl,
+      avatar_url: publicUrl,
     });
 
-    return data.publicUrl;
+    return publicUrl;
   }
 
   private compressAvatarImage(file: File, maxSize = 400, quality = 0.82): Promise<Blob> {
@@ -204,7 +212,7 @@ export class SupabaseService {
     }
 
     const { data, error } = await query;
-    if (error) throw error;
+    if (error) throw new Error(error.message);
     return (data as CompletedWorkoutRecord[]) || [];
   }
 
@@ -225,7 +233,7 @@ export class SupabaseService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) throw new Error(error.message);
     return data as CompletedWorkoutRecord;
   }
 
@@ -240,6 +248,6 @@ export class SupabaseService {
       .eq('plan_id', planId)
       .eq('workout_id', workoutId);
 
-    if (error) throw error;
+    if (error) throw new Error(error.message);
   }
 }
