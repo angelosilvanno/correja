@@ -28,9 +28,9 @@
 
           <h2 class="athlete-name">{{ athleteName }}</h2>
 
-          <span class="runner-level-pill">CORREDOR INICIANTE</span>
+          <span class="runner-level-pill">CORREDOR {{ athleteLevel | uppercase }}</span>
 
-          <input
+           <input
             #photoInput
             type="file"
             accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -38,17 +38,14 @@
             (change)="onPhotoSelected($event)" />
 
           <div class="photo-actions-group">
-            <button type="button" class="btn-change-photo" (click)="triggerPhotoPicker(photoInput)">
+            <button
+              type="button"
+              class="btn-change-photo"
+              [disabled]="isUploadingPhoto"
+              (click)="triggerPhotoPicker(photoInput)">
               <ion-icon name="camera-outline"></ion-icon>
-              <span>ALTERAR FOTO</span>
+              <span>{{ isUploadingPhoto ? 'ENVIANDO FOTO...' : 'ALTERAR FOTO' }}</span>
             </button>
-
-            @if (pendingPhotoPreview) {
-              <div class="photo-confirm-bar">
-                <button type="button" class="btn-photo-cancel" (click)="cancelPhotoChange(photoInput)">Cancelar</button>
-                <button type="button" class="btn-photo-save" (click)="confirmPhotoChange(photoInput)">Salvar foto</button>
-              </div>
-            }
           </div>
         </section>
 
@@ -222,6 +219,7 @@
                     <option value="Estou começando">Estou começando</option>
                     <option value="Corro ocasionalmente">Corro ocasionalmente</option>
                     <option value="Corredor intermediário">Corredor intermediário</option>
+                    <option value="Corredor avançado">Corredor avançado</option>
                   </select>
                 </div>
 
@@ -231,6 +229,7 @@
                     <option value="2 vezes por semana">2 vezes por semana</option>
                     <option value="3 vezes por semana">3 vezes por semana</option>
                     <option value="4 vezes por semana">4 vezes por semana</option>
+                    <option value="5 vezes por semana">5 vezes por semana</option>
                   </select>
                 </div>
 
@@ -248,8 +247,8 @@
                 <button type="button" class="btn-form-cancel" (click)="cancelEditForm()">
                   Cancelar
                 </button>
-                <button type="submit" class="btn-form-save">
-                  Salvar alterações
+                <button type="submit" class="btn-form-save" [disabled]="isSavingProfile">
+                  {{ isSavingProfile ? 'Salvando...' : 'Salvar alterações' }}
                 </button>
               </div>
             </form>

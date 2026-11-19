@@ -54,9 +54,9 @@ export class ProfilePage implements OnInit {
   private readonly notificationsStorageKey = 'correja_notifications_enabled';
 
   athleteName = '';
+  athleteLevel: AthleteLevel = 'Iniciante';
   profilePhotoUrl: string | null = null;
   pendingPhotoPreview: string | null = null;
-  private pendingPhotoFile: File | null = null;
   private previousPhotoUrl: string | null = null;
 
   isUploadingPhoto = false;
@@ -118,10 +118,11 @@ export class ProfilePage implements OnInit {
   }
 
   public triggerPhotoPicker(input: HTMLInputElement): void {
+    if (this.isUploadingPhoto) return;
     input.click();
   }
 
-  public onPhotoSelected(event: Event): void {
+  public async onPhotoSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
@@ -140,50 +141,32 @@ export class ProfilePage implements OnInit {
       return;
     }
 
+    this.previousPhotoUrl = this.profilePhotoUrl;
+    this.isUploadingPhoto = true;
+
+    // Mostra prévia imediata enquanto sobe para o Supabase
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        if (!this.pendingPhotoPreview) {
-          this.previousPhotoUrl = this.profilePhotoUrl;
-        }
-        this.pendingPhotoFile = file;
-        this.pendingPhotoPreview = reader.result;
+      if (typeof reader.result === 'string' && this.isUploadingPhoto) {
         this.profilePhotoUrl = reader.result;
       }
     };
-    reader.onerror = () => {
-      this.showFeedback('Não foi possível ler a imagem selecionada.', 'error');
-    };
     reader.readAsDataURL(file);
-  }
 
-  public cancelPhotoChange(input: HTMLInputElement): void {
-    this.profilePhotoUrl = this.previousPhotoUrl;
-    this.pendingPhotoPreview = null;
-    this.pendingPhotoFile = null;
-    input.value = '';
-  }
-
-  public async confirmPhotoChange(input: HTMLInputElement): Promise<void> {
-    if (!this.pendingPhotoPreview || !this.pendingPhotoFile) return;
-    if (this.isUploadingPhoto) return;
-
-    this.isUploadingPhoto = true;
     try {
-      const publicUrl = await this.supabaseService.uploadAvatar(this.pendingPhotoFile);
-
+      const publicUrl = await this.supabaseService.uploadAvatar(file);
       this.profilePhotoUrl = publicUrl;
       this.previousPhotoUrl = publicUrl;
       this.pendingPhotoPreview = null;
-      this.pendingPhotoFile = null;
-      input.value = '';
-
       localStorage.setItem(this.photoStorageKey, publicUrl);
       this.showFeedback('Foto de perfil salva na nuvem com sucesso!', 'success');
-    } catch {
-      this.showFeedback('Não foi possível enviar a foto para o servidor. Verifique sua conexão.', 'error');
+    } catch (err: unknown) {
+      this.profilePhotoUrl = this.previousPhotoUrl;
+      const detail = err instanceof Error ? err.message : 'Erro desconhecido';
+      this.showFeedback(`Falha ao enviar foto: ${detail}`, 'error');
     } finally {
       this.isUploadingPhoto = false;
+      input.value = '';
     }
   }
 
@@ -216,6 +199,7 @@ export class ProfilePage implements OnInit {
     const cleanedEmail = this.editDraft.email.trim();
     const cleanedHeight = this.editDraft.height.trim();
     const cleanedWeight = this.editDraft.weight.trim();
+    const mappedLevel = this.mapExperienceToLevel(this.editDraft.experience);
 
     this.profileForm = {
       ...this.editDraft,
@@ -228,6 +212,7 @@ export class ProfilePage implements OnInit {
     };
 
     this.athleteName = cleanedFullName;
+    this.athleteLevel = mappedLevel;
 
     try {
       const user = await this.supabaseService.getCurrentUser();
@@ -240,7 +225,7 @@ export class ProfilePage implements OnInit {
           id: user.id,
           full_name: cleanedFullName,
           email: cleanedEmail,
-          level: this.mapExperienceToLevel(this.profileForm.experience),
+          level: mappedLevel,
           goal_distance: this.profileForm.targetDistance,
           weekly_frequency: Number.isNaN(parsedFreq) ? 3 : parsedFreq,
           weight_kg: Number.isNaN(parsedWeight) ? undefined : parsedWeight,
@@ -299,6 +284,7 @@ export class ProfilePage implements OnInit {
         return;
       }
 
+      this.athleteLevel = cloudProfile.level || 'Iniciante';
       this.profileForm = {
         ...this.profileForm,
         fullName: cloudProfile.full_name || this.profileForm.fullName,
@@ -339,7 +325,7 @@ export class ProfilePage implements OnInit {
 
   private mapLevelToExperience(level?: AthleteLevel): string {
     if (level === 'Avançado') return 'Corredor avançado';
-    if (level === 'Intermediário') return 'Já corro regularmente';
+    if (level === 'Intermediário') return 'Corredor intermediário';
     return 'Estou começando';
   }
 
