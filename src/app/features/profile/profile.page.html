@@ -30,7 +30,7 @@
 
           <span class="runner-level-pill">CORREDOR {{ athleteLevel | uppercase }}</span>
 
-           <input
+          <input
             #photoInput
             type="file"
             accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -44,7 +44,7 @@
               [disabled]="isUploadingPhoto"
               (click)="triggerPhotoPicker(photoInput)">
               <ion-icon name="camera-outline"></ion-icon>
-              <span>{{ isUploadingPhoto ? 'ENVIANDO FOTO...' : 'ALTERAR FOTO' }}</span>
+              <span>ALTERAR FOTO</span>
             </button>
           </div>
         </section>
@@ -323,4 +323,71 @@
     </div>
 
   </div>
+
+  <!-- MODAL DE PRÉ-VISUALIZAÇÃO DA FOTO -->
+  @if (isPhotoModalOpen && photoPreviewUrl) {
+    <div
+      class="photo-preview-backdrop"
+      role="button"
+      tabindex="0"
+      aria-label="Fechar pré-visualização da foto"
+      (click)="closePhotoModal(photoInput)"
+      (keydown.escape)="closePhotoModal(photoInput)"
+      (keydown.enter)="closePhotoModal(photoInput)">
+      <div
+        class="photo-preview-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="photoModalTitle"
+        tabindex="-1"
+        (click)="$event.stopPropagation()"
+        (keydown.escape)="closePhotoModal(photoInput)">
+        <div class="modal-header-row">
+          <h3 id="photoModalTitle">Pré-visualizar foto</h3>
+          <button
+            type="button"
+            class="btn-modal-close"
+            [disabled]="isUploadingPhoto"
+            (click)="closePhotoModal(photoInput)"
+            aria-label="Fechar">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+
+        <p class="modal-helper-text">
+          Veja como sua foto de perfil ficará antes de salvar.
+        </p>
+
+        <div class="modal-avatar-stage">
+          <img [src]="photoPreviewUrl" alt="Pré-visualização do avatar" class="modal-avatar-preview" />
+        </div>
+
+        <button
+          type="button"
+          class="btn-reselect-photo"
+          [disabled]="isUploadingPhoto"
+          (click)="triggerPhotoPicker(photoInput)">
+          <ion-icon name="camera-outline"></ion-icon>
+          <span>Escolher outra imagem</span>
+        </button>
+
+        <div class="modal-footer-actions">
+          <button
+            type="button"
+            class="btn-modal-cancel"
+            [disabled]="isUploadingPhoto"
+            (click)="closePhotoModal(photoInput)">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-modal-confirm"
+            [disabled]="isUploadingPhoto"
+            (click)="confirmPhotoUpload(photoInput)">
+            {{ isUploadingPhoto ? 'Salvando...' : 'Salvar foto' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </ion-content>

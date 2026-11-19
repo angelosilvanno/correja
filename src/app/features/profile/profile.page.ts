@@ -12,6 +12,7 @@ import {
   cameraOutline,
   checkmarkCircleOutline,
   chevronForwardOutline,
+  closeOutline,
   createOutline,
   logOutOutline,
   notificationsOutline,
@@ -56,8 +57,11 @@ export class ProfilePage implements OnInit {
   athleteName = '';
   athleteLevel: AthleteLevel = 'Iniciante';
   profilePhotoUrl: string | null = null;
-  pendingPhotoPreview: string | null = null;
-  private previousPhotoUrl: string | null = null;
+
+  // Controle do Modal de Pré-visualização da Foto
+  isPhotoModalOpen = false;
+  photoPreviewUrl: string | null = null;
+  private selectedPhotoFile: File | null = null;
 
   isUploadingPhoto = false;
   isSavingProfile = false;
@@ -90,6 +94,7 @@ export class ProfilePage implements OnInit {
       cameraOutline,
       checkmarkCircleOutline,
       chevronForwardOutline,
+      closeOutline,
       createOutline,
       logOutOutline,
       notificationsOutline,
@@ -122,7 +127,7 @@ export class ProfilePage implements OnInit {
     input.click();
   }
 
-  public async onPhotoSelected(event: Event): Promise<void> {
+  public onPhotoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
@@ -141,32 +146,48 @@ export class ProfilePage implements OnInit {
       return;
     }
 
-    this.previousPhotoUrl = this.profilePhotoUrl;
-    this.isUploadingPhoto = true;
-
-    // Mostra prévia imediata enquanto sobe para o Supabase
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === 'string' && this.isUploadingPhoto) {
-        this.profilePhotoUrl = reader.result;
+      if (typeof reader.result === 'string') {
+        this.selectedPhotoFile = file;
+        this.photoPreviewUrl = reader.result;
+        this.isPhotoModalOpen = true;
       }
     };
+    reader.onerror = () => {
+      this.showFeedback('Não foi possível ler a imagem selecionada.', 'error');
+    };
     reader.readAsDataURL(file);
+  }
 
+  public closePhotoModal(input: HTMLInputElement): void {
+    if (this.isUploadingPhoto) return;
+    this.isPhotoModalOpen = false;
+    this.photoPreviewUrl = null;
+    this.selectedPhotoFile = null;
+    input.value = '';
+  }
+
+  public async confirmPhotoUpload(input: HTMLInputElement): Promise<void> {
+    if (!this.selectedPhotoFile || this.isUploadingPhoto) return;
+
+    this.isUploadingPhoto = true;
     try {
-      const publicUrl = await this.supabaseService.uploadAvatar(file);
+      const publicUrl = await this.supabaseService.uploadAvatar(this.selectedPhotoFile);
       this.profilePhotoUrl = publicUrl;
-      this.previousPhotoUrl = publicUrl;
-      this.pendingPhotoPreview = null;
       localStorage.setItem(this.photoStorageKey, publicUrl);
-      this.showFeedback('Foto de perfil salva na nuvem com sucesso!', 'success');
+
+      this.isPhotoModalOpen = false;
+      this.photoPreviewUrl = null;
+      this.selectedPhotoFile = null;
+      input.value = '';
+
+      this.showFeedback('Foto de perfil atualizada com sucesso!', 'success');
     } catch (err: unknown) {
-      this.profilePhotoUrl = this.previousPhotoUrl;
       const detail = err instanceof Error ? err.message : 'Erro desconhecido';
-      this.showFeedback(`Falha ao enviar foto: ${detail}`, 'error');
+      this.showFeedback(`Falha ao salvar foto: ${detail}`, 'error');
     } finally {
       this.isUploadingPhoto = false;
-      input.value = '';
     }
   }
 
@@ -304,7 +325,6 @@ export class ProfilePage implements OnInit {
 
       if (cloudProfile.avatar_url) {
         this.profilePhotoUrl = cloudProfile.avatar_url;
-        this.previousPhotoUrl = cloudProfile.avatar_url;
         localStorage.setItem(this.photoStorageKey, cloudProfile.avatar_url);
       }
     } catch {
@@ -378,7 +398,6 @@ export class ProfilePage implements OnInit {
 
     if (savedPhoto) {
       this.profilePhotoUrl = savedPhoto;
-      this.previousPhotoUrl = savedPhoto;
     }
 
     if (savedNotifications !== null) {
