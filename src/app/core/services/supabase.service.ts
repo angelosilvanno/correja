@@ -123,15 +123,23 @@ export class SupabaseService {
 
   async uploadAvatar(file: File): Promise<string> {
     const user = await this.getCurrentUser();
-    if (!user) throw new Error('Usuário não autenticado');
+    if (!user) throw new Error('Sessão expirada. Faça login novamente.');
 
-    const fileExt = file.name.split('.').pop() || 'jpg';
-    const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+    const optimizedBlob = await this.compressAvatarImage(file, 400, 0.82);
+    const filePath = `${user.id}/avatar-${Date.now()}.jpg`;
 
-    const { error: uploadError } = await this.supabase.storage
+    const uploadPromise = this.supabase.storage
       .from('avatars')
-      .upload(filePath, file, { upsert: true });
+      .upload(filePath, optimizedBlob, {
+        contentType: 'image/jpeg',
+        upsert: true
+      });
 
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Tempo limite excedido ao enviar a foto. Verifique sua conexão ou as chaves do Supabase em produção.')), 15000)
+    );
+
+    const { error: uploadError } = await Promise.race([uploadPromise, timeoutPromise]);
     if (uploadError) throw uploadError;
 
     const { data } = this.supabase.storage
@@ -144,6 +152,41 @@ export class SupabaseService {
     });
 
     return data.publicUrl;
+  }
+
+  private compressAvatarImage(file: File, maxSize = 400, quality = 0.82): Promise<Blob> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+          (blob) => resolve(blob || file),
+          'image/jpeg',
+          quality
+        );
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(file);
+      };
+
+      img.src = objectUrl;
+    });
   }
 
   // --- TREINOS CONCLUÍDOS ---
