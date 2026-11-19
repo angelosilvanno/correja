@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createClient, type SupabaseClient, type User } from '@supabase/supabase-js';
+import { BehaviorSubject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 
@@ -40,9 +41,19 @@ export interface CompletedWorkoutRecord {
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
+  private profileSubject = new BehaviorSubject<RunnerProfile | null>(null);
+  public readonly profile$ = this.profileSubject.asObservable();
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+  }
+
+  public get currentProfileValue(): RunnerProfile | null {
+    return this.profileSubject.value;
+  }
+
+  public clearProfileState(): void {
+    this.profileSubject.next(null);
   }
 
   // --- AUTENTICAÇÃO ---
@@ -88,6 +99,7 @@ export class SupabaseService {
   }
 
   async signOut(): Promise<void> {
+    this.clearProfileState();
     const { error } = await this.supabase.auth.signOut();
     if (error) throw new Error(error.message);
   }
@@ -121,7 +133,10 @@ export class SupabaseService {
   // --- PERFIL DO ATLETA & AVATAR ---
   async getProfile(): Promise<RunnerProfile | null> {
     const user = await this.getCurrentUser();
-    if (!user) return null;
+    if (!user) {
+      this.clearProfileState();
+      return null;
+    }
 
     const { data, error } = await this.supabase
       .from('profiles')
@@ -130,7 +145,16 @@ export class SupabaseService {
       .single();
 
     if (error) return null;
-    return data as RunnerProfile;
+
+    const profile = data as RunnerProfile;
+    this.profileSubject.next(profile);
+    localStorage.setItem('correja_user_name', profile.full_name);
+
+    if (profile.avatar_url) {
+      localStorage.setItem('correja_user_photo', profile.avatar_url);
+    }
+
+    return profile;
   }
 
   async upsertProfile(profile: Partial<RunnerProfile> & { id: string }): Promise<RunnerProfile> {
@@ -151,7 +175,10 @@ export class SupabaseService {
       });
     }
 
-    return data as RunnerProfile;
+    const updated = data as RunnerProfile;
+    this.profileSubject.next(updated);
+    localStorage.setItem('correja_user_name', updated.full_name);
+    return updated;
   }
 
   async uploadAvatar(file: File): Promise<string> {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import type { OnInit } from '@angular/core';
+import type { OnDestroy, OnInit } from '@angular/core';
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular';
@@ -12,6 +12,7 @@ import {
   sparklesOutline,
   speedometerOutline
 } from 'ionicons/icons';
+import type { Subscription } from 'rxjs';
 
 import { SupabaseService } from '../core/services/supabase.service';
 
@@ -22,9 +23,10 @@ import { SupabaseService } from '../core/services/supabase.service';
   standalone: true,
   imports: [CommonModule, RouterModule, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel]
 })
-export class TabsPage implements OnInit {
+export class TabsPage implements OnInit, OnDestroy {
   private supabaseService = inject(SupabaseService);
   private cdr = inject(ChangeDetectorRef);
+  private profileSub?: Subscription;
 
   userName = '';
   activePlanLabel = 'Plano 5 km';
@@ -66,27 +68,12 @@ export class TabsPage implements OnInit {
 
   public async ngOnInit(): Promise<void> {
     this.loadUserData();
-    await this.syncCloudUser();
-  }
 
-  public async ionViewWillEnter(): Promise<void> {
-    this.loadUserData();
-    await this.syncCloudUser();
-  }
-
-  private loadUserData(): void {
-    const savedName = localStorage.getItem('correja_user_name');
-    if (savedName && savedName.trim() !== 'Corredor') {
-      this.userName = savedName.trim();
-    }
-  }
-
-  private async syncCloudUser(): Promise<void> {
-    try {
-      const profile = await this.supabaseService.getProfile();
+    this.profileSub = this.supabaseService.profile$.subscribe((profile) => {
       if (profile?.full_name) {
         this.userName = profile.full_name.trim();
-        localStorage.setItem('correja_user_name', this.userName);
+      } else if (!profile) {
+        this.userName = '';
       }
 
       if (profile?.active_plan_id) {
@@ -94,8 +81,36 @@ export class TabsPage implements OnInit {
       }
 
       this.cdr.detectChanges();
-    } catch {
-      // mantém dados locais caso esteja offline
+    });
+
+    if (!this.supabaseService.currentProfileValue) {
+      await this.supabaseService.getProfile();
+    }
+  }
+
+  public ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
+  }
+
+  public async ionViewWillEnter(): Promise<void> {
+    this.loadUserData();
+    if (!this.supabaseService.currentProfileValue) {
+      await this.supabaseService.getProfile();
+    }
+  }
+
+  private loadUserData(): void {
+    const cachedProfile = this.supabaseService.currentProfileValue;
+    if (cachedProfile?.full_name) {
+      this.userName = cachedProfile.full_name.trim();
+      return;
+    }
+
+    const savedName = localStorage.getItem('correja_user_name');
+    if (savedName && savedName.trim() !== 'Corredor') {
+      this.userName = savedName.trim();
+    } else {
+      this.userName = '';
     }
   }
 }

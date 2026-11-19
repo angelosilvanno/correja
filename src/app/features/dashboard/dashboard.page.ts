@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import type { OnInit } from '@angular/core';
+import type { OnDestroy, OnInit } from '@angular/core';
 import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular';
@@ -18,6 +18,7 @@ import {
   timeOutline,
   trophyOutline
 } from 'ionicons/icons';
+import type { Subscription } from 'rxjs';
 
 import { SupabaseService } from '../../core/services/supabase.service';
 
@@ -28,9 +29,10 @@ import { SupabaseService } from '../../core/services/supabase.service';
   standalone: true,
   imports: [CommonModule, RouterModule, IonContent, IonIcon]
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
   private supabaseService = inject(SupabaseService);
   private cdr = inject(ChangeDetectorRef);
+  private profileSub?: Subscription;
 
   athleteName = '';
   profilePhotoUrl: string | null = null;
@@ -104,7 +106,24 @@ export class DashboardPage implements OnInit {
 
   public async ngOnInit(): Promise<void> {
     this.loadUserData();
+
+    this.profileSub = this.supabaseService.profile$.subscribe((profile) => {
+      if (profile?.full_name) {
+        this.athleteName = profile.full_name.trim();
+        this.profilePhotoUrl = profile.avatar_url || null;
+        this.cdr.detectChanges();
+      } else if (!profile) {
+        this.athleteName = '';
+        this.profilePhotoUrl = null;
+        this.cdr.detectChanges();
+      }
+    });
+
     await this.syncCloudUser();
+  }
+
+  public ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
   }
 
   public async ionViewWillEnter(): Promise<void> {
@@ -113,9 +132,18 @@ export class DashboardPage implements OnInit {
   }
 
   private loadUserData(): void {
+    const cachedProfile = this.supabaseService.currentProfileValue;
+    if (cachedProfile?.full_name) {
+      this.athleteName = cachedProfile.full_name.trim();
+      this.profilePhotoUrl = cachedProfile.avatar_url || null;
+      return;
+    }
+
     const savedName = localStorage.getItem('correja_user_name');
     if (savedName && savedName.trim() !== 'Corredor') {
       this.athleteName = savedName.trim();
+    } else {
+      this.athleteName = '';
     }
 
     const savedPhoto = localStorage.getItem('correja_user_photo');
@@ -133,7 +161,6 @@ export class DashboardPage implements OnInit {
         this.athleteName = profile.full_name.trim();
         localStorage.setItem('correja_user_name', this.athleteName);
 
-        // Garante que contas antigas também gravem o full_name no user_metadata do Auth
         if (user && user.user_metadata?.['full_name'] !== this.athleteName) {
           await this.supabaseService.upsertProfile({
             id: user.id,
