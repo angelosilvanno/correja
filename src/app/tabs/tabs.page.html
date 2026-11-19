@@ -40,7 +40,13 @@
       </div>
 
       <div class="user-profile-footer" routerLink="/tabs/profile">
-        <div class="user-initials-avatar">{{ userInitials }}</div>
+        <div class="user-initials-avatar">
+          @if (profilePhotoUrl) {
+            <img [src]="profilePhotoUrl" [alt]="fullUserName" class="sidebar-avatar-img" />
+          } @else {
+            {{ userInitials }}
+          }
+        </div>
         <div class="user-details">
           <strong>{{ fullUserName }}</strong>
           <span>{{ activePlanLabel }}</span>

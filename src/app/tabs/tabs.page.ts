@@ -29,6 +29,7 @@ export class TabsPage implements OnInit, OnDestroy {
   private profileSub?: Subscription;
 
   userName = '';
+  profilePhotoUrl: string | null = null;
   activePlanLabel = 'Plano 5 km';
 
   constructor() {
@@ -72,8 +73,10 @@ export class TabsPage implements OnInit, OnDestroy {
     this.profileSub = this.supabaseService.profile$.subscribe((profile) => {
       if (profile?.full_name) {
         this.userName = profile.full_name.trim();
+        this.profilePhotoUrl = profile.avatar_url || null;
       } else if (!profile) {
         this.userName = '';
+        this.profilePhotoUrl = null;
       }
 
       if (profile?.active_plan_id) {
@@ -103,6 +106,7 @@ export class TabsPage implements OnInit, OnDestroy {
     const cachedProfile = this.supabaseService.currentProfileValue;
     if (cachedProfile?.full_name) {
       this.userName = cachedProfile.full_name.trim();
+      this.profilePhotoUrl = cachedProfile.avatar_url || null;
       return;
     }
 
@@ -112,5 +116,7 @@ export class TabsPage implements OnInit, OnDestroy {
     } else {
       this.userName = '';
     }
+
+    this.profilePhotoUrl = localStorage.getItem('correja_user_photo') || null;
   }
 }
