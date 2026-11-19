@@ -11,6 +11,7 @@ export interface RunnerProfile {
   email: string;
   level: AthleteLevel;
   active_plan_id: string;
+  avatar_url?: string;
   goal_distance?: string;
   target_pace?: string;
   weekly_frequency?: number;
@@ -87,7 +88,7 @@ export class SupabaseService {
     return data.user;
   }
 
-  // --- PERFIL DO ATLETA ---
+  // --- PERFIL DO ATLETA & AVATAR ---
   async getProfile(): Promise<RunnerProfile | null> {
     const user = await this.getCurrentUser();
     if (!user) return null;
@@ -114,6 +115,31 @@ export class SupabaseService {
 
     if (error) throw error;
     return data as RunnerProfile;
+  }
+
+  async uploadAvatar(file: File): Promise<string> {
+    const user = await this.getCurrentUser();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const fileExt = file.name.split('.').pop() || 'jpg';
+    const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await this.supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = this.supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    await this.upsertProfile({
+      id: user.id,
+      avatar_url: data.publicUrl,
+    });
+
+    return data.publicUrl;
   }
 
   // --- TREINOS CONCLUÍDOS ---
