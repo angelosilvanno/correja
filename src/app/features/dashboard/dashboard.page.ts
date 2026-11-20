@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import type { OnDestroy, OnInit } from '@angular/core';
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -21,6 +21,7 @@ import {
 import type { Subscription } from 'rxjs';
 
 import { SupabaseService } from '../../core/services/supabase.service';
+import { type PlanId, TrainingPlanService } from '../../core/services/training-plan.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,16 +32,28 @@ import { SupabaseService } from '../../core/services/supabase.service';
 })
 export class DashboardPage implements OnInit, OnDestroy {
   private supabaseService = inject(SupabaseService);
+  public planService = inject(TrainingPlanService);
   private cdr = inject(ChangeDetectorRef);
   private profileSub?: Subscription;
 
   athleteName = '';
   profilePhotoUrl: string | null = null;
 
-  progress = signal({
-    completedCount: 3,
-    plannedCount: 8,
-    streakWeeks: 2
+  activePlan = this.planService.currentPlan;
+  planProgressPct = this.planService.progressPercentage;
+  currentPlanWeek = this.planService.currentWeek;
+
+  progress = computed(() => {
+    const plan = this.planService.currentPlan();
+    const totalDone = this.planService.completedCountForCurrentPlan();
+    const weekDone = totalDone % plan.workoutsPerWeek;
+
+    return {
+      completedCount: weekDone === 0 && totalDone > 0 ? plan.workoutsPerWeek : weekDone,
+      plannedCount: plan.workoutsPerWeek,
+      totalCompleted: totalDone,
+      streakWeeks: Math.max(1, Math.floor(totalDone / plan.workoutsPerWeek))
+    };
   });
 
   workout = signal({
@@ -111,12 +124,18 @@ export class DashboardPage implements OnInit, OnDestroy {
       if (profile?.full_name) {
         this.athleteName = profile.full_name.trim();
         this.profilePhotoUrl = profile.avatar_url || null;
-        this.cdr.detectChanges();
       } else if (!profile) {
         this.athleteName = '';
         this.profilePhotoUrl = null;
-        this.cdr.detectChanges();
       }
+
+      const profilePlan = (profile as { goal_plan?: string; selected_plan?: string } | null)?.goal_plan
+        ?? (profile as { selected_plan?: string } | null)?.selected_plan;
+      if (profilePlan) {
+        this.syncPlanFromValue(profilePlan);
+      }
+
+      this.cdr.detectChanges();
     });
 
     await this.syncCloudUser();
@@ -129,6 +148,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   public async ionViewWillEnter(): Promise<void> {
     this.loadUserData();
     await this.syncCloudUser();
+    this.cdr.detectChanges();
   }
 
   private loadUserData(): void {
@@ -136,18 +156,16 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (cachedProfile?.full_name) {
       this.athleteName = cachedProfile.full_name.trim();
       this.profilePhotoUrl = cachedProfile.avatar_url || null;
-      return;
-    }
-
-    const savedName = localStorage.getItem('correja_user_name');
-    if (savedName && savedName.trim() !== 'Corredor') {
-      this.athleteName = savedName.trim();
     } else {
-      this.athleteName = '';
+      const savedName = localStorage.getItem('correja_user_name');
+      this.athleteName = savedName && savedName.trim() !== 'Corredor' ? savedName.trim() : '';
+      this.profilePhotoUrl = localStorage.getItem('correja_user_photo') || null;
     }
 
-    const savedPhoto = localStorage.getItem('correja_user_photo');
-    this.profilePhotoUrl = savedPhoto || null;
+    const savedPlan = localStorage.getItem('correja_active_plan');
+    if (savedPlan) {
+      this.syncPlanFromValue(savedPlan);
+    }
   }
 
   private async syncCloudUser(): Promise<void> {
@@ -174,9 +192,30 @@ export class DashboardPage implements OnInit, OnDestroy {
         localStorage.setItem('correja_user_photo', profile.avatar_url);
       }
 
+      const cloudPlan = (profile as { goal_plan?: string; selected_plan?: string } | null)?.goal_plan
+        ?? (profile as { selected_plan?: string } | null)?.selected_plan;
+      if (cloudPlan) {
+        this.syncPlanFromValue(cloudPlan);
+      }
+
       this.cdr.detectChanges();
     } catch {
       // mantém dados locais caso esteja offline
+    }
+  }
+
+  private syncPlanFromValue(rawPlan: string): void {
+    const normalized = rawPlan.toLowerCase();
+    let planId: PlanId = '5k';
+
+    if (normalized.includes('21')) {
+      planId = '21k';
+    } else if (normalized.includes('10')) {
+      planId = '10k';
+    }
+
+    if (this.planService.activePlanId() !== planId) {
+      this.planService.changePlan(planId);
     }
   }
 
