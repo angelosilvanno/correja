@@ -26,6 +26,7 @@ import {
   type RunnerProfile,
   SupabaseService
 } from '../../core/services/supabase.service';
+import { type PlanId, TrainingPlanService } from '../../core/services/training-plan.service';
 
 export interface UserProfileData {
   fullName: string;
@@ -50,6 +51,7 @@ export interface UserProfileData {
 export class ProfilePage implements OnInit, OnDestroy {
   private router = inject(Router);
   private supabaseService = inject(SupabaseService);
+  private planService = inject(TrainingPlanService);
   private cdr = inject(ChangeDetectorRef);
   private profileSub?: Subscription;
 
@@ -61,7 +63,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   athleteName = '';
   athleteLevel: AthleteLevel = 'Iniciante';
   profilePhotoUrl: string | null = null;
-  activePlanId = '5k';
+  activePlanId: PlanId = '5k';
 
   isPhotoModalOpen = false;
   photoPreviewUrl: string | null = null;
@@ -285,7 +287,8 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.athleteLevel = mappedLevel;
     this.activePlanId = mappedPlanId;
 
-    // Persiste imediatamente no cache local antes da chamada remota
+    this.planService.changePlan(mappedPlanId);
+
     localStorage.setItem(this.nameStorageKey, cleanedFullName);
     localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
 
@@ -380,11 +383,13 @@ export class ProfilePage implements OnInit, OnDestroy {
   private applyCloudProfile(cloudProfile: RunnerProfile, fallbackEmail = ''): void {
     const cloudLevel = cloudProfile.level || 'Iniciante';
     this.athleteLevel = cloudLevel;
-    this.activePlanId =
-      cloudProfile.active_plan_id ||
-      this.mapDistanceToPlanId(cloudProfile.goal_distance || '5 km');
 
-    // Mantém a opção de experiência escolhida localmente se ela corresponder ao mesmo nível
+    const resolvedPlanId = this.mapDistanceToPlanId(
+      cloudProfile.active_plan_id || cloudProfile.goal_distance || '5 km'
+    );
+    this.activePlanId = resolvedPlanId;
+    this.planService.changePlan(resolvedPlanId);
+
     const localExpMatchesLevel =
       this.mapExperienceToLevel(this.profileForm.experience) === cloudLevel;
 
@@ -445,13 +450,13 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  private mapDistanceToPlanId(distance: string): string {
+  private mapDistanceToPlanId(distance: string): PlanId {
     if (distance.includes('21')) return '21k';
     if (distance.includes('10')) return '10k';
     return '5k';
   }
 
-  private mapPlanIdToDistance(planId: string): string {
+  private mapPlanIdToDistance(planId: PlanId): string {
     if (planId === '21k') return '21 km';
     if (planId === '10k') return '10 km';
     return '5 km';
@@ -517,6 +522,7 @@ export class ProfilePage implements OnInit, OnDestroy {
           ...parsed
         };
         this.activePlanId = this.mapDistanceToPlanId(this.profileForm.targetDistance);
+        this.planService.changePlan(this.activePlanId);
       } catch {
         this.profileForm.fullName = savedName;
       }

@@ -129,8 +129,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.profilePhotoUrl = null;
       }
 
-      const profilePlan = (profile as { goal_plan?: string; selected_plan?: string } | null)?.goal_plan
-        ?? (profile as { selected_plan?: string } | null)?.selected_plan;
+      const profilePlan = profile?.active_plan_id || profile?.goal_distance;
       if (profilePlan) {
         this.syncPlanFromValue(profilePlan);
       }
@@ -162,7 +161,8 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.profilePhotoUrl = localStorage.getItem('correja_user_photo') || null;
     }
 
-    const savedPlan = localStorage.getItem('correja_active_plan');
+    const cachedPlan = cachedProfile?.active_plan_id || cachedProfile?.goal_distance;
+    const savedPlan = cachedPlan || localStorage.getItem('correja_active_plan');
     if (savedPlan) {
       this.syncPlanFromValue(savedPlan);
     }
@@ -192,8 +192,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         localStorage.setItem('correja_user_photo', profile.avatar_url);
       }
 
-      const cloudPlan = (profile as { goal_plan?: string; selected_plan?: string } | null)?.goal_plan
-        ?? (profile as { selected_plan?: string } | null)?.selected_plan;
+      const cloudPlan = profile?.active_plan_id || profile?.goal_distance;
       if (cloudPlan) {
         this.syncPlanFromValue(cloudPlan);
       }
