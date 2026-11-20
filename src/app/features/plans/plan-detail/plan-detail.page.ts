@@ -19,6 +19,8 @@ import {
   timeOutline
 } from 'ionicons/icons';
 
+import { TrainingPlanService } from '../../../core/services/training-plan.service';
+
 interface DaySession {
   dayName: string;
   dayType: 'workout' | 'rest';
@@ -40,11 +42,11 @@ interface DaySession {
 })
 export class PlanDetailPage implements OnInit {
   private router = inject(Router);
+  public planService = inject(TrainingPlanService);
   private readonly storageKey = 'correja_plan_completed_sessions';
 
   selectedWeek = 2;
   selectedWorkoutIndex = 0;
-  weeks = [1, 2, 3, 4, 5, 6];
 
   currentWeekSessions: DaySession[] = [
     {
@@ -54,7 +56,7 @@ export class PlanDetailPage implements OnInit {
       durationMinutes: 35,
       targetZone: 'Z2 - Leve',
       zoneColor: '#10b981',
-      status: 'completed',
+      status: 'today',
       purpose: 'Estimula novos capilares nos músculos e fortalece tendões sem gerar fadiga.',
       structure: '5 min caminhada Z1 + 5x [3m trote Z2 + 2m caminhada Z1] + 5 min Z1'
     },
@@ -76,7 +78,7 @@ export class PlanDetailPage implements OnInit {
       durationMinutes: 30,
       targetZone: 'Z2 - Leve',
       zoneColor: '#10b981',
-      status: 'completed',
+      status: 'upcoming',
       purpose: 'Treina a eficiência respiratória e a cadência de passada suave.',
       structure: '5 min caminhada Z1 + 4x [4m trote Z2 + 2m caminhada Z1] + 5 min Z1'
     },
@@ -98,7 +100,7 @@ export class PlanDetailPage implements OnInit {
       durationMinutes: 40,
       targetZone: 'Z2 - Leve',
       zoneColor: '#10b981',
-      status: 'today',
+      status: 'upcoming',
       purpose: 'Ensina o corpo a utilizar gordura como combustível por períodos mais longos.',
       structure: '5 min caminhada Z1 + 6x [3m trote Z2 + 2m caminhada Z1] + 5 min Z1'
     },
@@ -132,6 +134,11 @@ export class PlanDetailPage implements OnInit {
     });
   }
 
+  public get weeks(): number[] {
+    const total = this.planService.currentPlan().totalWeeks;
+    return Array.from({ length: total }, (_, idx) => idx + 1);
+  }
+
   public get workoutSessions(): DaySession[] {
     return this.currentWeekSessions.filter((session) => session.dayType === 'workout');
   }
@@ -144,16 +151,24 @@ export class PlanDetailPage implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.selectedWeek = this.planService.currentWeek();
     this.restoreSavedStatuses();
-    const todayIdx = this.workoutSessions.findIndex((s) => s.status === 'today');
-    this.selectedWorkoutIndex = todayIdx >= 0 ? todayIdx : 0;
+    const firstPendingIdx = this.workoutSessions.findIndex((s) => s.status !== 'completed');
+    this.selectedWorkoutIndex = firstPendingIdx >= 0 ? firstPendingIdx : 0;
+  }
+
+  public ionViewWillEnter(): void {
+    if (this.selectedWeek > this.planService.currentPlan().totalWeeks) {
+      this.selectedWeek = 1;
+    }
+    this.restoreSavedStatuses();
   }
 
   selectWeek(week: number): void {
     this.selectedWeek = week;
     this.restoreSavedStatuses();
-    const todayIdx = this.workoutSessions.findIndex((s) => s.status === 'today');
-    this.selectedWorkoutIndex = todayIdx >= 0 ? todayIdx : 0;
+    const firstPendingIdx = this.workoutSessions.findIndex((s) => s.status !== 'completed');
+    this.selectedWorkoutIndex = firstPendingIdx >= 0 ? firstPendingIdx : 0;
   }
 
   selectWorkout(index: number): void {
@@ -177,13 +192,19 @@ export class PlanDetailPage implements OnInit {
   }
 
   completeSession(session: DaySession): void {
-    const isCurrentlyCompleted = session.status === 'completed';
-    session.status = isCurrentlyCompleted ? 'today' : 'completed';
+    const workoutIdx = this.workoutSessions.indexOf(session);
+    if (workoutIdx === -1) return;
+
+    // Alterna no TrainingPlanService global (atualiza imediatamente a barra de progresso no Dashboard)
+    this.planService.toggleWorkoutCompleted(this.selectedWeek, workoutIdx);
+
+    const isDone = this.planService.isWorkoutCompleted(this.selectedWeek, workoutIdx);
+    session.status = isDone ? 'completed' : 'today';
     this.saveStatus(session);
   }
 
   private getSessionKey(session: DaySession): string {
-    return `w${this.selectedWeek}_${session.dayName}`;
+    return `${this.planService.activePlanId()}_w${this.selectedWeek}_${session.dayName}`;
   }
 
   private saveStatus(session: DaySession): void {
@@ -200,14 +221,21 @@ export class PlanDetailPage implements OnInit {
   private restoreSavedStatuses(): void {
     try {
       const raw = localStorage.getItem(this.storageKey);
-      if (!raw) return;
-      const map: Record<string, 'completed' | 'today'> = JSON.parse(raw);
-      for (const session of this.workoutSessions) {
+      const map: Record<string, 'completed' | 'today'> = raw ? JSON.parse(raw) : {};
+
+      this.workoutSessions.forEach((session, workoutIdx) => {
+        const isDoneInService = this.planService.isWorkoutCompleted(this.selectedWeek, workoutIdx);
         const saved = map[this.getSessionKey(session)];
-        if (saved) {
-          session.status = saved;
+
+        if (isDoneInService || saved === 'completed') {
+          session.status = 'completed';
+          if (!isDoneInService) {
+            this.planService.toggleWorkoutCompleted(this.selectedWeek, workoutIdx);
+          }
+        } else {
+          session.status = workoutIdx === 0 ? 'today' : 'upcoming';
         }
-      }
+      });
     } catch (error) {
       console.warn('Não foi possível restaurar os treinos salvos.', error);
     }
