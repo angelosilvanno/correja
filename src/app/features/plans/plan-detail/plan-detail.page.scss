@@ -2,6 +2,13 @@
   --background: #f7f7f5;
   color: #18181b;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+.schedule-canvas *,
+.schedule-canvas *::before,
+.schedule-canvas *::after {
+  box-sizing: border-box;
 }
 
 .app-viewport-container {
@@ -57,6 +64,7 @@
   color: #71717a;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 
   &.selected {
     background: #fff3ed;
@@ -70,8 +78,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
+
+  > div:first-child {
+    min-width: 0;
+    flex: 1;
+  }
 }
 
 .session-kicker-badge {
@@ -93,12 +106,14 @@
   letter-spacing: -0.02em;
   color: #18181b;
   margin: 0 0 6px;
+  line-height: 1.15;
 }
 
 .session-subtitle {
   font-size: 14.5px;
   color: #71717a;
   margin: 0;
+  line-height: 1.45;
 }
 
 .zone-circle-badge {
@@ -144,6 +159,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 
   .metric-icon-box {
     width: 38px;
@@ -193,6 +209,7 @@
   border-radius: 18px;
   padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  min-width: 0;
 }
 
 .micro-eyebrow {
@@ -224,7 +241,7 @@
 .step-row-card {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
   background: #fafaf9;
   border: 1px solid #efefec;
   border-radius: 14px;
@@ -259,6 +276,7 @@
 
 .step-body {
   flex: 1;
+  min-width: 0;
 
   .step-top-line {
     display: flex;
@@ -278,6 +296,7 @@
     font-size: 11px;
     font-weight: 700;
     color: #71717a;
+    flex-shrink: 0;
 
     &.orange {
       color: #ff5a1f;
@@ -296,6 +315,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
 .side-panel-title {
@@ -427,40 +447,6 @@
   text-align: center;
 }
 
-@media (max-width: 960px) {
-  .detail-two-col-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .metrics-strip-card {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .metric-divider {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-  .app-viewport-container {
-    padding: 18px 16px 40px;
-  }
-
-  .plan-headline {
-    font-size: 24px;
-  }
-
-  .zone-circle-badge {
-    width: 64px;
-    height: 64px;
-
-    strong {
-      font-size: 17px;
-    }
-  }
-}
-
 .workout-switcher-bar {
   display: flex;
   align-items: center;
@@ -494,6 +480,8 @@
   color: #52525b;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
 
   ion-icon {
     font-size: 15px;
@@ -511,6 +499,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 
   .counter-lbl {
     font-size: 12px;
@@ -536,5 +525,138 @@
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+  }
+}
+
+/* RESPONSIVIDADE TABLET & MOBILE */
+@media (max-width: 960px) {
+  .detail-two-col-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-strip-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .metric-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-viewport-container {
+    padding: 16px 16px 88px;
+  }
+
+  /* Carrossel horizontal em 1 linha para as semanas */
+  .weeks-selector-inline {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Barra de treinos compacta e deslizável no mobile */
+  .workout-switcher-bar {
+    flex-wrap: nowrap;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .workout-tabs {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .workout-tab-pill {
+    padding: 6px 10px;
+    font-size: 11.5px;
+  }
+
+  .workout-arrows {
+    gap: 4px;
+
+    .counter-lbl {
+      min-width: 36px;
+      font-size: 11.5px;
+    }
+  }
+
+  .arrow-nav-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .plan-headline {
+    font-size: 23px;
+  }
+
+  .session-subtitle {
+    font-size: 13.5px;
+  }
+
+  .zone-circle-badge {
+    width: 62px;
+    height: 62px;
+
+    strong {
+      font-size: 16px;
+    }
+
+    span {
+      font-size: 9px;
+    }
+  }
+
+  .clean-panel {
+    padding: 18px 16px;
+  }
+
+  .step-row-card {
+    padding: 14px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .weeks-selector-inline {
+    display: none;
+  }
+
+  .schedule-topbar {
+    margin-bottom: 12px;
+  }
+
+  .workout-switcher-bar {
+    padding: 8px 12px;
+    margin-bottom: 18px;
+  }
+
+  .workout-tab-pill:not(.active) {
+    display: none;
+  }
+
+  .workout-tab-pill.active {
+    background: transparent;
+    border-color: transparent;
+    color: #18181b;
+    padding: 4px 0;
+    font-size: 13px;
+    font-weight: 700;
   }
 }
