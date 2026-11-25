@@ -78,17 +78,24 @@
         }
 
         @if (authMode === 'login') {
-          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" autocomplete="off" class="form-content">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" autocomplete="on" class="form-content">
             <div class="field-group">
               <label for="email-in">E-mail</label>
               <div class="input-box">
                 <ion-icon name="mail-outline"></ion-icon>
                 <input
                   id="email-in"
+                  name="email"
                   type="email"
                   formControlName="email"
                   placeholder="voce@email.com"
-                  autocomplete="off" />
+                  autocomplete="email"
+                  list="correja-saved-email" />
+                <datalist id="correja-saved-email">
+                  @if (rememberedEmail) {
+                    <option [value]="rememberedEmail"></option>
+                  }
+                </datalist>
               </div>
               @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
                 <span class="input-error">Informe um e-mail válido</span>
@@ -106,10 +113,11 @@
                 <ion-icon name="lock-closed-outline"></ion-icon>
                 <input
                   id="pass-in"
+                  name="password"
                   [type]="showPassword ? 'text' : 'password'"
                   formControlName="password"
                   placeholder="Digite sua senha"
-                  autocomplete="new-password" />
+                  autocomplete="current-password" />
                 <button type="button" class="eye-toggle-btn" (click)="togglePasswordVisibility()">
                   <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
                 </button>

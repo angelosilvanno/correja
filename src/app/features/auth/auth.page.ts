@@ -47,7 +47,9 @@ export class AuthPage implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   private readonly activeUserNameKey = 'correja_user_name';
+  private readonly lastEmailStorageKey = 'correja_last_email';
 
+  rememberedEmail = '';
   authMode: AuthViewMode = 'login';
   isLoginMode = true;
   isSubmitting = false;
@@ -99,6 +101,8 @@ export class AuthPage implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.loadRememberedEmail();
+
     if (window.location.hash.includes('type=recovery')) {
       this.toggleMode('reset');
     }
@@ -112,6 +116,7 @@ export class AuthPage implements OnInit {
   }
 
   public ionViewWillEnter(): void {
+    this.loadRememberedEmail();
     this.loginForm.reset({ email: '', password: '' });
     this.registerForm.reset({
       name: '',
@@ -239,6 +244,7 @@ export class AuthPage implements OnInit {
 
     try {
       await this.supabaseService.signUp(email, password, name, level);
+      this.saveRememberedEmail(email);
 
       this.registerForm.reset({
         name: '',
@@ -282,6 +288,7 @@ export class AuthPage implements OnInit {
         (user?.user_metadata?.['full_name'] as string | undefined) ||
         'Corredor';
 
+      this.saveRememberedEmail(user?.email || email);
       localStorage.setItem(this.activeUserNameKey, fallbackName);
       this.loginForm.reset({ email: '', password: '' });
 
@@ -298,6 +305,18 @@ export class AuthPage implements OnInit {
     } finally {
       this.isSubmitting = false;
       this.cdr.detectChanges();
+    }
+  }
+
+  private loadRememberedEmail(): void {
+    this.rememberedEmail = (localStorage.getItem(this.lastEmailStorageKey) ?? '').trim();
+  }
+
+  private saveRememberedEmail(email: string): void {
+    const clean = email.trim().toLowerCase();
+    if (clean) {
+      localStorage.setItem(this.lastEmailStorageKey, clean);
+      this.rememberedEmail = clean;
     }
   }
 
