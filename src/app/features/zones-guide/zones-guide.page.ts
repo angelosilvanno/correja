@@ -69,14 +69,14 @@ export class ZonesGuidePage {
           level: 'intermediario',
           levelLabel: 'Intermediário',
           duration: '25 min',
-          workoutTitle: 'Trote regenerativo solto',
-          instructions: '25 minutos de trote bem leve sem preocupação com ritmo.'
+          workoutTitle: 'Corrida regenerativa',
+          instructions: '25 minutos de corrida bem leve sem preocupação com ritmo.'
         },
         {
           level: 'avancado',
           levelLabel: 'Avançado',
           duration: '30 min',
-          workoutTitle: 'Rodagem de recuperação ativa',
+          workoutTitle: 'Corrida de recuperação ativa',
           instructions: '30 minutos contínuos em esforço mínimo no dia seguinte a treinos fortes.'
         }
       ]
@@ -94,8 +94,8 @@ export class ZonesGuidePage {
           level: 'iniciante',
           levelLabel: 'Iniciante',
           duration: '30 min',
-          workoutTitle: 'Alternado caminhada + trote',
-          instructions: '5 min caminhada + 5x (3 min trote Z2 + 2 min caminhada).'
+          workoutTitle: 'Alternado caminhada + corrida',
+          instructions: '5 min caminhada + 5x (3 min corrida Z2 + 2 min caminhada).'
         },
         {
           level: 'intermediario',
@@ -166,14 +166,14 @@ export class ZonesGuidePage {
           levelLabel: 'Intermediário',
           duration: '36 min',
           workoutTitle: 'Intervalado de limiar',
-          instructions: '10 min Z2 + 4x (4 min Z4 + 2 min trote leve) + 2 min Z1.'
+          instructions: '10 min Z2 + 4x (4 min Z4 + 2 min corrida leve) + 2 min Z1.'
         },
         {
           level: 'avancado',
           levelLabel: 'Avançado',
           duration: '45 min',
           workoutTitle: 'Séries sustentadas de limiar',
-          instructions: '12 min Z2 + 3x (8 min Z4 + 2 min trote) + 3 min Z1.'
+          instructions: '12 min Z2 + 3x (8 min Z4 + 2 min corrida) + 3 min Z1.'
         }
       ]
     },
@@ -198,14 +198,14 @@ export class ZonesGuidePage {
           levelLabel: 'Intermediário',
           duration: '32 min',
           workoutTitle: 'Intervalado de velocidade',
-          instructions: '10 min Z2 + 8x (1 min Z5 + 1 min 30s trote leve) + 2 min Z1.'
+          instructions: '10 min Z2 + 8x (1 min Z5 + 1 min 30s corrida leve) + 2 min Z1.'
         },
         {
           level: 'avancado',
           levelLabel: 'Avançado',
           duration: '40 min',
           workoutTitle: 'Tiros de potência aeróbica',
-          instructions: '12 min Z2 + 6x (2 min Z5 + 2 min trote) + 4 min Z1.'
+          instructions: '12 min Z2 + 6x (2 min Z5 + 2 min corrida) + 4 min Z1.'
         }
       ]
     }
