@@ -59,6 +59,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   private readonly profileStorageKey = 'correja_user_profile';
   private readonly photoStorageKey = 'correja_user_photo';
   private readonly notificationsStorageKey = 'correja_notifications_enabled';
+  private readonly lastEmailStorageKey = 'correja_last_email';
 
   athleteName = '';
   athleteLevel: AthleteLevel = 'Iniciante';
@@ -291,6 +292,9 @@ export class ProfilePage implements OnInit, OnDestroy {
 
     localStorage.setItem(this.nameStorageKey, cleanedFullName);
     localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
+    if (cleanedEmail) {
+      localStorage.setItem(this.lastEmailStorageKey, cleanedEmail);
+    }
 
     try {
       const user = await this.supabaseService.getCurrentUser();
@@ -350,6 +354,11 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   public async logout(): Promise<void> {
+    const emailToSave = (this.profileForm.email || '').trim();
+    if (emailToSave) {
+      localStorage.setItem(this.lastEmailStorageKey, emailToSave);
+    }
+
     try {
       await this.supabaseService.signOut();
     } catch {
@@ -421,6 +430,9 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.athleteName = this.profileForm.fullName || 'Atleta CorreJa';
     localStorage.setItem(this.nameStorageKey, this.athleteName);
     localStorage.setItem(this.profileStorageKey, JSON.stringify(this.profileForm));
+    if (this.profileForm.email) {
+      localStorage.setItem(this.lastEmailStorageKey, this.profileForm.email.trim());
+    }
 
     if (cloudProfile.avatar_url) {
       this.profilePhotoUrl = cloudProfile.avatar_url;
@@ -439,6 +451,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if (!cloudProfile) {
         if (user.email && !this.profileForm.email) {
           this.profileForm.email = user.email;
+          localStorage.setItem(this.lastEmailStorageKey, user.email.trim());
           this.cdr.detectChanges();
         }
         return;
