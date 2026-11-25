@@ -58,7 +58,7 @@ export class PlanDetailPage implements OnInit {
       zoneColor: '#10b981',
       status: 'today',
       purpose: 'Estimula novos capilares nos músculos e fortalece tendões sem gerar fadiga.',
-      structure: '5 min caminhada Z1 + 5x [3m trote Z2 + 2m caminhada Z1] + 5 min Z1'
+      structure: '5 min caminhada Z1 + 5x [3m corrida Z2 + 2m caminhada Z1] + 5 min Z1'
     },
     {
       dayName: 'Quarta-feira',
@@ -80,7 +80,7 @@ export class PlanDetailPage implements OnInit {
       zoneColor: '#10b981',
       status: 'upcoming',
       purpose: 'Treina a eficiência respiratória e a cadência de passada suave.',
-      structure: '5 min caminhada Z1 + 4x [4m trote Z2 + 2m caminhada Z1] + 5 min Z1'
+      structure: '5 min caminhada Z1 + 4x [4m corrida Z2 + 2m caminhada Z1] + 5 min Z1'
     },
     {
       dayName: 'Sexta-feira',
@@ -102,7 +102,7 @@ export class PlanDetailPage implements OnInit {
       zoneColor: '#10b981',
       status: 'upcoming',
       purpose: 'Ensina o corpo a utilizar gordura como combustível por períodos mais longos.',
-      structure: '5 min caminhada Z1 + 6x [3m trote Z2 + 2m caminhada Z1] + 5 min Z1'
+      structure: '5 min caminhada Z1 + 6x [3m corrida Z2 + 2m caminhada Z1] + 5 min Z1'
     },
     {
       dayName: 'Domingo',
